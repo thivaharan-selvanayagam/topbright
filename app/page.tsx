@@ -15,7 +15,7 @@ import WhatWeOfferSection from "@/sections/home/WhatWeOfferSection";
 export default function HomePage() {
   return (
     <div className="relative overflow-hidden bg-slate-50 text-slate-900">
-      {/* <SmokeCanvas /> */}
+      <SmokeCanvas />
       <HeroSection />
       <HighlightsSection />
       <WhatWeOfferSection/>
