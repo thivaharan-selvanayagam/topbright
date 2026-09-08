@@ -1,0 +1,52 @@
+[
+  {
+    "id": "RgzfZq0n9g",
+    "studentId": "ICT2026001",
+    "studentName": "Nithusha Kumar",
+    "examId": "e2",
+    "examTitle": "Grade 12 – Database Concepts Test",
+    "score": 8,
+    "totalMarks": 8,
+    "percentage": 100,
+    "answers": {
+      "q1": 1,
+      "q2": 0,
+      "q3": 1,
+      "q4": 0
+    },
+    "submittedAt": "2026-09-06T14:48:12.100Z"
+  },
+  {
+    "id": "t77J_PqLBN",
+    "studentId": "ICT2026001",
+    "studentName": "Nithusha Kumar",
+    "examId": "e1",
+    "examTitle": "Grade 11 – Number Systems Quiz",
+    "score": 10,
+    "totalMarks": 10,
+    "percentage": 100,
+    "answers": {
+      "q1": 1,
+      "q2": 2,
+      "q3": 2,
+      "q4": 1,
+      "q5": 1
+    },
+    "submittedAt": "2026-09-06T15:12:51.090Z"
+  },
+  {
+    "id": "WO6KKlyQkd",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "examId": "WLFHwWHA",
+    "examTitle": "Operating System",
+    "score": 0,
+    "totalMarks": 4,
+    "percentage": 0,
+    "answers": {
+      "-iiFih": 1,
+      "ldc_AC": 1
+    },
+    "submittedAt": "2026-09-07T04:22:44.838Z"
+  }
+]

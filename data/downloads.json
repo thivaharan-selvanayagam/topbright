@@ -1,0 +1,42 @@
+[
+  {
+    "id": "d1",
+    "title": "2025 O/L ICT Model Paper 01",
+    "description": "Full model paper with structured and essay questions, based on the latest syllabus.",
+    "type": "Model Paper",
+    "grade": "Grade 10 & 11",
+    "fileUrl": "/uploads/sample-model-paper.pdf",
+    "fileName": "2025-ol-ict-model-paper-01.pdf",
+    "addedAt": "2026-05-12"
+  },
+  {
+    "id": "d2",
+    "title": "Grade 12 Database Unit – Tute",
+    "description": "Complete tute covering DBMS concepts, SQL basics, and normalisation.",
+    "type": "Tute",
+    "grade": "Grade 12 & 13",
+    "fileUrl": "/uploads/sample-tute.pdf",
+    "fileName": "grade12-database-tute.pdf",
+    "addedAt": "2026-05-20"
+  },
+  {
+    "id": "d3",
+    "title": "ICT Reference Handbook (Grade 6–8)",
+    "description": "A friendly introduction to computers, hardware and software for younger learners.",
+    "type": "Book",
+    "grade": "Grade 6, 7 & 8",
+    "fileUrl": "/uploads/sample-book.pdf",
+    "fileName": "ict-reference-handbook-6-8.pdf",
+    "addedAt": "2026-06-01"
+  },
+  {
+    "id": "d4",
+    "title": "2024 A/L ICT Past Paper",
+    "description": "Official structure past exam paper with marking scheme included.",
+    "type": "Exam Paper",
+    "grade": "Grade 12 & 13",
+    "fileUrl": "/uploads/sample-exam-paper.pdf",
+    "fileName": "2024-al-ict-past-paper.pdf",
+    "addedAt": "2026-06-18"
+  }
+]

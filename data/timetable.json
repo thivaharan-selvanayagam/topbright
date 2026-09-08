@@ -1,0 +1,90 @@
+[
+  {
+    "id": "t1",
+    "day": "Monday",
+    "time": "4:00 PM – 5:30 PM",
+    "grade": "Grade 10 & 11",
+    "mode": "Online",
+    "topic": "ICT Theory – Databases"
+  },
+  {
+    "id": "t2",
+    "day": "Monday",
+    "time": "6:00 PM – 7:30 PM",
+    "grade": "Grade 12 & 13",
+    "mode": "Online",
+    "topic": "ICT Revision – Networking"
+  },
+  {
+    "id": "t3",
+    "day": "Tuesday",
+    "time": "3:30 PM – 5:00 PM",
+    "grade": "Grade 6, 7 & 8",
+    "mode": "Physical",
+    "topic": "Introduction to Computing"
+  },
+  {
+    "id": "t4",
+    "day": "Wednesday",
+    "time": "4:00 PM – 5:30 PM",
+    "grade": "Grade 9",
+    "mode": "Physical",
+    "topic": "Programming Fundamentals"
+  },
+  {
+    "id": "t5",
+    "day": "Thursday",
+    "time": "5:00 PM – 6:30 PM",
+    "grade": "Grade 10 & 11",
+    "mode": "Group",
+    "topic": "Practical – Spreadsheets & DB"
+  },
+  {
+    "id": "t6",
+    "day": "Friday",
+    "time": "By appointment",
+    "grade": "All Grades",
+    "mode": "One-to-One",
+    "topic": "Personalised Revision Session"
+  },
+  {
+    "id": "t7",
+    "day": "Saturday",
+    "time": "9:00 AM – 10:30 AM",
+    "grade": "Grade 12 & 13",
+    "mode": "Physical",
+    "topic": "Paper Class – Structured Essays"
+  },
+  {
+    "id": "t8",
+    "day": "Saturday",
+    "time": "11:00 AM – 12:30 PM",
+    "grade": "Grade 6, 7 & 8",
+    "mode": "Online",
+    "topic": "Fun with Scratch & Logic"
+  },
+  {
+    "id": "t9",
+    "day": "Sunday",
+    "time": "By appointment",
+    "grade": "All Grades",
+    "mode": "One-to-One",
+    "topic": "Exam Preparation Clinic"
+  },
+  {
+    "id": "1EJo7yT5",
+    "day": "Monday",
+    "time": "7.30pm - 8.00pm",
+    "grade": "Grade 6",
+    "mode": "Online",
+    "topic": "introduction"
+  },
+  {
+    "id": "vZ3g3rXn",
+    "day": "Tuesday",
+    "time": "7.30 pm - 8.30 pm",
+    "grade": "Grade 10",
+    "mode": "Online",
+    "topic": "operating system"
+  }
+]

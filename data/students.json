@@ -1,0 +1,35 @@
+[
+  {
+    "id": "ICT2026001",
+    "name": "Nithusha Kumar",
+    "grade": "10",
+    "mode": "Online",
+    "passwordHash": "$2a$10$8n2q4ginVlPCrdQgkxw.IOXeOBpKXPiM4B8tY3s3VXxQ1pAEkQpoq",
+    "createdAt": "2026-09-06T14:35:27.794Z"
+  },
+  {
+    "id": "ICT2026002",
+    "name": "Aravind Selvam",
+    "grade": "12",
+    "mode": "Physical",
+    "passwordHash": "$2a$10$9U8Wc4mXsdfiLnzT4cypI.L4UIKZJ/s03Ht9KT3XXEFzUX.ObmemK",
+    "createdAt": "2026-09-06T14:35:27.879Z"
+  },
+  {
+    "id": "ICT2026003",
+    "name": "Priya Devan",
+    "grade": "7",
+    "mode": "Group",
+    "passwordHash": "$2a$10$8oov11PrJdbI1V7KOop8yeJl1Rv3zTLw7RRMTmwO9wRYsGrNTpXQ6",
+    "createdAt": "2026-09-06T14:35:27.964Z"
+  },
+  {
+    "id": "ICT2023004",
+    "name": "Akija",
+    "grade": "10",
+    "mode": "Online",
+    "phone": "",
+    "passwordHash": "$2a$10$p/BIPgaN1ch7mrJ.0ZQSbeV1KXfy0xvNV5teufhI4yS6QB.nh4nA2",
+    "createdAt": "2026-09-07T04:19:54.124Z"
+  }
+]

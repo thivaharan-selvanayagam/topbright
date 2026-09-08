@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F5F7FA;
+  color: #0B1220;
+}
+
+::selection {
+  background-color: #3FD8D4;
+  color: #0B1220;
+}
+
+.container-page {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .container-page {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(63,216,212,0.35) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid #3FD8D4;
+  outline-offset: 3px;
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-navy-900 focus-ring;
+  }
+  .btn-primary {
+    @apply rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-cyan-600 disabled:opacity-60;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
