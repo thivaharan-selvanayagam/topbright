@@ -74,21 +74,21 @@ const sampleResources = [
 
 export default function StudyVaultSection() {
   return (
-    <section className="relative overflow-hidden bg-slate-50/80 py-24 border-b border-slate-200">
-      {/* Background Soft Glows */}
-      <div className="pointer-events-none absolute -left-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#8a00c2]/5 blur-3xl" />
-      <div className="pointer-events-none absolute -right-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#f0822b]/5 blur-3xl" />
+    <section className="relative overflow-hidden bg-slate-950 py-24 border-b border-slate-800 text-white select-none">
+      {/* Background Soft Glows - Adjusted for Dark Mode */}
+      <div className="pointer-events-none absolute -left-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#8a00c2]/10 blur-[100px]" />
+      <div className="pointer-events-none absolute -right-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#f0822b]/10 blur-[100px]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         
         {/* Header Row */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#8a00c2]/20 bg-[#8a00c2]/5 px-3.5 py-1 text-xs font-mono font-bold tracking-widest text-[#8a00c2] uppercase">
+            <span className="inline-flex items-center gap-2 rounded-full border border-purple-800 bg-purple-950 px-3.5 py-1 text-xs font-mono font-bold tracking-widest text-[#8a00c2] uppercase">
               <VaultFolderIcon />
               Study Vault
             </span>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 uppercase">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white uppercase">
               Recent Model Papers <br className="hidden sm:inline" />
               <span className="bg-gradient-to-r from-[#8a00c2] to-[#f0822b] bg-clip-text text-transparent">
                 &amp; Study Tutes.
@@ -98,7 +98,7 @@ export default function StudyVaultSection() {
 
           <Link
             href="/downloads"
-            className="group inline-flex items-center gap-2.5 rounded-xl bg-[#8a00c2] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5"
+            className="group inline-flex items-center gap-2.5 rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/50 transition-all hover:bg-purple-700 hover:-translate-y-0.5"
           >
             <span>View All Downloads</span>
             <ArrowRightIcon />
@@ -112,33 +112,36 @@ export default function StudyVaultSection() {
             return (
               <div
                 key={res.title}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-[#8a00c2]/40 hover:shadow-xl hover:shadow-[#8a00c2]/5"
+                className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-7 shadow-2xl shadow-slate-950/20 transition-all duration-300 hover:-translate-y-2 hover:border-purple-800 hover:shadow-purple-950/30"
               >
-                <div>
+                {/* Dynamic gradient background effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-800/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                <div className="relative z-10">
                   {/* Top Badges */}
                   <div className="flex items-center justify-between gap-2 mb-6">
                     <span className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider ${res.badgeBg}`}>
                       <IconComponent />
                       {res.type}
                     </span>
-                    <span className="font-mono text-xs font-semibold text-slate-400">
+                    <span className="font-mono text-xs font-semibold text-slate-500">
                       {res.size}
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-display text-lg font-bold text-slate-900 transition-colors group-hover:text-[#8a00c2] leading-snug">
+                  <h3 className="font-display text-lg font-bold text-white transition-colors group-hover:text-white leading-snug">
                     {res.title}
                   </h3>
 
                   {/* Format Subtitle */}
-                  <p className="mt-2 font-mono text-xs text-slate-500 font-medium">
-                    Format: <span className="text-slate-700 font-semibold">{res.format}</span>
+                  <p className="mt-2 font-mono text-xs text-slate-400 font-medium">
+                    Format: <span className="text-slate-200 font-semibold">{res.format}</span>
                   </p>
                 </div>
 
                 {/* Bottom CTA Button Line */}
-                <div className="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between">
+                <div className="mt-8 pt-5 border-t border-slate-800 flex items-center justify-between relative z-10">
                   <Link
                     href={res.link}
                     className="inline-flex items-center gap-2 text-xs font-bold text-[#8a00c2] group-hover:text-[#f0822b] transition-colors"
@@ -147,7 +150,7 @@ export default function StudyVaultSection() {
                     <DownloadIcon />
                   </Link>
 
-                  <div className="h-1.5 w-1.5 rounded-full bg-slate-200 group-hover:bg-[#f0822b] transition-colors" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-slate-700 group-hover:bg-[#f0822b] transition-colors" />
                 </div>
               </div>
             );

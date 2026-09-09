@@ -11,6 +11,7 @@ import ForParentsSection from "@/sections/home/ForParentsSection";
 import FaqSection from "@/sections/home/FaqSection";
 import CtaSection from "@/sections/home/CtaSection";
 import WhatWeOfferSection from "@/sections/home/WhatWeOfferSection";
+import AcademicRoadmapSection from "@/sections/home/AcademicRoadmapSection";
 
 export default function HomePage() {
   return (
@@ -26,6 +27,7 @@ export default function HomePage() {
       <TestimonialsSection />
       <StudyVaultSection />
       <ForParentsSection />
+      <AcademicRoadmapSection/>
       <FaqSection />
       <CtaSection />
     </div>

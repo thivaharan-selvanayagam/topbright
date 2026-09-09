@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import CtaSection from "@/sections/home/CtaSection";
 
 export const metadata: Metadata = { title: "About | TopBright Academy" };
 
@@ -314,38 +315,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* SECTION 5: STATS COUNTER BAR (DARK THEME) */}
-      <section className="bg-slate-950 text-white py-16 relative overflow-hidden">
-        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[600px] rounded-full bg-[#8a00c2]/10 blur-[120px]" />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            
-            <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-6 text-center backdrop-blur shadow-xl">
-              <p className="font-display text-4xl font-extrabold text-[#f0822b]">5+ Yrs</p>
-              <p className="mt-2 text-xs font-mono text-slate-300 font-semibold uppercase tracking-wider">Teaching Experience</p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-6 text-center backdrop-blur shadow-xl">
-              <p className="font-display text-4xl font-extrabold text-[#8a00c2]">Grade 6–13</p>
-              <p className="mt-2 text-xs font-mono text-slate-300 font-semibold uppercase tracking-wider">National Syllabus Range</p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-6 text-center backdrop-blur shadow-xl">
-  <p className="font-display text-4xl font-extrabold text-[#f0822b]">4 Options</p>
-  <p className="mt-2 text-xs font-mono text-slate-300 font-semibold uppercase tracking-wider">
-    Online &amp; Physical · 1-to-1 or Group
-  </p>
-</div>
-
-            <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-6 text-center backdrop-blur shadow-xl">
-              <p className="font-display text-4xl font-extrabold text-emerald-400">24/7</p>
-              <p className="mt-2 text-xs font-mono text-slate-300 font-semibold uppercase tracking-wider">Student Portal Access</p>
-            </div>
-
-          </div>
-        </div>
-      </section>
+      <CtaSection />
 
     </div>
   );

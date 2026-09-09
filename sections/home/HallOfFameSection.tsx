@@ -10,7 +10,7 @@ function TrophyIcon() {
 
 function SchoolIcon() {
   return (
-    <svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
     </svg>
   );
@@ -53,73 +53,90 @@ const topAchievers = [
 
 export default function HallOfFameSection() {
   return (
-    <section className="relative overflow-hidden bg-slate-50/80 py-24 border-b border-slate-200">
-      {/* Background Glows */}
-      <div className="pointer-events-none absolute -left-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#8a00c2]/5 blur-3xl" />
-      <div className="pointer-events-none absolute -right-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#f0822b]/5 blur-3xl" />
+    <section className="relative overflow-hidden bg-slate-950 py-24 border-b border-white/5 select-none">
+      
+      {/* Dynamic Background Glows */}
+      <div className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#8a00c2]/15 blur-[160px]" />
+      <div className="pointer-events-none absolute -right-40 bottom-0 h-[500px] w-[500px] rounded-full bg-[#f0822b]/10 blur-[160px]" />
+      
+      {/* Dot Grid Overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#8a00c2]/20 bg-[#8a00c2]/5 px-3.5 py-1 text-xs font-mono font-bold tracking-widest text-[#8a00c2] uppercase">
+        {/* Header Section */}
+        <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-20">
+          <span className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-xs font-mono font-bold tracking-widest text-purple-300 uppercase shadow-lg shadow-purple-900/20 backdrop-blur-md">
             <TrophyIcon />
             National Results
           </span>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 uppercase">
-            Hall of <span className="bg-gradient-to-r from-[#8a00c2] to-[#f0822b] bg-clip-text text-transparent">Fame</span>
+          <h2 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white uppercase leading-tight">
+            Hall of <span className="bg-gradient-to-r from-[#8a00c2] via-purple-300 to-[#f0822b] bg-clip-text text-transparent">Fame</span>
           </h2>
-          <p className="mt-4 text-sm sm:text-base text-slate-600 font-medium">
-            Celebrating our top achievers who have secured outstanding A-grade results in national examinations.
+          <p className="mt-5 text-sm sm:text-base text-slate-400 font-medium max-w-xl leading-relaxed">
+            Celebrating our top achievers who have secured outstanding A-grade results in their national examinations.
           </p>
         </div>
 
-        {/* Cards Grid */}
+        {/* Glowing Plaque Cards Grid */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {topAchievers.map((student) => (
+          {topAchievers.map((student, idx) => (
             <div
               key={student.name}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-[#8a00c2]/40 hover:shadow-xl hover:shadow-[#8a00c2]/5"
+              className="group relative rounded-3xl p-[1px] overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#8a00c2]/20"
             >
-              {/* Background Trophy Watermark */}
-              <div className="pointer-events-none absolute -right-6 -bottom-6 opacity-5 transition-transform duration-500 group-hover:scale-125 group-hover:opacity-10 text-[#8a00c2]">
-                <svg className="w-36 h-36" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z" />
-                </svg>
-              </div>
-
-              <div>
-                {/* Top Badge & Score Row */}
-                <div className="flex items-center justify-between mb-6">
-                  <span className="inline-flex items-center gap-1 rounded-md bg-[#f0822b]/10 px-2.5 py-1 font-mono text-[10px] font-bold text-[#f0822b] uppercase tracking-wider">
-                    <StarIcon />
-                    {student.highlight}
-                  </span>
-                  <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 font-mono text-xs font-extrabold text-emerald-600">
-                    {student.score}
-                  </span>
+              {/* Animated Gradient Border Layer */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent transition-all duration-500 group-hover:from-[#8a00c2]/80 group-hover:via-[#f0822b]/50 group-hover:to-transparent" />
+              
+              {/* Inner Card Content */}
+              <div className="relative flex h-full flex-col justify-between rounded-[23px] bg-slate-900/90 backdrop-blur-xl p-8 overflow-hidden">
+                
+                {/* Decorative Background Icon */}
+                <div className="pointer-events-none absolute -right-8 -bottom-8 text-white transition-transform duration-700 opacity-[0.02] group-hover:scale-110 group-hover:opacity-[0.05] group-hover:text-[#f0822b] group-hover:rotate-12">
+                  <svg className="w-48 h-48" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z" />
+                  </svg>
                 </div>
 
-                {/* Avatar & Info */}
-                <div className="flex items-center gap-4 mb-5">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8a00c2] to-purple-900 text-white font-mono font-extrabold text-lg shadow-md shadow-[#8a00c2]/20 ring-4 ring-purple-50 transition-transform group-hover:scale-105">
-                    {student.initials}
+                <div>
+                  {/* Top Badges */}
+                  <div className="flex items-center justify-between mb-8">
+                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#f0822b]/10 border border-[#f0822b]/20 px-3 py-1.5 font-mono text-[10px] font-bold text-[#f0822b] uppercase tracking-widest shadow-sm">
+                      <StarIcon />
+                      {student.highlight}
+                    </span>
+                    <span className="rounded-full bg-emerald-500/10 border border-emerald-400/30 px-3.5 py-1 font-mono text-xs font-extrabold text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.1)]">
+                      {student.score}
+                    </span>
                   </div>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-slate-900 transition-colors group-hover:text-[#8a00c2]">
+
+                  {/* Profile Section */}
+                  <div className="flex flex-col items-center text-center">
+                    <div className="relative mb-5">
+                      {/* Avatar Glow Ring */}
+                      <div className="absolute inset-0 rounded-full bg-[#8a00c2] blur-md opacity-20 transition-opacity duration-300 group-hover:opacity-60" />
+                      
+                      {/* Avatar */}
+                      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#8a00c2] to-slate-900 text-white font-display font-bold text-2xl border-2 border-white/10 shadow-xl transition-transform duration-500 group-hover:scale-110 group-hover:border-[#f0822b]/50">
+                        {student.initials}
+                      </div>
+                    </div>
+
+                    <h3 className="font-display text-2xl font-bold text-white transition-colors duration-300 group-hover:text-[#f0822b]">
                       {student.name}
                     </h3>
-                    <p className="font-mono text-xs font-semibold text-[#f0822b] mt-0.5">
+                    <p className="font-mono text-xs font-semibold text-[#8a00c2] mt-1.5 uppercase tracking-widest bg-[#8a00c2]/10 px-3 py-1 rounded-full inline-block border border-[#8a00c2]/20">
                       {student.exam}
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* School Tag Footer */}
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-medium text-slate-500">
-                <SchoolIcon />
-                <span className="truncate">{student.school}</span>
+                {/* Footer / School */}
+                <div className="mt-8 pt-5 border-t border-white/10 flex items-center justify-center gap-2.5 text-xs font-medium text-slate-400 transition-colors duration-300 group-hover:text-slate-300">
+                  <SchoolIcon />
+                  <span className="truncate">{student.school}</span>
+                </div>
+                
               </div>
             </div>
           ))}
