@@ -17,7 +17,7 @@ export default function HeroSection() {
         {/* LEFT COLUMN: HERO CONTENT */}
         <div>
           <p className="font-mono text-sm font-semibold text-[#8a00c2]">
-            ICT Classes · Grade 6 – 12 · Batticaloa
+            ICT Classes · Grade 6 – 13 · Batticaloa
           </p>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.08] text-slate-900 sm:text-5xl">
             Learn ICT the way it&apos;s actually examined —
@@ -52,7 +52,7 @@ export default function HeroSection() {
           </div>
           
           <div className="mt-3 flex flex-wrap items-center gap-1">
-            {["6", "7", "8", "9", "10", "11", "12"].map((g, i) => (
+            {["6", "7", "8", "9", "10", "11", "12", "13"].map((g, i) => (
               <div key={g} className="flex items-center">
                 <button
                   onMouseEnter={() => setHoveredGrade(g)}
@@ -65,7 +65,7 @@ export default function HeroSection() {
                 >
                   {g}
                 </button>
-                {i < 6 && <span className="h-px w-3 bg-[#8a00c2]/20" />}
+                {i < 7 && <span className="h-px w-3 bg-[#8a00c2]/20" />}
               </div>
             ))}
           </div>
