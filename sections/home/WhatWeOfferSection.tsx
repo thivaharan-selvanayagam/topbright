@@ -22,7 +22,7 @@ function TerminalIcon() {
 function LaptopIcon() {
   return (
     <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 0121 5.25z" />
     </svg>
   );
 }
@@ -97,14 +97,9 @@ export default function WhatWeOfferSection() {
   const IconComponent = current.icon;
 
   return (
-    <section className="relative w-full bg-slate-50 border-b border-slate-200 
-      /* Viewport constraints for desktop - locks it to screen height */
-      lg:h-[calc(100vh-80px)] lg:max-h-[850px] lg:min-h-[650px] 
-      flex flex-col py-10 lg:py-12"
-    >
+    <section className="relative w-full bg-slate-50 border-b border-slate-200 lg:h-[calc(100vh-80px)] lg:max-h-[850px] lg:min-h-[650px] flex flex-col py-10 lg:py-12">
       <div className="container-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col h-full">
-        
-        {/* HEADER ROW - Takes up minimal space */}
+        {/* HEADER ROW */}
         <div className="flex-shrink-0 mb-6 lg:mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#8a00c2]/20 bg-[#8a00c2]/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-[#8a00c2]">
@@ -120,11 +115,11 @@ export default function WhatWeOfferSection() {
           </p>
         </div>
 
-        {/* MAIN STAGE GRID - Fills the remaining viewport height perfectly */}
+        {/* MAIN STAGE GRID */}
         <div className="flex-1 grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-12 min-h-0">
           
-          {/* TAB BUTTONS (LEFT - 4 COLS) */}
-          <div className="lg:col-span-4 flex flex-col gap-3 lg:h-full lg:overflow-y-auto overflow-x-hidden pr-1 pb-1">
+          {/* TAB BUTTONS (LEFT - 4 COLS) - Added p-2.5 padding so rings/borders are never clipped */}
+          <div className="lg:col-span-4 flex flex-col gap-4 lg:h-full lg:overflow-y-auto p-2.5">
             {offerings.map((item, index) => {
               const isActive = activeTab === index;
               const ItemIcon = item.icon;
@@ -133,10 +128,10 @@ export default function WhatWeOfferSection() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(index)}
-                  className={`group relative flex items-center justify-between rounded-2xl p-4 lg:p-5 text-left transition-all duration-300 border flex-1 ${
+                  className={`group relative flex items-center justify-between rounded-2xl p-4 lg:p-5 text-left transition-all duration-300 flex-1 ${
                     isActive
-                      ? "border-[#8a00c2] bg-[#fdf8ff] shadow-md shadow-[#8a00c2]/5 scale-[1.01]"
-                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/80"
+                      ? "ring-2 ring-[#8a00c2] border-transparent bg-[#fdf8ff] shadow-lg shadow-[#8a00c2]/10 z-20"
+                      : "border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/80 z-10"
                   }`}
                 >
                   <div className="flex items-center gap-4">
@@ -179,7 +174,6 @@ export default function WhatWeOfferSection() {
 
           {/* ACTIVE CONTENT DISPLAY (RIGHT - 8 COLS) */}
           <div className="lg:col-span-8 relative rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/10 border border-slate-200/50 bg-slate-900 lg:h-full h-[500px]">
-            
             {/* Background Image Container */}
             <div className="absolute inset-0 w-full h-full">
               <img
@@ -189,7 +183,7 @@ export default function WhatWeOfferSection() {
                 className="absolute inset-0 h-full w-full object-cover animate-image-fade opacity-80 mix-blend-overlay"
                 loading="lazy"
               />
-              {/* Dark Gradient Overlay to make text readable */}
+              {/* Dark Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#0d0114] via-[#0d0114]/60 to-transparent" />
             </div>
 
@@ -235,12 +229,12 @@ export default function WhatWeOfferSection() {
                 </a>
               </div>
             </div>
-
           </div>
+
         </div>
       </div>
 
-      {/* Smooth CSS Animations */}
+      {/* Animations */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes imageFade {
           0% { opacity: 0.3; transform: scale(1.03); filter: blur(2px); }
