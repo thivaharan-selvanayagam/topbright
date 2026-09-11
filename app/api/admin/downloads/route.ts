@@ -4,19 +4,26 @@ import fs from "fs/promises";
 import path from "path";
 import { db } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
-import type { DownloadItem } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   if (!getAdminSession()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const contentType = req.headers.get("content-type") || "";
-  let title = "", description = "", type: DownloadItem["type"] = "Other", grade = "", fileUrl = "", fileName = "";
+  let title = "",
+    description = "",
+    category = "Model Papers",
+    subCategory = "",
+    grade = "",
+    fileUrl = "",
+    fileName = "",
+    fileSize = "";
 
   if (contentType.includes("multipart/form-data")) {
     const form = await req.formData();
     title = String(form.get("title") || "");
     description = String(form.get("description") || "");
-    type = (String(form.get("type") || "Other")) as DownloadItem["type"];
+    category = String(form.get("category") || form.get("type") || "Model Papers");
+    subCategory = String(form.get("subCategory") || "");
     grade = String(form.get("grade") || "");
     const externalUrl = String(form.get("fileUrl") || "");
     const file = form.get("file") as File | null;
@@ -29,6 +36,7 @@ export async function POST(req: NextRequest) {
       await fs.writeFile(path.join(uploadDir, safeName), bytes);
       fileUrl = `/uploads/${safeName}`;
       fileName = file.name;
+      fileSize = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
     } else if (externalUrl) {
       fileUrl = externalUrl;
       fileName = title;
@@ -39,26 +47,35 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     title = body.title;
     description = body.description || "";
-    type = body.type || "Other";
+    category = body.category || body.type || "Model Papers";
+    subCategory = body.subCategory || "";
     grade = body.grade;
     fileUrl = body.fileUrl;
     fileName = body.fileName || title;
+    fileSize = body.fileSize || "";
   }
 
-  if (!title || !grade || !fileUrl) {
-    return NextResponse.json({ error: "Title, grade and file/link are required." }, { status: 400 });
+  if (!title || !category || !grade || !fileUrl) {
+    return NextResponse.json({ error: "Title, category, grade and file/link are required." }, { status: 400 });
   }
 
-  const item: DownloadItem = {
+  const item: Record<string, any> = {
     id: nanoid(8),
     title,
     description,
-    type,
+    category,
     grade,
     fileUrl,
     fileName,
     addedAt: new Date().toISOString().slice(0, 10),
   };
+
+  if (subCategory && category === "School Exam Papers") {
+    item.subCategory = subCategory;
+  }
+  if (fileSize) {
+    item.fileSize = fileSize;
+  }
 
   const downloads = await db.downloads.all();
   downloads.unshift(item);
@@ -73,7 +90,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
   const downloads = await db.downloads.all();
-  const filtered = downloads.filter((d) => d.id !== id);
+  const filtered = downloads.filter((d: any) => d.id !== id);
   await db.downloads.save(filtered);
   return NextResponse.json({ ok: true });
 }

@@ -81,7 +81,7 @@ export default function HeroSection() {
                 <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
                 <span className="h-2.5 w-2.5 rounded-full bg-[#f0822b]" />
                 <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
-                <span className="ml-3 font-mono text-xs font-semibold text-slate-500">educator_profile.ts</span>
+                <span className="ml-3 font-mono text-xs font-semibold text-slate-500">Top Bright Academy</span>
               </div>
               <span className="rounded-full bg-[#8a00c2]/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-[#8a00c2] uppercase tracking-wider">
                 Lead Educator
@@ -91,16 +91,16 @@ export default function HeroSection() {
             {/* LAVANYA PHOTO CONTAINER */}
             <div className="relative h-[380px] sm:h-[420px] w-full overflow-hidden bg-gradient-to-b from-[#8a00c2]/5 to-slate-100">
               <img
-                src="/lavanya_profile.webp"
+                src="/topbright_hero.webp"
                 alt="Lavanya - Lead ICT Educator"
                 className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
               />
               
               {/* Gradient overlay for contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/10 via-slate-950/20 to-transparent" />
 
               {/* FLOATING OVERLAY BADGE */}
-              <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-white/20 bg-white/90 p-4 backdrop-blur-md shadow-lg">
+              {/* <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-white/20 bg-white/90 p-4 backdrop-blur-md shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-display text-base font-bold text-slate-900">Lavanya</h3>
@@ -112,7 +112,7 @@ export default function HeroSection() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
           </div>

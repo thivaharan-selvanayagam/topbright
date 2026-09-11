@@ -1,18 +1,18 @@
 [
   {
     "id": "QUTwGHgI",
-    "title": "operating",
-    "description": "current sylabas",
-    "youtubeId": "45XjdFmznos",
+    "title": "Understanding Operating Systems",
+    "description": "what an operating system is and talk about a few of the most common operating systems",
+    "youtubeId": "fkGCLIQx1MI",
     "grade": "Grade 9",
-    "category": "Practical",
+    "category": "Theory",
     "addedAt": "2026-09-07"
   },
   {
     "id": "v1",
     "title": "Introduction to Number Systems",
     "description": "Binary, decimal, octal and hexadecimal conversions explained step by step for Grade 10/11 ICT.",
-    "youtubeId": "dQw4w9WgXcQ",
+    "youtubeId": "FFDMzbrEXaE",
     "grade": "Grade 10 & 11",
     "category": "Theory",
     "addedAt": "2026-06-01"
@@ -21,7 +21,7 @@
     "id": "v2",
     "title": "Database Concepts – Primary & Foreign Keys",
     "description": "A visual walkthrough of relational database design using simple examples.",
-    "youtubeId": "dQw4w9WgXcQ",
+    "youtubeId": "2KCObY8ixgw",
     "grade": "Grade 12 & 13",
     "category": "Theory",
     "addedAt": "2026-06-10"
@@ -30,7 +30,7 @@
     "id": "v3",
     "title": "Getting Started with Scratch",
     "description": "A fun, beginner-friendly first look at block-based programming for younger students.",
-    "youtubeId": "dQw4w9WgXcQ",
+    "youtubeId": "D-nW4jvzRr8",
     "grade": "Grade 6, 7 & 8",
     "category": "Practical",
     "addedAt": "2026-06-15"
@@ -39,7 +39,7 @@
     "id": "v4",
     "title": "Networking Basics – LAN vs WAN",
     "description": "Understand network types, topologies, and devices with real-world analogies.",
-    "youtubeId": "dQw4w9WgXcQ",
+    "youtubeId": "NyZWSvSj8ek",
     "grade": "Grade 10 & 11",
     "category": "Theory",
     "addedAt": "2026-07-02"
@@ -48,7 +48,7 @@
     "id": "v5",
     "title": "Spreadsheet Formulas for Exams",
     "description": "The exact formulas examiners expect you to know, with worked past-paper examples.",
-    "youtubeId": "dQw4w9WgXcQ",
+    "youtubeId": "ShBTJrdioLo",
     "grade": "Grade 9",
     "category": "Practical",
     "addedAt": "2026-07-20"

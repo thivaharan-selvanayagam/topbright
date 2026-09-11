@@ -2,29 +2,44 @@ import type { Metadata } from "next";
 import downloads from "@/data/downloads.json";
 import DownloadsList from "@/components/DownloadsList";
 
-export const metadata: Metadata = { title: "Downloads | TopBright Academy" };
+// Force Next.js to fetch the latest data on every load. 
+// This ensures files added via the Admin panel show up immediately.
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = { title: "Study Vault | TopBright Academy" };
 
 export default function DownloadsPage() {
   return (
-    <div className="min-h-screen bg-[#0d0114]">
+    <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden">
+      
+      {/* Background Ambient Glows */}
+      <div className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#8a00c2]/20 blur-[150px]" />
+      <div className="pointer-events-none absolute -right-40 top-1/3 h-[500px] w-[500px] rounded-full bg-[#f0822b]/15 blur-[150px]" />
+
       {/* Header Banner */}
-      <section className="relative overflow-hidden border-b border-[#8a00c2]/30 bg-[#0d0114]">
-        <div className="absolute -left-20 -top-20 h-80 w-80 animate-pulse rounded-full bg-[#8a00c2]/25 blur-[120px]" />
-        <div className="container-page relative z-10 py-16">
-          <p className="font-mono text-sm font-medium text-[#f0822b]">Downloads</p>
-          <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold text-white sm:text-4xl">
-            Exam papers, model papers, books & tutes
+      <section className="relative border-b border-white/10 pt-20 pb-16 sm:pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-purple-500/40 bg-[#8a00c2]/20 px-4 py-1.5 text-xs font-mono font-bold tracking-widest text-purple-200 uppercase shadow-sm">
+            <span className="h-2 w-2 rounded-full bg-[#f0822b] animate-ping" />
+            Resource Library
+          </span>
+          <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight uppercase leading-tight">
+            Study Vault &amp; <br className="hidden sm:inline" />
+            <span className="bg-gradient-to-r from-[#8a00c2] via-purple-300 to-[#f0822b] bg-clip-text text-transparent">
+              Downloads.
+            </span>
           </h1>
-          <p className="mt-3 max-w-xl text-slate-300">
-            Free to view and download — filter by grade or by resource type below.
+          <p className="mt-4 max-w-2xl text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
+            Access official past papers, school term test papers, model questions, and revision books. Filter by grade or category below.
           </p>
         </div>
       </section>
 
-      {/* Downloads List Section */}
-      <section className="container-page relative z-10 py-14">
+      {/* Downloads List Component */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <DownloadsList items={downloads as any} />
       </section>
+      
     </div>
   );
 }
