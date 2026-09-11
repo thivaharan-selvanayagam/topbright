@@ -4,6 +4,7 @@ import fs from "fs/promises";
 import path from "path";
 import { db } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
+import type { DownloadItem } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   if (!getAdminSession()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -59,7 +60,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Title, category, grade and file/link are required." }, { status: 400 });
   }
 
-  const item: Record<string, any> = {
+  // Strictly typing the item as DownloadItem
+  const item: DownloadItem = {
     id: nanoid(8),
     title,
     description,
@@ -90,7 +92,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
   const downloads = await db.downloads.all();
-  const filtered = downloads.filter((d: any) => d.id !== id);
+  const filtered = downloads.filter((d: DownloadItem) => d.id !== id);
   await db.downloads.save(filtered);
   return NextResponse.json({ ok: true });
 }

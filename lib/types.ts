@@ -1,7 +1,7 @@
 export type Student = {
   id: string; // e.g. ICT2026001, used as login username
   name: string;
-  grade: string; // "6" - "12"
+  grade: string; // "6" - "13"
   mode: "Online" | "Physical" | "One-to-One" | "Group";
   phone?: string;
   passwordHash: string;
@@ -53,12 +53,15 @@ export type Video = {
 export type DownloadItem = {
   id: string;
   title: string;
-  description: string;
-  type: "Exam Paper" | "Model Paper" | "Book" | "Tute" | "Other";
+  description?: string;
+  category: "Past Papers" | "Model Papers" | "School Exam Papers" | "Unit Papers" | "Books" | string;
+  subCategory?: "Term 1" | "Term 2" | "Term 3" | string;
+  type?: string;
   grade: string;
   fileUrl: string;
-  fileName: string;
-  addedAt: string;
+  fileName?: string;
+  fileSize?: string;
+  addedAt?: string;
 };
 
 export type TimetableEntry = {
