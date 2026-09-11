@@ -1,5 +1,27 @@
 [
   {
+    "id": "zuDYYVbS",
+    "title": "ICT Book Grade 10",
+    "description": "6th edition (2019)",
+    "category": "Books",
+    "grade": "Grade 10",
+    "fileUrl": "/uploads/1789157980674-ICT_GR_10-6th_edition_2019_.pdf",
+    "fileName": "ICT GR 10-6th edition(2019).pdf",
+    "addedAt": "2026-09-11",
+    "fileSize": "9.4 MB"
+  },
+  {
+    "id": "8qJFpELv",
+    "title": "ICT Book Grade 11",
+    "description": "6th edition (2020)",
+    "category": "Books",
+    "grade": "Grade 11",
+    "fileUrl": "/uploads/1789157941173-ICT_GR_11-6th_edition_2020_.pdf",
+    "fileName": "ICT GR 11-6th edition(2020).pdf",
+    "addedAt": "2026-09-11",
+    "fileSize": "23.9 MB"
+  },
+  {
     "id": "ORaMqxeE",
     "title": "2025 A/L",
     "description": "2025 GCE AL ICT Past Paper",
