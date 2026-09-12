@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
-import downloads from "@/data/downloads.json";
+import { db } from "@/lib/db";
 import DownloadsList from "@/components/DownloadsList";
+import type { DownloadItem } from "@/lib/types";
 
-// Force Next.js to fetch the latest data on every load. 
-// This ensures files added via the Admin panel show up immediately.
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = { title: "Study Vault | TopBright Academy" };
 
-export default function DownloadsPage() {
+export default async function DownloadsPage() {
+  // Fetch files dynamically from database storage
+  const allDownloads = await db.downloads.all().catch(() => []);
+
+  // Filter out internal student materials (Unit Exams & Unit Notes)
+  const publicItems = (allDownloads as DownloadItem[]).filter(
+    (item) => item.category !== "Unit Exams" && item.category !== "Unit Notes"
+  );
+
   return (
     <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden">
-      
       {/* Background Ambient Glows */}
       <div className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#8a00c2]/20 blur-[150px]" />
       <div className="pointer-events-none absolute -right-40 top-1/3 h-[500px] w-[500px] rounded-full bg-[#f0822b]/15 blur-[150px]" />
@@ -37,9 +44,8 @@ export default function DownloadsPage() {
 
       {/* Downloads List Component */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        <DownloadsList items={downloads as any} />
+        <DownloadsList items={publicItems} />
       </section>
-      
     </div>
   );
 }

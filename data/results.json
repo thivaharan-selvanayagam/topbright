@@ -48,5 +48,67 @@
       "ldc_AC": 1
     },
     "submittedAt": "2026-09-07T04:22:44.838Z"
+  },
+  {
+    "id": "hQ-7Q6B8Zp",
+    "studentId": "ICT2026001",
+    "studentName": "Nithusha Kumar",
+    "examId": "W7qeham3",
+    "examTitle": "Input and Output Devices",
+    "score": 0,
+    "totalMarks": 40,
+    "percentage": 0,
+    "answers": {},
+    "submittedAt": "2026-09-12T10:11:11.046Z"
+  },
+  {
+    "id": "0tAQP-hVQS",
+    "studentId": "ICT2026001",
+    "studentName": "Nithusha Kumar",
+    "examId": "WLFHwWHA",
+    "examTitle": "Operating System",
+    "score": 4,
+    "totalMarks": 4,
+    "percentage": 100,
+    "answers": {
+      "-iiFih": 0,
+      "ldc_AC": 0
+    },
+    "submittedAt": "2026-09-12T14:31:01.941Z"
+  },
+  {
+    "id": "a7iWgmAJ2k",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "examId": "e1",
+    "examTitle": "Grade 11 – Number Systems Quiz",
+    "score": 6,
+    "totalMarks": 10,
+    "percentage": 60,
+    "answers": {
+      "q1": 3,
+      "q2": 2,
+      "q3": 1,
+      "q4": 1,
+      "q5": 1
+    },
+    "submittedAt": "2026-09-12T15:08:06.309Z"
+  },
+  {
+    "id": "IkCOL3P8Il",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "examId": "e2",
+    "examTitle": "Grade 12 – Database Concepts Test",
+    "score": 8,
+    "totalMarks": 8,
+    "percentage": 100,
+    "answers": {
+      "q1": 1,
+      "q2": 0,
+      "q3": 1,
+      "q4": 0
+    },
+    "submittedAt": "2026-09-12T15:22:55.127Z"
   }
 ]

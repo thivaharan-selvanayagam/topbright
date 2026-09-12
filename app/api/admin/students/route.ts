@@ -1,54 +1,95 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import type { Student } from "@/lib/types";
 
-export async function GET() {
-  if (!getAdminSession()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const students = await db.students.all();
-  return NextResponse.json({
-    students: students.map(({ passwordHash, ...rest }) => rest),
-  });
+export async function GET(req: NextRequest) {
+  if (!getAdminSession()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const students = await db.students.all();
+    return NextResponse.json({ students });
+  } catch {
+    return NextResponse.json({ students: [] });
+  }
 }
 
 export async function POST(req: NextRequest) {
-  if (!getAdminSession()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { id, name, grade, mode, password, phone } = await req.json();
-
-  if (!id || !name || !grade || !mode || !password) {
-    return NextResponse.json({ error: "All fields are required." }, { status: 400 });
+  if (!getAdminSession()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const students = await db.students.all();
-  if (students.some((s) => s.id.toLowerCase() === id.toLowerCase())) {
-    return NextResponse.json({ error: "That Student ID already exists." }, { status: 409 });
+  try {
+    const body = await req.json();
+    const { id, name, grade, mode, password, phone } = body;
+
+    if (!id || !name || !password) {
+      return NextResponse.json(
+        { error: "Student ID, Name, and Password are required." },
+        { status: 400 }
+      );
+    }
+
+    const students = await db.students.all();
+    const exists = students.some(
+      (s) => s.id.toLowerCase() === id.trim().toLowerCase()
+    );
+
+    if (exists) {
+      return NextResponse.json(
+        { error: "Student ID already exists." },
+        { status: 400 }
+      );
+    }
+
+    const newStudent: Student = {
+      id: id.trim(),
+      name: name.trim(),
+      grade: grade || "Grade 10",
+      mode: mode || "Online",
+      phone: phone?.trim() || "",
+      passwordHash: password.trim(),
+      createdAt: new Date().toISOString().slice(0, 10),
+    };
+
+    students.unshift(newStudent);
+    await db.students.save(students);
+
+    return NextResponse.json({ success: true, student: newStudent });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error?.message || "Failed to create student." },
+      { status: 500 }
+    );
   }
-
-  const passwordHash = await bcrypt.hash(password, 10);
-  const newStudent: Student = {
-    id,
-    name,
-    grade,
-    mode,
-    phone,
-    passwordHash,
-    createdAt: new Date().toISOString(),
-  };
-  students.push(newStudent);
-  await db.students.save(students);
-
-  const { passwordHash: _, ...safe } = newStudent;
-  return NextResponse.json({ student: safe });
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!getAdminSession()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const id = req.nextUrl.searchParams.get("id");
-  if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  if (!getAdminSession()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  const students = await db.students.all();
-  const filtered = students.filter((s) => s.id !== id);
-  await db.students.save(filtered);
-  return NextResponse.json({ ok: true });
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json({ error: "Student ID required." }, { status: 400 });
+  }
+
+  try {
+    const students = await db.students.all();
+    const updated = students.filter(
+      (s) => s.id.toLowerCase() !== id.trim().toLowerCase()
+    );
+    await db.students.save(updated);
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error?.message || "Failed to delete student." },
+      { status: 500 }
+    );
+  }
 }

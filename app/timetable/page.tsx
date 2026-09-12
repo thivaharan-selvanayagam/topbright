@@ -13,16 +13,39 @@ const modeColor: Record<string, string> = {
   "One-to-One": "bg-slate-800/80 text-slate-300 border border-slate-700",
 };
 
+// Converts time strings like "03:30 PM – 04:30 PM" to minutes from midnight for ascending sorting
+function parseStartTimeMinutes(timeStr: string): number {
+  if (!timeStr) return 0;
+  const startTime = timeStr.split(/[-–]/)[0].trim();
+  const match = startTime.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+  if (!match) return 0;
+
+  let hours = parseInt(match[1], 10);
+  const minutes = parseInt(match[2], 10);
+  const ampm = match[3]?.toUpperCase();
+
+  if (ampm === "PM" && hours < 12) hours += 12;
+  if (ampm === "AM" && hours === 12) hours = 0;
+
+  return hours * 60 + minutes;
+}
+
 export default function TimetablePage() {
   const grouped = dayOrder
-    .map((day) => ({
-      day,
-      entries: timetable.filter((t) => t.day === day),
-    }))
+    .map((day) => {
+      const entries = timetable
+        .filter((t) => t.day === day)
+        .sort((a, b) => parseStartTimeMinutes(a.time) - parseStartTimeMinutes(b.time));
+
+      return {
+        day,
+        entries,
+      };
+    })
     .filter((g) => g.entries.length > 0);
 
   return (
-    <div className="min-h-screen bg-[#0d0114]">
+    <div className="min-h-screen bg-[#0d0114] select-none">
       {/* Header Banner */}
       <section className="relative overflow-hidden border-b border-[#8a00c2]/30 bg-[#0d0114]">
         <div className="absolute -left-20 -top-20 h-80 w-80 animate-pulse rounded-full bg-[#8a00c2]/25 blur-[120px]" />
@@ -48,9 +71,9 @@ export default function TimetablePage() {
                 {g.entries.map((e) => (
                   <div
                     key={e.id}
-                    className="grid grid-cols-1 items-center gap-2 p-4 transition-colors hover:bg-[#1e032d]/60 sm:grid-cols-[140px_1fr_130px_110px]"
+                    className="grid grid-cols-1 items-center gap-2 p-4 transition-colors hover:bg-[#1e032d]/60 sm:grid-cols-[210px_1fr_130px_110px]"
                   >
-                    <span className="font-mono text-sm text-slate-400">{e.time}</span>
+                    <span className="font-mono text-sm text-slate-400 whitespace-nowrap">{e.time}</span>
                     <span className="text-sm font-medium text-white">{e.topic}</span>
                     <span className="text-sm text-slate-300">{e.grade}</span>
                     <span

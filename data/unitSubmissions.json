@@ -1,0 +1,83 @@
+[
+  {
+    "id": "UpSB9MRI",
+    "examId": "PGEDJpAZ",
+    "examTitle": "test 3",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "grade": "Grade 10",
+    "fileUrls": [
+      "/uploads/unit-submissions/ICT2023004-1789236545054-bCHB.jpeg",
+      "/uploads/unit-submissions/ICT2023004-1789236545059-dkRA.pdf"
+    ],
+    "submittedAt": "2026-09-12",
+    "expiresAt": "2026-10-12T18:09:05.061Z"
+  },
+  {
+    "id": "JCqMyCow",
+    "examId": "UmYIMNrN",
+    "examTitle": "test2",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "grade": "Grade 10",
+    "fileUrls": [
+      "/uploads/unit-submissions/ICT2023004-1789235715818-WEgw.jpeg"
+    ],
+    "submittedAt": "2026-09-12",
+    "expiresAt": "2026-10-12T17:55:15.819Z"
+  },
+  {
+    "id": "s8z2LjO8",
+    "examId": "TRUGAezi",
+    "examTitle": "testing",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "grade": "",
+    "fileUrls": [
+      "/uploads/unit-submissions/ICT2023004-1789234421667-oVqr.jpeg"
+    ],
+    "submittedAt": "2026-09-12",
+    "expiresAt": "2026-10-12T17:33:41.668Z"
+  },
+  {
+    "id": "W7b-2s0r",
+    "examId": "TRUGAezi",
+    "examTitle": "testing",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "grade": "",
+    "fileUrls": [
+      "/uploads/unit-submissions/ICT2023004-1789234117787-7nID.jpeg"
+    ],
+    "submittedAt": "2026-09-12",
+    "expiresAt": "2026-10-12T17:28:37.789Z"
+  },
+  {
+    "id": "vE-fnC-s",
+    "examId": "TRUGAezi",
+    "examTitle": "testing",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "grade": "",
+    "fileUrls": [
+      "/uploads/unit-submissions/ICT2023004-1789233924554--_6W.jpg"
+    ],
+    "submittedAt": "2026-09-12",
+    "expiresAt": "2026-10-12T17:25:24.555Z"
+  },
+  {
+    "id": "CXmg0Jjg",
+    "examId": "TRUGAezi",
+    "examTitle": "testing",
+    "studentId": "ICT2023004",
+    "studentName": "Akija",
+    "grade": "",
+    "fileUrls": [
+      "/uploads/unit-submissions/ICT2023004-1789233454387-NCHQ.jpg",
+      "/uploads/unit-submissions/ICT2023004-1789233454395-GDs4.webp",
+      "/uploads/unit-submissions/ICT2023004-1789233454398-keyk.jpeg"
+    ],
+    "submittedAt": "2026-09-12",
+    "expiresAt": "2026-10-12T17:17:34.401Z"
+  }
+]

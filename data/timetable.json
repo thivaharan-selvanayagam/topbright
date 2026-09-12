@@ -2,7 +2,7 @@
   {
     "id": "T6X-eauz",
     "day": "Monday",
-    "time": "3.30 PM - 4.30 PM",
+    "time": "03:30 PM – 04:30 PM",
     "grade": "Grade 10",
     "mode": "Online",
     "topic": "School Syllabus (Batch 1) "
@@ -10,7 +10,7 @@
   {
     "id": "7zLMTn4u",
     "day": "Monday",
-    "time": "4.30 PM - 5.30 PM",
+    "time": "04:30 PM – 05:30 PM",
     "grade": "Grade 7",
     "mode": "Online",
     "topic": "School Syllabus "
@@ -18,7 +18,7 @@
   {
     "id": "ICukfc9t",
     "day": "Monday",
-    "time": "6.00 PM - 7.00 PM",
+    "time": "06:00 PM – 07:00 PM",
     "grade": "Grade 10",
     "mode": "Online",
     "topic": "School Syllabus (Batch 2)"
@@ -26,7 +26,7 @@
   {
     "id": "5w4M2iYx",
     "day": "Tuesday",
-    "time": "4.00 PM - 5.00 PM",
+    "time": "04:00 PM – 05:00 PM",
     "grade": "Grade 10",
     "mode": "Online",
     "topic": "School Syllabus (Batch 1)"
@@ -34,7 +34,7 @@
   {
     "id": "tPSZj9U-",
     "day": "Wednesday",
-    "time": "3.00 PM - 4.00 PM",
+    "time": "03:00 PM – 04:00 PM",
     "grade": "Grade 7",
     "mode": "Online",
     "topic": "School Syllabus"
@@ -42,15 +42,23 @@
   {
     "id": "GA7sZ_I2",
     "day": "Wednesday",
-    "time": "4.00 PM - 5.00 PM",
+    "time": "04:00 PM – 05:00 PM",
     "grade": "Grade 10",
     "mode": "Online",
     "topic": "School Syllabus (Batch 1) "
   },
   {
+    "id": "TqQ4W0-q",
+    "day": "Wednesday",
+    "time": "05:00 PM – 06:00 PM",
+    "grade": "Grade 10",
+    "mode": "One-to-One",
+    "topic": "School Syllabus (Rifla)"
+  },
+  {
     "id": "ww1WoNGN",
     "day": "Thursday",
-    "time": "3.00 PM - 4.00 PM",
+    "time": "03:00 PM – 04:00 PM",
     "grade": "Grade 9",
     "mode": "Online",
     "topic": "School Syllabus"
@@ -58,7 +66,7 @@
   {
     "id": "qsdFzuka",
     "day": "Thursday",
-    "time": "4.00 PM - 5.00 PM",
+    "time": "04:00 PM – 05:00 PM",
     "grade": "Grade 10",
     "mode": "Online",
     "topic": "School Syllabus (Batch 1) "
@@ -66,7 +74,7 @@
   {
     "id": "rZVRmcmQ",
     "day": "Friday",
-    "time": "3.00 PM - 4.00 PM",
+    "time": "03:00 PM – 04:00 PM",
     "grade": "Grade 9",
     "mode": "Online",
     "topic": "School Syllabus"
@@ -74,7 +82,7 @@
   {
     "id": "rWW4QlO8",
     "day": "Friday",
-    "time": "4.30 PM - 5.30 PM",
+    "time": "04:30 PM – 05:30 PM",
     "grade": "Grade 10",
     "mode": "Online",
     "topic": "School Syllabus (Batch 1)"
@@ -82,33 +90,33 @@
   {
     "id": "WvZbfrTj",
     "day": "Friday",
-    "time": "5.30 PM - 6.30 PM",
+    "time": "05:30 PM – 06:30 PM",
     "grade": "Grade 10",
     "mode": "Online",
     "topic": "School Syllabus (Batch 2)"
   },
   {
+    "id": "o1gZOzTy",
+    "day": "Saturday",
+    "time": "08:00 AM – 11:00 AM",
+    "grade": "Grade 11",
+    "mode": "One-to-One",
+    "topic": "School Syllabus (Zayan)"
+  },
+  {
     "id": "8CKW-iMo",
     "day": "Saturday",
-    "time": "11.00 AM - 12.00 Pm",
+    "time": "11:00 AM – 12:00 PM",
     "grade": "Grade 9",
     "mode": "Online",
     "topic": "School Syllabus"
   },
   {
-    "id": "H3Zg0soZ",
+    "id": "Maszj4x0",
     "day": "Saturday",
-    "time": "5.00 PM - 6.00 PM",
-    "grade": "Grade 11",
-    "mode": "Online",
-    "topic": "School Syllabus (English Medium)"
-  },
-  {
-    "id": "18FEF4Hj",
-    "day": "Saturday",
-    "time": "6.00 PM - 7.00 PM",
-    "grade": "Grade 11",
-    "mode": "Online",
-    "topic": "School Syllabus"
+    "time": "06:00 PM – 07:00 PM",
+    "grade": "Grade 10",
+    "mode": "One-to-One",
+    "topic": "School Syllabus (Rifla)"
   }
 ]

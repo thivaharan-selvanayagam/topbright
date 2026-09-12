@@ -26,44 +26,53 @@ import path from "path";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
-async function readJson<T>(file: string): Promise<T> {
+async function readJson<T>(file: string, fallback: T): Promise<T> {
   const filePath = path.join(DATA_DIR, file);
-  const raw = await fs.readFile(filePath, "utf-8");
-  return JSON.parse(raw) as T;
+  try {
+    const raw = await fs.readFile(filePath, "utf-8");
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
 }
 
 async function writeJson<T>(file: string, data: T): Promise<void> {
   const filePath = path.join(DATA_DIR, file);
+  await fs.mkdir(DATA_DIR, { recursive: true });
   await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf-8");
 }
 
 export const db = {
   students: {
-    all: () => readJson<import("./types").Student[]>("students.json"),
+    all: () => readJson<import("./types").Student[]>("students.json", []),
     save: (data: import("./types").Student[]) => writeJson("students.json", data),
   },
   exams: {
-    all: () => readJson<import("./types").Exam[]>("exams.json"),
+    all: () => readJson<import("./types").Exam[]>("exams.json", []),
     save: (data: import("./types").Exam[]) => writeJson("exams.json", data),
   },
   results: {
-    all: () => readJson<import("./types").Result[]>("results.json"),
+    all: () => readJson<import("./types").Result[]>("results.json", []),
     save: (data: import("./types").Result[]) => writeJson("results.json", data),
   },
   videos: {
-    all: () => readJson<import("./types").Video[]>("videos.json"),
+    all: () => readJson<import("./types").Video[]>("videos.json", []),
     save: (data: import("./types").Video[]) => writeJson("videos.json", data),
   },
   downloads: {
-    all: () => readJson<import("./types").DownloadItem[]>("downloads.json"),
+    all: () => readJson<import("./types").DownloadItem[]>("downloads.json", []),
     save: (data: import("./types").DownloadItem[]) => writeJson("downloads.json", data),
   },
   timetable: {
-    all: () => readJson<import("./types").TimetableEntry[]>("timetable.json"),
+    all: () => readJson<import("./types").TimetableEntry[]>("timetable.json", []),
     save: (data: import("./types").TimetableEntry[]) => writeJson("timetable.json", data),
   },
+  unitSubmissions: {
+    all: () => readJson<import("./types").UnitExamSubmission[]>("unitSubmissions.json", []),
+    save: (data: import("./types").UnitExamSubmission[]) => writeJson("unitSubmissions.json", data),
+  },
   settings: {
-    get: () => readJson<import("./types").Settings>("settings.json"),
+    get: () => readJson<import("./types").Settings>("settings.json", {} as import("./types").Settings),
     save: (data: import("./types").Settings) => writeJson("settings.json", data),
   },
 };

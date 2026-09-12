@@ -1,29 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { DownloadItem } from "@/lib/types";
 
-export interface DownloadItem {
-  id: string;
-  title: string;
-  description?: string;
-  category: "Past Papers" | "Model Papers" | "School Exam Papers" | "Unit Papers" | "Books";
-  subCategory?: "Term 1" | "Term 2" | "Term 3"; // Applicable for School Exam Papers
-  grade: string; // e.g. "Grade 6", "Grade 11", "Grade 12", "Grade 13"
-  fileUrl: string;
-  fileName?: string;
-  fileSize?: string;
-  updatedAt?: string;
-}
-
-const ALL_CATEGORIES = [
+const STANDARD_CATEGORIES = [
   "Past Papers",
   "Model Papers",
   "School Exam Papers",
-  "Unit Papers",
   "Books",
 ] as const;
 
 const SCHOOL_TERMS = ["Term 1", "Term 2", "Term 3"] as const;
+const ITEMS_PER_PAGE = 12;
 
 function FolderIcon({ active }: { active: boolean }) {
   return (
@@ -69,23 +57,33 @@ function EmptyVaultIcon() {
 }
 
 export default function DownloadsList({ items = [] }: { items: DownloadItem[] }) {
-  // 1. Filter out categories that have NO uploaded items
-  const availableCategories = useMemo(() => {
-    return ALL_CATEGORIES.filter((cat) => items.some((item) => item.category === cat));
-  }, [items]);
-
-  const [activeCategory, setActiveCategory] = useState<string>(
-    availableCategories[0] || ALL_CATEGORIES[0]
-  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [activeSubCategory, setActiveSubCategory] = useState<string>("All");
   const [activeGrade, setActiveGrade] = useState<string>("All");
 
-  // Keep active category synced if items change dynamically
-  const currentCategory = availableCategories.includes(activeCategory as any)
-    ? activeCategory
-    : availableCategories[0] || ALL_CATEGORIES[0];
+  // 1. Dynamic category detection based on items array
+  const availableCategories = useMemo(() => {
+    if (!items || items.length === 0) return [];
+    const presentCategories = Array.from(new Set(items.map((item) => item.category)));
+    const ordered = STANDARD_CATEGORIES.filter((cat) => presentCategories.includes(cat as any)) as string[];
 
-  // 2. Subcategories (Only for "School Exam Papers" & only terms that contain items)
+    presentCategories.forEach((cat) => {
+      if (!ordered.includes(cat)) ordered.push(cat);
+    });
+
+    return ordered;
+  }, [items]);
+
+  // Fallback to active available category
+  const currentCategory = useMemo(() => {
+    if (selectedCategory && availableCategories.includes(selectedCategory)) {
+      return selectedCategory;
+    }
+    return availableCategories[0] || "";
+  }, [selectedCategory, availableCategories]);
+
+  // 2. Subcategories for School Exam Papers
   const availableSubCategories = useMemo(() => {
     if (currentCategory !== "School Exam Papers") return [];
     const existingTerms = SCHOOL_TERMS.filter((term) =>
@@ -96,7 +94,7 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
     return existingTerms.length > 0 ? ["All", ...existingTerms] : [];
   }, [items, currentCategory]);
 
-  // 3. Filter grades for the currently selected category & subcategory
+  // 3. Filter grades for active category and subcategory
   const availableGrades = useMemo(() => {
     const categoryItems = items.filter((i) => {
       if (i.category !== currentCategory) return false;
@@ -111,8 +109,7 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
     });
 
     const uniqueGrades = Array.from(new Set(categoryItems.map((i) => i.grade)));
-    
-    // Sort numerically or by standard grade order
+
     uniqueGrades.sort((a, b) => {
       const numA = parseInt(a.replace(/\D/g, "")) || 0;
       const numB = parseInt(b.replace(/\D/g, "")) || 0;
@@ -140,11 +137,18 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
     });
   }, [items, currentCategory, activeSubCategory, activeGrade]);
 
-  // Handle Category Change
+  // 5. Pagination Logic (12 items per page)
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+  const paginatedItems = filteredItems.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   const handleCategorySelect = (cat: string) => {
-    setActiveCategory(cat);
+    setSelectedCategory(cat);
     setActiveSubCategory("All");
     setActiveGrade("All");
+    setCurrentPage(1);
   };
 
   if (availableCategories.length === 0) {
@@ -163,8 +167,7 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
 
   return (
     <div className="space-y-8 select-none">
-      
-      {/* 1. CATEGORY FOLDER TABS (Only Visible Folders Show) */}
+      {/* CATEGORY FOLDER TABS */}
       <div className="flex flex-wrap items-center gap-3 border-b border-white/10 pb-4">
         {availableCategories.map((cat) => {
           const isActive = currentCategory === cat;
@@ -196,10 +199,8 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
         })}
       </div>
 
-      {/* 2. SUB-CATEGORY & GRADE FILTERS BAR */}
+      {/* SUB-CATEGORY & GRADE FILTERS */}
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-white/10 bg-slate-900/60 p-4 backdrop-blur-md">
-        
-        {/* Subcategories (Only for School Exam Papers) */}
         {currentCategory === "School Exam Papers" && availableSubCategories.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1">
@@ -213,6 +214,7 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
                   onClick={() => {
                     setActiveSubCategory(sub);
                     setActiveGrade("All");
+                    setCurrentPage(1);
                   }}
                   className={`rounded-xl px-3.5 py-1.5 font-mono text-xs font-bold transition-all ${
                     isSubActive
@@ -227,7 +229,6 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
           </div>
         )}
 
-        {/* Grade Pills */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1">
             Grade:
@@ -237,7 +238,10 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
             return (
               <button
                 key={g}
-                onClick={() => setActiveGrade(g)}
+                onClick={() => {
+                  setActiveGrade(g);
+                  setCurrentPage(1);
+                }}
                 className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
                   isGradeActive
                     ? "bg-[#8a00c2] text-white shadow-md shadow-[#8a00c2]/30"
@@ -251,71 +255,94 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
         </div>
       </div>
 
-      {/* 3. DOWNLOAD ITEMS GRID */}
+      {/* ITEMS GRID */}
       {filteredItems.length > 0 ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-slate-900/90 p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#8a00c2]/50 hover:bg-slate-900"
-            >
-              <div>
-                {/* Badges */}
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-lg bg-[#8a00c2]/20 border border-[#8a00c2]/30 px-2.5 py-1 font-mono text-[10px] font-bold text-purple-300 uppercase">
-                      {item.grade}
-                    </span>
-                    {item.subCategory && (
-                      <span className="rounded-lg bg-[#f0822b]/10 border border-[#f0822b]/30 px-2.5 py-1 font-mono text-[10px] font-bold text-[#f0822b] uppercase">
-                        {item.subCategory}
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {paginatedItems.map((item) => (
+              <div
+                key={item.id}
+                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-slate-900/90 p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#8a00c2]/50 hover:bg-slate-900"
+              >
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-lg bg-[#8a00c2]/20 border border-[#8a00c2]/30 px-2.5 py-1 font-mono text-[10px] font-bold text-purple-300 uppercase">
+                        {item.grade}
+                      </span>
+                      {item.subCategory && (
+                        <span className="rounded-lg bg-[#f0822b]/10 border border-[#f0822b]/30 px-2.5 py-1 font-mono text-[10px] font-bold text-[#f0822b] uppercase">
+                          {item.subCategory}
+                        </span>
+                      )}
+                    </div>
+                    {item.fileSize && (
+                      <span className="font-mono text-[11px] text-slate-500 font-semibold">
+                        {item.fileSize}
                       </span>
                     )}
                   </div>
-                  {item.fileSize && (
-                    <span className="font-mono text-[11px] text-slate-500 font-semibold">
-                      {item.fileSize}
-                    </span>
+
+                  <h3 className="font-display text-base font-bold text-white transition-colors group-hover:text-[#f0822b] leading-snug">
+                    {item.title}
+                  </h3>
+                  {item.description && (
+                    <p className="mt-2 text-xs text-slate-400 font-medium leading-relaxed line-clamp-2">
+                      {item.description}
+                    </p>
                   )}
                 </div>
 
-                {/* Title & Description */}
-                <h3 className="font-display text-base font-bold text-white transition-colors group-hover:text-[#f0822b] leading-snug">
-                  {item.title}
-                </h3>
-                {item.description && (
-                  <p className="mt-2 text-xs text-slate-400 font-medium leading-relaxed line-clamp-2">
-                    {item.description}
-                  </p>
-                )}
-              </div>
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between gap-2">
+                  <a
+                    href={item.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-bold text-slate-300 transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white"
+                  >
+                    <ViewIcon />
+                    <span>Preview</span>
+                  </a>
 
-              {/* Actions Footer */}
-              <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between gap-2">
-                <a
-                  href={item.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-bold text-slate-300 transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white"
-                >
-                  <ViewIcon />
-                  <span>Preview</span>
-                </a>
-
-                <a
-                  href={item.fileUrl}
-                  download={item.fileName || item.title}
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#8a00c2] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:scale-105"
-                >
-                  <DownloadIcon />
-                  <span>Download</span>
-                </a>
+                  <a
+                    href={item.fileUrl}
+                    download={item.fileName || item.title}
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#8a00c2] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:scale-105"
+                  >
+                    <DownloadIcon />
+                    <span>Download</span>
+                  </a>
+                </div>
               </div>
+            ))}
+          </div>
+
+          {/* PAGINATION CONTROLS */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-white/10 pt-6 mt-8">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="rounded-xl border border-white/10 bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition-all hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                &larr; Previous Page
+              </button>
+
+              <span className="font-mono text-xs font-bold text-slate-400 bg-slate-900 px-4 py-2 rounded-xl border border-white/5">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="rounded-xl border border-white/10 bg-[#8a00c2] px-5 py-2.5 text-xs font-bold text-white transition-all hover:bg-[#7200a3] disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#8a00c2]/20"
+              >
+                Next Page &rarr;
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
-        /* Empty Filter Results State */
         <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-8 text-center backdrop-blur-md">
           <p className="font-mono text-xs font-semibold text-slate-400">
             No downloadable materials match the selected grade or term filter.

@@ -50,18 +50,37 @@ export type Video = {
   addedAt: string;
 };
 
+export type DownloadCategory =
+  | "Past Papers"
+  | "Model Papers"
+  | "School Exam Papers"
+  | "Books"
+  | "Unit Exams"
+  | "Unit Notes";
+
 export type DownloadItem = {
   id: string;
   title: string;
   description?: string;
-  category: "Past Papers" | "Model Papers" | "School Exam Papers" | "Unit Papers" | "Books" | string;
+  category: DownloadCategory;
   subCategory?: "Term 1" | "Term 2" | "Term 3" | string;
-  type?: string;
   grade: string;
   fileUrl: string;
   fileName?: string;
   fileSize?: string;
   addedAt?: string;
+};
+
+export type UnitExamSubmission = {
+  id: string;
+  examId: string;
+  examTitle: string;
+  studentId: string;
+  studentName: string;
+  grade: string;
+  fileUrls: string[]; // Multi-image or PDF answer sheet uploads
+  submittedAt: string;
+  expiresAt: string; // Auto-calculated 30-day expiration date
 };
 
 export type TimetableEntry = {

@@ -3,22 +3,40 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Tab = "students" | "exams" | "videos" | "downloads" | "timetable";
+type Tab = "submissions" | "students" | "exams" | "videos" | "downloads" | "timetable";
 
 const GRADES = ["Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12", "Grade 13", "Grade 6, 7 & 8", "Grade 10 & 11", "Grade 12 & 13", "All Grades"];
 const MODES = ["Online", "Physical", "One-to-One", "Group"];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-const DOWNLOAD_CATEGORIES = ["Past Papers", "Model Papers", "School Exam Papers", "Unit Papers", "Books"];
+const DOWNLOAD_CATEGORIES = [
+  "Past Papers",
+  "Model Papers",
+  "School Exam Papers",
+  "Books",
+  "Unit Exams",
+  "Unit Notes",
+];
 const SCHOOL_TERMS = ["Term 1", "Term 2", "Term 3"];
 
-// Shared input styling for consistency
 const INPUT_CLASS = "w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition-colors focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]";
+
+// Helper to convert 24-hour time string (14:30) to 12-hour format (02:30 PM)
+function formatTime12h(time24: string) {
+  if (!time24) return "";
+  const [hStr, mStr] = time24.split(":");
+  let h = parseInt(hStr, 10);
+  const m = mStr || "00";
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  const hFormatted = h < 10 ? `0${h}` : `${h}`;
+  return `${hFormatted}:${m} ${ampm}`;
+}
 
 export default function AdminPage() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
-  const [tab, setTab] = useState<Tab>("downloads"); 
+  const [tab, setTab] = useState<Tab>("submissions"); 
 
   useEffect(() => {
     fetch("/api/admin/me")
@@ -37,6 +55,7 @@ export default function AdminPage() {
   if (checking) return <div className="min-h-screen bg-slate-950 py-24 text-center text-slate-500 font-mono">Checking access…</div>;
 
   const tabs: { id: Tab; label: string }[] = [
+    { id: "submissions", label: "Student Submissions" },
     { id: "students", label: "Students" },
     { id: "exams", label: "Exams" },
     { id: "videos", label: "Videos" },
@@ -83,12 +102,398 @@ export default function AdminPage() {
         </div>
 
         <div className="mt-8">
+          {tab === "submissions" && <SubmissionsTab />}
           {tab === "students" && <StudentsTab />}
           {tab === "exams" && <ExamsTab />}
           {tab === "videos" && <VideosTab />}
           {tab === "downloads" && <DownloadsTab />}
           {tab === "timetable" && <TimetableTab />}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Student Submissions Tab ---------------- */
+function SubmissionsTab() {
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/admin/unit-submissions")
+      .then((r) => r.json())
+      .then((data) => setSubmissions(data.submissions || []))
+      .catch(() => setSubmissions([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="p-8 text-center font-mono text-xs text-slate-500">Loading student answer sheets...</div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-display text-lg font-bold text-white">Student Written Unit Exam Submissions</h3>
+          <p className="text-xs text-slate-400 mt-0.5">Answer sheet uploads are retained for 30 days before auto-purging.</p>
+        </div>
+        <span className="rounded-xl bg-purple-500/20 border border-purple-500/30 px-3.5 py-1.5 font-mono text-xs font-bold text-purple-300">
+          Total Submissions: {submissions.length}
+        </span>
+      </div>
+
+      {submissions.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-white/10 bg-slate-900/40 p-12 text-center">
+          <p className="text-xs font-mono text-slate-500">No student answer sheets uploaded yet.</p>
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {submissions.map((sub) => (
+            <div key={sub.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-md flex flex-col justify-between">
+              <div>
+                <div className="flex justify-between items-start gap-2">
+                  <div>
+                    {/* STUDENT NAME WITH GRADE BADGE RIGHT NEXT TO IT */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="font-display text-base font-bold text-white">{sub.studentName}</h4>
+                      <span className="rounded-md bg-purple-500/20 border border-purple-500/30 px-2 py-0.5 font-mono text-[10px] font-bold text-purple-300 uppercase">
+                        {sub.grade || "Grade Class"}
+                      </span>
+                    </div>
+                    <p className="text-xs font-mono text-[#f0822b] mt-1">ID: {sub.studentId}</p>
+                  </div>
+                  <span className="rounded-md bg-white/10 px-2 py-0.5 font-mono text-[10px] text-slate-300">
+                    {sub.submittedAt}
+                  </span>
+                </div>
+
+                <div className="mt-4 rounded-xl bg-white/5 border border-white/5 p-3">
+                  <span className="font-mono text-[10px] uppercase text-slate-400 font-bold block">Exam Title</span>
+                  <p className="text-xs font-bold text-white mt-1">{sub.examTitle}</p>
+                </div>
+              </div>
+
+              <div className="mt-5 border-t border-white/10 pt-4">
+                <span className="font-mono text-[10px] uppercase text-slate-400 font-bold block mb-2">
+                  Uploaded Pages ({sub.fileUrls?.length || 1}):
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {sub.fileUrls?.map((url: string, idx: number) => (
+                    <a
+                      key={idx}
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-lg border border-purple-500/40 bg-[#8a00c2]/20 px-3 py-1.5 font-mono text-xs font-bold text-purple-200 hover:bg-[#8a00c2]/40 transition-colors"
+                    >
+                      📄 Page {idx + 1}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Timetable Tab (Clock Time Picker Added) ---------------- */
+function TimetableTab() {
+  const [form, setForm] = useState({ 
+    day: "Monday", 
+    startTime: "16:00", 
+    endTime: "17:30", 
+    grade: "Grade 10 & 11", 
+    mode: "Online", 
+    topic: "" 
+  });
+  const [msg, setMsg] = useState("");
+  const [added, setAdded] = useState<any[]>([]);
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault();
+    setMsg("");
+    
+    // Format start time & end time into standard string (e.g. "04:00 PM – 05:30 PM")
+    const formattedTime = `${formatTime12h(form.startTime)} – ${formatTime12h(form.endTime)}`;
+
+    const res = await fetch("/api/admin/timetable", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        day: form.day,
+        time: formattedTime,
+        grade: form.grade,
+        mode: form.mode,
+        topic: form.topic,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) return setMsg(data.error);
+    setAdded((a) => [...a, data.entry]);
+    setForm({ day: "Monday", startTime: "16:00", endTime: "17:30", grade: "Grade 10 & 11", mode: "Online", topic: "" });
+  }
+
+  async function handleDelete(id: string) {
+    await fetch(`/api/admin/timetable?id=${id}`, { method: "DELETE" });
+    setAdded((a) => a.filter((x) => x.id !== id));
+  }
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
+      <form onSubmit={handleAdd} className="h-fit space-y-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
+        <h3 className="font-display text-lg font-bold text-white mb-2">Add a class slot</h3>
+        {msg && <p className="text-xs font-bold text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{msg}</p>}
+        
+        <Field label="Day">
+          <select value={form.day} onChange={(e) => setForm({ ...form, day: e.target.value })} className={INPUT_CLASS}>
+            {DAYS.map((d) => <option key={d}>{d}</option>)}
+          </select>
+        </Field>
+
+        {/* Clock Selection Inputs */}
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Start Time (Clock)">
+            <input 
+              type="time" 
+              required 
+              value={form.startTime} 
+              onChange={(e) => setForm({ ...form, startTime: e.target.value })} 
+              className={`${INPUT_CLASS} [color-scheme:dark]`} 
+            />
+          </Field>
+          <Field label="End Time (Clock)">
+            <input 
+              type="time" 
+              required 
+              value={form.endTime} 
+              onChange={(e) => setForm({ ...form, endTime: e.target.value })} 
+              className={`${INPUT_CLASS} [color-scheme:dark]`} 
+            />
+          </Field>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Grade">
+            <select value={form.grade} onChange={(e) => setForm({ ...form, grade: e.target.value })} className={INPUT_CLASS}>
+              {GRADES.map((g) => <option key={g}>{g}</option>)}
+            </select>
+          </Field>
+          <Field label="Mode">
+            <select value={form.mode} onChange={(e) => setForm({ ...form, mode: e.target.value })} className={INPUT_CLASS}>
+              {MODES.map((m) => <option key={m}>{m}</option>)}
+            </select>
+          </Field>
+        </div>
+        
+        <Field label="Topic">
+          <input required value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} className={INPUT_CLASS} placeholder="e.g. Unit 4: Python Data Structures" />
+        </Field>
+        
+        <button className="w-full rounded-xl bg-[#8a00c2] py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5 mt-4">
+          Add to timetable
+        </button>
+      </form>
+
+      <div className="space-y-3">
+        {added.map((t) => (
+          <div key={t.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-sm">
+            <h4 className="font-display text-sm font-bold text-white">{t.day} · {t.time}</h4>
+            <p className="mt-1 text-xs text-[#f0822b] font-mono">{t.grade} · {t.mode}</p>
+            <p className="mt-2 text-sm text-slate-300 font-medium">{t.topic}</p>
+            <button onClick={() => handleDelete(t.id)} className="mt-4 text-xs font-bold text-red-400 hover:text-red-300">Remove Slot</button>
+          </div>
+        ))}
+        {added.length === 0 && <p className="text-xs text-slate-500 border border-dashed border-white/10 p-8 rounded-2xl text-center">Slots you add this session will appear here.</p>}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Exams Tab (Submission & Unique ID Fix) ---------------- */
+function ExamsTab() {
+  const [exams, setExams] = useState<any[]>([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [grade, setGrade] = useState("Grade 10 & 11");
+  const [duration, setDuration] = useState(10);
+  const [questions, setQuestions] = useState([
+    { id: "q_1", question: "", options: ["", "", "", ""], correctIndex: 0, marks: 2 },
+  ]);
+  const [msg, setMsg] = useState("");
+
+  function load() {
+    fetch("/api/admin/exams").then((r) => r.json()).then((d) => setExams(d.exams || []));
+  }
+  useEffect(load, []);
+
+  function updateQuestion(i: number, patch: any) {
+    setQuestions((qs) => qs.map((q, idx) => (idx === i ? { ...q, ...patch } : q)));
+  }
+  function updateOption(i: number, oi: number, value: string) {
+    setQuestions((qs) =>
+      qs.map((q, idx) => (idx === i ? { ...q, options: q.options.map((o: string, j: number) => (j === oi ? value : o)) } : q))
+    );
+  }
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault();
+    setMsg("");
+
+    // Guaranteed Question IDs & Types for evaluation engine
+    const preparedQuestions = questions.map((q, idx) => ({
+      id: q.id || `q_${Date.now()}_${idx}`,
+      question: q.question,
+      options: q.options,
+      correctIndex: Number(q.correctIndex),
+      marks: Number(q.marks),
+    }));
+
+    const res = await fetch("/api/admin/exams", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        title, 
+        description, 
+        grade, 
+        durationMinutes: Number(duration), 
+        questions: preparedQuestions, 
+        published: true 
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) return setMsg(data.error);
+
+    setTitle(""); 
+    setDescription(""); 
+    setQuestions([{ id: `q_${Date.now()}`, question: "", options: ["", "", "", ""], correctIndex: 0, marks: 2 }]);
+    load();
+  }
+
+  async function togglePublish(id: string, published: boolean) {
+    await fetch("/api/admin/exams", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, published: !published }),
+    });
+    load();
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm("Delete this exam? Student results for it will remain on record.")) return;
+    await fetch(`/api/admin/exams?id=${id}`, { method: "DELETE" });
+    load();
+  }
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
+      <form onSubmit={handleCreate} className="h-fit space-y-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
+        <h3 className="font-display text-lg font-bold text-white mb-2">Create an exam</h3>
+        {msg && <p className="text-xs font-bold text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{msg}</p>}
+        <Field label="Title">
+          <input required value={title} onChange={(e) => setTitle(e.target.value)} className={INPUT_CLASS} placeholder="e.g. Unit 3 Programming Logic MCQ" />
+        </Field>
+        <Field label="Description">
+          <input value={description} onChange={(e) => setDescription(e.target.value)} className={INPUT_CLASS} placeholder="Short instructions for students..." />
+        </Field>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Grade">
+            <select value={grade} onChange={(e) => setGrade(e.target.value)} className={INPUT_CLASS}>
+              {GRADES.map((g) => <option key={g}>{g}</option>)}
+            </select>
+          </Field>
+          <Field label="Duration (minutes)">
+            <input type="number" min={1} value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={INPUT_CLASS} />
+          </Field>
+        </div>
+
+        <div className="space-y-4 border-t border-white/10 pt-6 mt-4">
+          {questions.map((q, i) => (
+            <div key={q.id || i} className="rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#f0822b]">Question {i + 1}</p>
+                {questions.length > 1 && (
+                  <button type="button" onClick={() => setQuestions((qs) => qs.filter((_, idx) => idx !== i))} className="text-xs text-red-400 hover:text-red-300">
+                    Remove
+                  </button>
+                )}
+              </div>
+              <input
+                required
+                placeholder="Question text"
+                value={q.question}
+                onChange={(e) => updateQuestion(i, { question: e.target.value })}
+                className={INPUT_CLASS}
+              />
+              <div className="mt-3 space-y-2">
+                {q.options.map((opt: string, oi: number) => (
+                  <div key={oi} className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name={`question_${i}_correct`}
+                      checked={q.correctIndex === oi}
+                      onChange={() => updateQuestion(i, { correctIndex: oi })}
+                      className="text-[#8a00c2] focus:ring-[#8a00c2] bg-slate-900 border-white/20"
+                    />
+                    <input
+                      required
+                      placeholder={`Option ${oi + 1}`}
+                      value={opt}
+                      onChange={(e) => updateOption(i, oi, e.target.value)}
+                      className={`${INPUT_CLASS} py-1.5`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 flex items-center gap-3 text-xs text-slate-400 font-mono font-bold">
+                Marks for correct answer:
+                <input
+                  type="number"
+                  min={1}
+                  value={q.marks}
+                  onChange={(e) => updateQuestion(i, { marks: Number(e.target.value) })}
+                  className={`${INPUT_CLASS} w-20 py-1`}
+                />
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setQuestions((qs) => [...qs, { id: `q_${Date.now()}_${qs.length}`, question: "", options: ["", "", "", ""], correctIndex: 0, marks: 2 }])}
+            className="text-xs font-bold text-[#8a00c2] hover:text-[#a914e8] transition-colors"
+          >
+            + Add another question
+          </button>
+        </div>
+
+        <button className="w-full rounded-xl bg-[#8a00c2] py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5 mt-4">
+          Create & publish exam
+        </button>
+      </form>
+
+      <div className="space-y-3">
+        {exams.map((e) => (
+          <div key={e.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-sm">
+            <div className="flex items-start justify-between">
+              <div>
+                <h4 className="font-display text-base font-bold text-white">{e.title}</h4>
+                <p className="mt-1 text-xs text-slate-400 font-mono">{e.grade} · {e.questions.length} questions · {e.durationMinutes} min</p>
+              </div>
+              <span className={`rounded-lg px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider ${e.published ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white/10 text-slate-400"}`}>
+                {e.published ? "Published" : "Draft"}
+              </span>
+            </div>
+            <div className="mt-4 flex gap-4 text-xs font-bold">
+              <button onClick={() => togglePublish(e.id, e.published)} className="text-purple-400 hover:text-purple-300">
+                {e.published ? "Unpublish" : "Publish"}
+              </button>
+              <button onClick={() => handleDelete(e.id)} className="text-red-400 hover:text-red-300">Delete</button>
+            </div>
+          </div>
+        ))}
+        {exams.length === 0 && <p className="text-xs text-slate-500 border border-dashed border-white/10 p-8 rounded-2xl text-center">No exams created yet.</p>}
       </div>
     </div>
   );
@@ -326,172 +731,6 @@ function StudentsTab() {
   );
 }
 
-/* ---------------- Exams Tab ---------------- */
-function ExamsTab() {
-  const [exams, setExams] = useState<any[]>([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [grade, setGrade] = useState("Grade 10 & 11");
-  const [duration, setDuration] = useState(10);
-  const [questions, setQuestions] = useState([
-    { question: "", options: ["", "", "", ""], correctIndex: 0, marks: 2 },
-  ]);
-  const [msg, setMsg] = useState("");
-
-  function load() {
-    fetch("/api/admin/exams").then((r) => r.json()).then((d) => setExams(d.exams || []));
-  }
-  useEffect(load, []);
-
-  function updateQuestion(i: number, patch: any) {
-    setQuestions((qs) => qs.map((q, idx) => (idx === i ? { ...q, ...patch } : q)));
-  }
-  function updateOption(i: number, oi: number, value: string) {
-    setQuestions((qs) =>
-      qs.map((q, idx) => (idx === i ? { ...q, options: q.options.map((o: string, j: number) => (j === oi ? value : o)) } : q))
-    );
-  }
-
-  async function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
-    setMsg("");
-    const res = await fetch("/api/admin/exams", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, grade, durationMinutes: duration, questions, published: true }),
-    });
-    const data = await res.json();
-    if (!res.ok) return setMsg(data.error);
-    setTitle(""); setDescription(""); setQuestions([{ question: "", options: ["", "", "", ""], correctIndex: 0, marks: 2 }]);
-    load();
-  }
-
-  async function togglePublish(id: string, published: boolean) {
-    await fetch("/api/admin/exams", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, published: !published }),
-    });
-    load();
-  }
-
-  async function handleDelete(id: string) {
-    if (!confirm("Delete this exam? Student results for it will remain on record.")) return;
-    await fetch(`/api/admin/exams?id=${id}`, { method: "DELETE" });
-    load();
-  }
-
-  return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
-      <form onSubmit={handleCreate} className="h-fit space-y-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
-        <h3 className="font-display text-lg font-bold text-white mb-2">Create an exam</h3>
-        {msg && <p className="text-xs font-bold text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{msg}</p>}
-        <Field label="Title">
-          <input required value={title} onChange={(e) => setTitle(e.target.value)} className={INPUT_CLASS} />
-        </Field>
-        <Field label="Description">
-          <input value={description} onChange={(e) => setDescription(e.target.value)} className={INPUT_CLASS} />
-        </Field>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Grade">
-            <select value={grade} onChange={(e) => setGrade(e.target.value)} className={INPUT_CLASS}>
-              {GRADES.map((g) => <option key={g}>{g}</option>)}
-            </select>
-          </Field>
-          <Field label="Duration (minutes)">
-            <input type="number" min={1} value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={INPUT_CLASS} />
-          </Field>
-        </div>
-
-        <div className="space-y-4 border-t border-white/10 pt-6 mt-4">
-          {questions.map((q, i) => (
-            <div key={i} className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#f0822b]">Question {i + 1}</p>
-                {questions.length > 1 && (
-                  <button type="button" onClick={() => setQuestions((qs) => qs.filter((_, idx) => idx !== i))} className="text-xs text-red-400 hover:text-red-300">
-                    Remove
-                  </button>
-                )}
-              </div>
-              <input
-                required
-                placeholder="Question text"
-                value={q.question}
-                onChange={(e) => updateQuestion(i, { question: e.target.value })}
-                className={INPUT_CLASS}
-              />
-              <div className="mt-3 space-y-2">
-                {q.options.map((opt: string, oi: number) => (
-                  <div key={oi} className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      checked={q.correctIndex === oi}
-                      onChange={() => updateQuestion(i, { correctIndex: oi })}
-                      className="text-[#8a00c2] focus:ring-[#8a00c2] bg-slate-900 border-white/20"
-                    />
-                    <input
-                      required
-                      placeholder={`Option ${oi + 1}`}
-                      value={opt}
-                      onChange={(e) => updateOption(i, oi, e.target.value)}
-                      className={`${INPUT_CLASS} py-1.5`}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 flex items-center gap-3 text-xs text-slate-400 font-mono font-bold">
-                Marks for correct answer:
-                <input
-                  type="number"
-                  min={1}
-                  value={q.marks}
-                  onChange={(e) => updateQuestion(i, { marks: Number(e.target.value) })}
-                  className={`${INPUT_CLASS} w-20 py-1`}
-                />
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => setQuestions((qs) => [...qs, { question: "", options: ["", "", "", ""], correctIndex: 0, marks: 2 }])}
-            className="text-xs font-bold text-[#8a00c2] hover:text-[#a914e8] transition-colors"
-          >
-            + Add another question
-          </button>
-        </div>
-
-        <button className="w-full rounded-xl bg-[#8a00c2] py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5 mt-4">
-          Create & publish exam
-        </button>
-      </form>
-
-      <div className="space-y-3">
-        {exams.map((e) => (
-          <div key={e.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-sm">
-            <div className="flex items-start justify-between">
-              <div>
-                <h4 className="font-display text-base font-bold text-white">{e.title}</h4>
-                <p className="mt-1 text-xs text-slate-400 font-mono">{e.grade} · {e.questions.length} questions · {e.durationMinutes} min</p>
-              </div>
-              <span className={`rounded-lg px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider ${e.published ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white/10 text-slate-400"}`}>
-                {e.published ? "Published" : "Draft"}
-              </span>
-            </div>
-            <div className="mt-4 flex gap-4 text-xs font-bold">
-              <button onClick={() => togglePublish(e.id, e.published)} className="text-purple-400 hover:text-purple-300">
-                {e.published ? "Unpublish" : "Publish"}
-              </button>
-              <button onClick={() => handleDelete(e.id)} className="text-red-400 hover:text-red-300">Delete</button>
-            </div>
-          </div>
-        ))}
-        {exams.length === 0 && <p className="text-xs text-slate-500 border border-dashed border-white/10 p-8 rounded-2xl text-center">No exams created yet.</p>}
-      </div>
-    </div>
-  );
-}
-
 /* ---------------- Videos Tab ---------------- */
 function VideosTab() {
   const [form, setForm] = useState({ title: "", description: "", url: "", grade: "Grade 10 & 11", category: "Theory" });
@@ -557,81 +796,6 @@ function VideosTab() {
           </div>
         ))}
         {localVideos.length === 0 && <p className="text-xs text-slate-500 border border-dashed border-white/10 p-8 rounded-2xl text-center">Videos you add this session will appear here.</p>}
-      </div>
-    </div>
-  );
-}
-
-/* ---------------- Timetable Tab ---------------- */
-function TimetableTab() {
-  const [form, setForm] = useState({ day: "Monday", time: "", grade: "Grade 10 & 11", mode: "Online", topic: "" });
-  const [msg, setMsg] = useState("");
-  const [added, setAdded] = useState<any[]>([]);
-
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault();
-    setMsg("");
-    const res = await fetch("/api/admin/timetable", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    if (!res.ok) return setMsg(data.error);
-    setAdded((a) => [...a, data.entry]);
-    setForm({ day: "Monday", time: "", grade: "Grade 10 & 11", mode: "Online", topic: "" });
-  }
-
-  async function handleDelete(id: string) {
-    await fetch(`/api/admin/timetable?id=${id}`, { method: "DELETE" });
-    setAdded((a) => a.filter((x) => x.id !== id));
-  }
-
-  return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
-      <form onSubmit={handleAdd} className="h-fit space-y-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
-        <h3 className="font-display text-lg font-bold text-white mb-2">Add a class slot</h3>
-        {msg && <p className="text-xs font-bold text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{msg}</p>}
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Day">
-            <select value={form.day} onChange={(e) => setForm({ ...form, day: e.target.value })} className={INPUT_CLASS}>
-              {DAYS.map((d) => <option key={d}>{d}</option>)}
-            </select>
-          </Field>
-          <Field label="Time">
-            <input required value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className={INPUT_CLASS} placeholder="4:00 PM – 5:30 PM" />
-          </Field>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Grade">
-            <select value={form.grade} onChange={(e) => setForm({ ...form, grade: e.target.value })} className={INPUT_CLASS}>
-              {GRADES.map((g) => <option key={g}>{g}</option>)}
-            </select>
-          </Field>
-          <Field label="Mode">
-            <select value={form.mode} onChange={(e) => setForm({ ...form, mode: e.target.value })} className={INPUT_CLASS}>
-              {MODES.map((m) => <option key={m}>{m}</option>)}
-            </select>
-          </Field>
-        </div>
-        <Field label="Topic">
-          <input required value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} className={INPUT_CLASS} />
-        </Field>
-        <button className="w-full rounded-xl bg-[#8a00c2] py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5 mt-4">
-          Add to timetable
-        </button>
-      </form>
-
-      <div className="space-y-3">
-        {added.map((t) => (
-          <div key={t.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-sm">
-            <h4 className="font-display text-sm font-bold text-white">{t.day} · {t.time}</h4>
-            <p className="mt-1 text-xs text-[#f0822b] font-mono">{t.grade} · {t.mode}</p>
-            <p className="mt-2 text-sm text-slate-300 font-medium">{t.topic}</p>
-            <button onClick={() => handleDelete(t.id)} className="mt-4 text-xs font-bold text-red-400 hover:text-red-300">Remove Slot</button>
-          </div>
-        ))}
-        {added.length === 0 && <p className="text-xs text-slate-500 border border-dashed border-white/10 p-8 rounded-2xl text-center">Slots you add this session will appear here.</p>}
       </div>
     </div>
   );

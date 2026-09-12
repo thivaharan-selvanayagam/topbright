@@ -72,12 +72,14 @@ export default function ExamPage() {
       }
       setResult(data.result);
       setReview(data.review);
+
+      // Smooth auto-scroll to the top so students immediately see the exam score card
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setError("Something went wrong while submitting.");
     } finally {
       setSubmitting(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answers, params.id, submitting, result]);
 
   useEffect(() => {
@@ -91,69 +93,160 @@ export default function ExamPage() {
   }, [secondsLeft, result, handleSubmit]);
 
   if (loading) {
-    return <div className="container-page py-24 text-center text-slate-500">Loading exam…</div>;
-  }
-
-  if (error && !exam) {
     return (
-      <div className="container-page py-24 text-center">
-        <p className="text-red-500">{error}</p>
-        <Link href="/dashboard" className="mt-4 inline-block text-cyan-600 hover:underline">
-          Back to dashboard
-        </Link>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center font-mono text-xs text-slate-400">
+        Loading exam session...
       </div>
     );
   }
 
-  if (result && review) {
+  if (error && !exam) {
     return (
-      <div className="container-page max-w-3xl py-14">
-        <div className="rounded-lg border border-slate-200 bg-white p-8 text-center">
-          <p className="font-mono text-sm text-cyan-600">Exam submitted</p>
-          <h1 className="mt-2 font-display text-2xl font-semibold text-navy-900">{result.examTitle}</h1>
-          <p className="mt-6 font-display text-5xl font-semibold text-cyan-500">
-            {result.score} / {result.totalMarks}
-          </p>
-          <p className="mt-2 text-slate-500">{result.percentage}% — saved to your Student ID</p>
-          <Link
-            href="/dashboard"
-            className="mt-6 inline-block rounded-md bg-cyan-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-cyan-600"
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 text-center">
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-8 max-w-md">
+          <p className="text-sm font-bold text-red-400">{error}</p>
+          <button
+            onClick={() => {
+              // Hard refresh navigation ensures latest exam results from database/JSON are loaded
+              window.location.href = "/dashboard";
+            }}
+            className="inline-flex items-center justify-center rounded-xl bg-[#8a00c2] px-8 py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:scale-105 active:scale-95"
           >
             Back to dashboard
-          </Link>
+          </button>
         </div>
+      </div>
+    );
+  }
 
-        <h2 className="mt-10 font-display text-lg font-semibold text-navy-900">Answer review</h2>
-        <div className="mt-4 space-y-4">
-          {review.map((q, idx) => (
-            <div key={q.id} className="rounded-md border border-slate-200 bg-white p-5">
-              <p className="text-sm font-medium text-navy-900">
-                {idx + 1}. {q.question}
+  /* ---------------- Post-Exam Submission Results & Answer Review ---------------- */
+  if (result && review) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden pb-24">
+        {/* Background Ambient Glows */}
+        <div className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#8a00c2]/20 blur-[150px]" />
+        <div className="pointer-events-none absolute -right-40 top-1/3 h-[500px] w-[500px] rounded-full bg-[#f0822b]/15 blur-[150px]" />
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 relative z-10">
+          
+          {/* Result Score Card Header */}
+          <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-8 sm:p-10 text-center backdrop-blur-md shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#8a00c2] via-[#f0822b] to-[#8a00c2]" />
+
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1 text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest">
+              ✓ Exam Submitted Successfully
+            </span>
+
+            <h1 className="mt-4 font-display text-2xl sm:text-3xl font-extrabold text-white">
+              {result.examTitle}
+            </h1>
+
+            <div className="my-6">
+              <span className="font-display text-6xl sm:text-7xl font-black bg-gradient-to-r from-[#8a00c2] via-purple-300 to-[#f0822b] bg-clip-text text-transparent">
+                {result.score} / {result.totalMarks}
+              </span>
+              <p className="mt-2 text-sm font-mono font-bold text-slate-300">
+                Score: <span className="text-[#f0822b]">{result.percentage}%</span> — saved to your Student ID
               </p>
-              <div className="mt-3 space-y-1.5">
-                {q.options.map((opt, i) => {
-                  const isCorrect = i === q.correctIndex;
-                  const isGiven = i === q.givenIndex;
-                  return (
-                    <div
-                      key={i}
-                      className={`rounded-md border px-3 py-2 text-sm ${
-                        isCorrect
-                          ? "border-emerald-300 bg-emerald-50 text-emerald-800"
-                          : isGiven
-                          ? "border-red-300 bg-red-50 text-red-700"
-                          : "border-slate-200 text-slate-600"
-                      }`}
-                    >
-                      {opt}
-                      {isCorrect && <span className="ml-2 text-xs">✓ correct answer</span>}
-                      {isGiven && !isCorrect && <span className="ml-2 text-xs">✗ your answer</span>}
-                    </div>
-                  );
-                })}
-              </div>
             </div>
-          ))}
+
+            <button
+              onClick={() => {
+                // Hard refresh navigation ensures latest exam results from database/JSON are loaded
+                window.location.href = "/dashboard";
+              }}
+              className="inline-flex items-center justify-center rounded-xl bg-[#8a00c2] px-8 py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:scale-105 active:scale-95"
+            >
+              Back to dashboard
+            </button>
+          </div>
+
+          {/* Detailed Question Review List */}
+          <div className="mt-12 space-y-6">
+            <h2 className="font-display text-xl font-bold text-white flex items-center gap-3">
+              <span>Answer Review &amp; Feedback</span>
+              <span className="text-xs font-mono font-normal text-slate-400">({review.length} Questions)</span>
+            </h2>
+
+            {review.map((q, idx) => {
+              const isCorrect = q.givenIndex === q.correctIndex;
+              const isUnanswered = q.givenIndex === null;
+
+              return (
+                <div
+                  key={q.id}
+                  className={`rounded-2xl border p-6 backdrop-blur-md transition-all ${
+                    isCorrect
+                      ? "border-emerald-500/40 bg-emerald-950/20"
+                      : "border-rose-500/40 bg-rose-950/20"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <span className="font-mono text-xs font-bold text-slate-400 uppercase">
+                      Question {idx + 1}
+                    </span>
+
+                    {isCorrect ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-mono text-xs font-bold text-emerald-400">
+                        ✓ Correct (+{q.marks} Marks)
+                      </span>
+                    ) : isUnanswered ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-1 font-mono text-xs font-bold text-amber-400">
+                        ! Unanswered (0 Marks)
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-1 font-mono text-xs font-bold text-rose-400">
+                        ✕ Incorrect (0 Marks)
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="font-display text-base font-semibold text-white leading-snug mb-5">
+                    {q.question}
+                  </h3>
+
+                  <div className="space-y-3">
+                    {q.options.map((opt, i) => {
+                      const isCorrectOption = i === q.correctIndex;
+                      const isUserOption = i === q.givenIndex;
+
+                      let optionStyle = "border-white/5 bg-slate-950/30 text-slate-500 opacity-60";
+                      let badge = null;
+
+                      if (isCorrectOption) {
+                        optionStyle = "border-emerald-500 bg-emerald-500/20 text-white font-bold ring-1 ring-emerald-500";
+                        badge = (
+                          <span className="ml-auto rounded-md bg-emerald-500 px-2.5 py-0.5 font-mono text-[10px] font-extrabold text-slate-950 uppercase">
+                            Correct Answer
+                          </span>
+                        );
+                      } else if (isUserOption && !isCorrectOption) {
+                        optionStyle = "border-rose-500 bg-rose-500/20 text-rose-200 font-bold ring-1 ring-rose-500";
+                        badge = (
+                          <span className="ml-auto rounded-md bg-rose-500 px-2.5 py-0.5 font-mono text-[10px] font-extrabold text-white uppercase">
+                            Your Choice (Wrong)
+                          </span>
+                        );
+                      }
+
+                      return (
+                        <div
+                          key={i}
+                          className={`flex items-center text-left p-4 rounded-xl border transition-all text-xs sm:text-sm ${optionStyle}`}
+                        >
+                          <span className="w-6 h-6 rounded-lg border border-white/20 flex items-center justify-center font-mono text-xs font-bold mr-3 shrink-0">
+                            {String.fromCharCode(65 + i)}
+                          </span>
+                          <span className="flex-1">{opt}</span>
+                          {badge}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
@@ -165,69 +258,105 @@ export default function ExamPage() {
   const minutes = Math.floor((secondsLeft ?? 0) / 60);
   const seconds = (secondsLeft ?? 0) % 60;
 
+  /* ---------------- Active Exam Interface ---------------- */
   return (
-    <div className="container-page max-w-3xl py-10">
-      <div className="sticky top-16 z-10 -mx-4 mb-6 flex items-center justify-between border-b border-slate-200 bg-paper/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-md sm:border sm:px-5">
-        <div>
-          <h1 className="font-display text-lg font-semibold text-navy-900">{exam.title}</h1>
-          <p className="text-xs text-slate-500">
-            {answeredCount} / {exam.questions.length} answered
-          </p>
-        </div>
-        <div
-          className={`rounded-md px-3 py-1.5 font-mono text-sm ${
-            (secondsLeft ?? 0) < 60 ? "bg-red-100 text-red-600" : "bg-cyan-100 text-cyan-700"
-          }`}
-        >
-          {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-        </div>
-      </div>
+    <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden pb-24">
+      {/* Background Ambient Glows */}
+      <div className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#8a00c2]/20 blur-[150px]" />
+      <div className="pointer-events-none absolute -right-40 top-1/2 h-[500px] w-[500px] rounded-full bg-[#f0822b]/15 blur-[150px]" />
 
-      {error && (
-        <div className="mb-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-600">
-          {error}
-        </div>
-      )}
-
-      <div className="space-y-5">
-        {exam.questions.map((q, idx) => (
-          <div key={q.id} className="rounded-md border border-slate-200 bg-white p-5">
-            <p className="text-sm font-medium text-navy-900">
-              {idx + 1}. {q.question}{" "}
-              <span className="text-xs font-normal text-slate-400">({q.marks} marks)</span>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 relative z-10">
+        
+        {/* Sticky Header with Timer */}
+        <div className="sticky top-6 z-30 mb-8 flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/90 px-6 py-4 shadow-2xl backdrop-blur-md">
+          <div>
+            <h1 className="font-display text-base sm:text-lg font-bold text-white">{exam.title}</h1>
+            <p className="font-mono text-xs font-medium text-slate-400 mt-0.5">
+              <span className="text-[#f0822b] font-bold">{answeredCount}</span> of {exam.questions.length} answered
             </p>
-            <div className="mt-3 space-y-2">
-              {q.options.map((opt, i) => (
-                <label
-                  key={i}
-                  className={`flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2.5 text-sm transition ${
-                    answers[q.id] === i
-                      ? "border-cyan-400 bg-cyan-50 text-navy-900"
-                      : "border-slate-200 text-slate-700 hover:border-slate-300"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name={q.id}
-                    checked={answers[q.id] === i}
-                    onChange={() => setAnswers((a) => ({ ...a, [q.id]: i }))}
-                    className="accent-cyan-500"
-                  />
-                  {opt}
-                </label>
-              ))}
-            </div>
           </div>
-        ))}
-      </div>
 
-      <button
-        onClick={handleSubmit}
-        disabled={submitting}
-        className="mt-8 w-full rounded-md bg-cyan-500 px-6 py-3 text-sm font-medium text-white transition hover:bg-cyan-600 disabled:opacity-60"
-      >
-        {submitting ? "Submitting…" : "Submit exam"}
-      </button>
+          <div
+            className={`rounded-xl px-4 py-2 font-mono text-sm font-bold shadow-inner ${
+              (secondsLeft ?? 0) < 60
+                ? "bg-red-500/20 text-red-400 border border-red-500/40 animate-pulse"
+                : "bg-[#8a00c2]/20 text-purple-200 border border-[#8a00c2]/40"
+            }`}
+          >
+            ⏱ {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+          </div>
+        </div>
+
+        {error && (
+          <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-xs font-bold text-red-400">
+            {error}
+          </div>
+        )}
+
+        {/* Questions List */}
+        <div className="space-y-6">
+          {exam.questions.map((q, idx) => (
+            <div key={q.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-mono text-xs font-bold text-[#f0822b] uppercase tracking-wider">
+                  Question {idx + 1}
+                </span>
+                <span className="font-mono text-xs text-slate-400 font-semibold">
+                  {q.marks} Marks
+                </span>
+              </div>
+
+              <h3 className="font-display text-base sm:text-lg font-semibold text-white leading-snug mb-5">
+                {q.question}
+              </h3>
+
+              <div className="space-y-3">
+                {q.options.map((opt, i) => {
+                  const isSelected = answers[q.id] === i;
+                  return (
+                    <label
+                      key={i}
+                      className={`flex cursor-pointer items-center rounded-xl border p-4 text-xs sm:text-sm transition-all ${
+                        isSelected
+                          ? "border-[#8a00c2] bg-[#8a00c2]/20 text-white font-bold ring-1 ring-[#8a00c2]"
+                          : "border-white/10 bg-slate-950/50 text-slate-300 hover:border-purple-500/40 hover:bg-slate-900"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name={q.id}
+                        checked={isSelected}
+                        onChange={() => setAnswers((a) => ({ ...a, [q.id]: i }))}
+                        className="sr-only"
+                      />
+                      <span className={`w-6 h-6 rounded-lg border flex items-center justify-center font-mono text-xs font-bold mr-3 shrink-0 transition-colors ${
+                        isSelected 
+                          ? "bg-[#8a00c2] border-[#8a00c2] text-white" 
+                          : "border-white/20 text-slate-400"
+                      }`}>
+                        {String.fromCharCode(65 + i)}
+                      </span>
+                      <span className="flex-1">{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Submit Action */}
+        <div className="mt-10 border-t border-white/10 pt-6 flex justify-end">
+          <button
+            onClick={handleSubmit}
+            disabled={submitting}
+            className="w-full sm:w-auto rounded-xl bg-[#8a00c2] px-8 py-4 text-xs font-bold text-white shadow-xl shadow-[#8a00c2]/30 transition-all hover:bg-[#7200a3] hover:scale-105 active:scale-95 disabled:opacity-50"
+          >
+            {submitting ? "Submitting Exam..." : "Submit Exam Answers"}
+          </button>
+        </div>
+
+      </div>
     </div>
   );
 }
