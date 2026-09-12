@@ -1,5 +1,49 @@
 [
   {
+    "id": "qXlaj5VN",
+    "title": "ICT Book Grade 6",
+    "description": "1st Edition (2018)",
+    "category": "Books",
+    "grade": "Grade 6",
+    "fileUrl": "/uploads/1789195703545-ICT_GR_6-1st_edition_2018_.pdf",
+    "fileName": "ICT GR 6-1st edition(2018).pdf",
+    "addedAt": "2026-09-12",
+    "fileSize": "10.0 MB"
+  },
+  {
+    "id": "Ytnucrf4",
+    "title": "ICT Book Grade 7",
+    "description": "1st Edition (2018)",
+    "category": "Books",
+    "grade": "Grade 7",
+    "fileUrl": "/uploads/1789195657626-ICT_GR_7-1st_edition_2018_.pdf",
+    "fileName": "ICT GR 7-1st edition(2018).pdf",
+    "addedAt": "2026-09-12",
+    "fileSize": "13.2 MB"
+  },
+  {
+    "id": "GI6iwEre",
+    "title": "ICT Book Grade 8",
+    "description": "3rd Edition (2020)",
+    "category": "Books",
+    "grade": "Grade 8",
+    "fileUrl": "/uploads/1789195609520-ICT_GR_8-3rd_edition_2020_.pdf",
+    "fileName": "ICT GR 8-3rd edition(2020).pdf",
+    "addedAt": "2026-09-12",
+    "fileSize": "10.0 MB"
+  },
+  {
+    "id": "fRyCmtpg",
+    "title": "ICT Book Grade 9",
+    "description": "2nd Edition (2019)",
+    "category": "Books",
+    "grade": "Grade 9",
+    "fileUrl": "/uploads/1789195542904-ICT_GR_9-2nd_edition_2019_.pdf",
+    "fileName": "ICT GR 9-2nd edition(2019).pdf",
+    "addedAt": "2026-09-12",
+    "fileSize": "11.5 MB"
+  },
+  {
     "id": "zuDYYVbS",
     "title": "ICT Book Grade 10",
     "description": "6th edition (2019)",
