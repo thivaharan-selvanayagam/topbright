@@ -173,246 +173,269 @@
     "published": true,
     "createdAt": "2026-09-12T08:08:53.248Z",
     "questions": [
-    {
-      "id": "q1",
-      "question": "கீழ்வருவனவற்றுள் எது உள்ளீட்டுச் சாதனம் (Input Device) ஆகும்?",
-      "options": [
-        "அச்சுப்பொறி (Printer)",
-        "திரையகம் (Monitor)",
-        "வருடி (Scanner)",
-        "ஒலிபெருக்கி (Speaker)"
-      ],
-      "correctIndex": 2,
-      "marks": 2
-    },
-    {
-      "id": "q2",
-      "question": "கீழ்வருவனவற்றுள் எது வெளியீட்டுச் சாதனம் (Output Device) ஆகும்?",
-      "options": [
-        "சுட்டி (Mouse)",
-        "விசைப்பலகை (Keyboard)",
-        "ஒலிவாங்கி (Microphone)",
-        "ஒளிப்பொறி / ப்ரொஜெக்டர் (Projector)"
-      ],
-      "correctIndex": 3,
-      "marks": 2
-    },
-    {
-      "id": "q3",
-      "question": "கணினியில் சொற்களையும் எண்களையும் உள்ளீடு செய்யப் பயன்படும் முதன்மையான சாதனம் எது?",
-      "options": [
-        "சுட்டி",
-        "விசைப்பலகை",
-        "வருடி",
-        "பட்டைக்குறி படித்தான்"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q4",
-      "question": "கணினியிலிருந்து பெறப்படும் தாள் வடிவ அச்சிடப்பட்ட வெளியீடு எவ்வாறு அழைக்கப்படுகிறது?",
-      "options": [
-        "மென்பிரதி (Soft Copy)",
-        "வன்பிரதி (Hard Copy)",
-        "டிஜிட்டல் பிரதி (Digital Copy)",
-        "தற்காலிகப் பிரதி (Temporary Copy)"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q5",
-      "question": "கணினித் திரையில் தோன்றும் தற்காலிக வெளியீடு (Display) எவ்வாறு அழைக்கப்படுகிறது?",
-      "options": [
-        "வன்பிரதி (Hard Copy)",
-        "மென்பிரதி (Soft Copy)",
-        "இயற்பியல் பிரதி (Physical Copy)",
-        "அச்சுப் பிரதி (Printed Copy)"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q6",
-      "question": "கட்டிடப் பிளான்கள் (Architectural Plans) போன்ற பெரிய அளவிலான உயர்தர வரைபடங்களை அச்சிடப் பயன்படும் சாதனம் எது?",
-      "options": [
-        "புள்ளி அணி அச்சுப்பொறி (Dot Matrix Printer)",
-        "லேசர் அச்சுப்பொறி (Laser Printer)",
-        "வரைவி (Plotter)",
-        "இங்க்ஜெட் அச்சுப்பொறி (Inkjet Printer)"
-      ],
-      "correctIndex": 2,
-      "marks": 2
-    },
-    {
-      "id": "q7",
-      "question": "பல்தேர்வு வினாத்தாள்களின் (MCQ Answer Sheets) விடைகளை விரைவாக மதிப்பீடு செய்யப் பயன்படும் தொழில்நுட்பம் எது?",
-      "options": [
-        "OCR (Optical Character Reader)",
-        "OMR (Optical Mark Reader)",
-        "MICR (Magnetic Ink Character Reader)",
-        "Barcode Reader"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q8",
-      "question": "கணினி விளையாட்டுகளை (Computer Games) இலகுவாகக் கட்டுப்படுத்தப் பயன்படும் உள்ளீட்டுச் சாதனம் எது?",
-      "options": [
-        "இயக்கக் கோல் (Joystick)",
-        "வருடி (Scanner)",
-        "வரைவி (Plotter)",
-        "அச்சுப்பொறி (Printer)"
-      ],
-      "correctIndex": 0,
-      "marks": 2
-    },
-    {
-      "id": "q9",
-      "question": "வங்கிக் காசோலைகளில் (Cheques) உள்ள காந்த மை எழுத்துக்களைப் படிக்கப் பயன்படும் சாதனம் எது?",
-      "options": [
-        "OMR",
-        "OCR",
-        "MICR",
-        "UPC"
-      ],
-      "correctIndex": 2,
-      "marks": 2
-    },
-    {
-      "id": "q10",
-      "question": "கீழ்வருவனவற்றுள் ஒரே நேரத்தில் உள்ளீடாகவும் வெளியீடாகவும் செயல்படக்கூடிய சாதனம் எது?",
-      "options": [
-        "விசைப்பலகை",
-        "தொடுதிரை (Touchscreen)",
-        "சுட்டி",
-        "திரையகம்"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q11",
-      "question": "ஒலி வடிவ தரவை (Audio Data) கணினியினுள் உள்ளீடு செய்யப் பயன்படும் சாதனம் எது?",
-      "options": [
-        "ஒலிபெருக்கி (Speaker)",
-        "ஒலிவாங்கி (Microphone)",
-        "தலையணி ஒலிவாங்கி (Headphones)",
-        "இணையக் கேமரா (Webcam)"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q12",
-      "question": "பொருட்களின் மீதுள்ள பட்டைக்குறிகளைப் (Barcodes) படித்து அவற்றின் விபரங்களை கணினிக்கு அனுப்பும் சாதனம் எது?",
-      "options": [
-        "OMR",
-        "பட்டைக்குறி படித்தான் (Barcode Reader)",
-        "வருடி (Scanner)",
-        "வரைவி (Plotter)"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q13",
-      "question": "அச்சிடப்பட்ட ஆவணங்களை அல்லது புகைப்படங்களை டிஜிட்டல் படங்களாக (Digital Images) மாற்றி கணினியினுள் அனுப்ப உதவும் சாதனம் எது?",
-      "options": [
-        "அச்சுப்பொறி",
-        "வருடி (Scanner)",
-        "திரையகம்",
-        "ஒலிவாங்கி"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q14",
-      "question": "கீழ்வருவனவற்றுள் தாக்கு அச்சுப்பொறிக்கு (Impact Printer) உதாரணம் எது?",
-      "options": [
-        "லேசர் அச்சுப்பொறி (Laser Printer)",
-        "இங்க்ஜெட் அச்சுப்பொறி (Inkjet Printer)",
-        "புள்ளி அணி அச்சுப்பொறி (Dot Matrix Printer)",
-        "வெப்ப அச்சுப்பொறி (Thermal Printer)"
-      ],
-      "correctIndex": 2,
-      "marks": 2
-    },
-    {
-      "id": "q15",
-      "question": "கணினித் திரையின் தெளிவுத்திறனை (Screen Resolution) அளவிடப் பயன்படும் அலகு எது?",
-      "options": [
-        "PPM (Pages Per Minute)",
-        "Pixels (பிக்சல்கள்)",
-        "DPI (Dots Per Inch)",
-        "Bytes"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q16",
-      "question": "அச்சுப்பொறியின் அச்சுத் தரத்தை / தெளிவுத்திறனை (Printer Resolution) அளவிடப் பயன்படும் அலகு எது?",
-      "options": [
-        "DPI (Dots Per Inch)",
-        "PPM (Pages Per Minute)",
-        "Pixels",
-        "Hertz"
-      ],
-      "correctIndex": 0,
-      "marks": 2
-    },
-    {
-      "id": "q17",
-      "question": "கணினியிலிருந்து வரும் ஒலி சமிக்ஞைகளை மனிதர்கள் கேட்கக்கூடிய ஒலியாக மாற்றித் தரும் வெளியீட்டுச் சாதனம் எது?",
-      "options": [
-        "ஒலிவாங்கி",
-        "ஒலிபெருக்கி (Speaker)",
-        "இணையக் கேமரா",
-        "சுட்டி"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q18",
-      "question": "நேரடி இணைய உரையாடலின் போது (Video Call) நேரடிக் காட்சிகளைக் கணினியினுள் உள்ளீடு செய்யப் பயன்படுவது எது?",
-      "options": [
-        "பிளாட்பெட் ஸ்கேனர்",
-        "இணையக் கேமரா (Webcam)",
-        "டிஜிட்டல் ப்ரொஜெக்டர்",
-        "வரைவி"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q19",
-      "question": "கணினி விசைப்பலகையில் (Keyboard) பொதுவான விசை அமைப்பு முறை (Layout) எது?",
-      "options": [
-        "AZERTY",
-        "QWERTY",
-        "DVORAK",
-        "QWERTZ"
-      ],
-      "correctIndex": 1,
-      "marks": 2
-    },
-    {
-      "id": "q20",
-      "question": "கீழ்வருவனவற்றுள் தாக்குறா அச்சுப்பொறிக்கு (Non-impact Printer) உதாரணம் அல்லாதது எது?",
-      "options": [
-        "லேசர் அச்சுப்பொறி",
-        "இங்க்ஜெட் அச்சுப்பொறி",
-        "புள்ளி அணி அச்சுப்பொறி (Dot Matrix Printer)",
-        "வெப்ப அச்சுப்பொறி"
-      ],
-      "correctIndex": 2,
-      "marks": 2
-    }
-  ]
+      {
+        "id": "q1",
+        "question": "கீழ்வருவனவற்றுள் எது உள்ளீட்டுச் சாதனம் (Input Device) ஆகும்?",
+        "options": [
+          "அச்சுப்பொறி (Printer)",
+          "திரையகம் (Monitor)",
+          "வருடி (Scanner)",
+          "ஒலிபெருக்கி (Speaker)"
+        ],
+        "correctIndex": 2,
+        "marks": 2
+      },
+      {
+        "id": "q2",
+        "question": "கீழ்வருவனவற்றுள் எது வெளியீட்டுச் சாதனம் (Output Device) ஆகும்?",
+        "options": [
+          "சுட்டி (Mouse)",
+          "விசைப்பலகை (Keyboard)",
+          "ஒலிவாங்கி (Microphone)",
+          "ஒளிப்பொறி / ப்ரொஜெக்டர் (Projector)"
+        ],
+        "correctIndex": 3,
+        "marks": 2
+      },
+      {
+        "id": "q3",
+        "question": "கணினியில் சொற்களையும் எண்களையும் உள்ளீடு செய்யப் பயன்படும் முதன்மையான சாதனம் எது?",
+        "options": [
+          "சுட்டி",
+          "விசைப்பலகை",
+          "வருடி",
+          "பட்டைக்குறி படித்தான்"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q4",
+        "question": "கணினியிலிருந்து பெறப்படும் தாள் வடிவ அச்சிடப்பட்ட வெளியீடு எவ்வாறு அழைக்கப்படுகிறது?",
+        "options": [
+          "மென்பிரதி (Soft Copy)",
+          "வன்பிரதி (Hard Copy)",
+          "டிஜிட்டல் பிரதி (Digital Copy)",
+          "தற்காலிகப் பிரதி (Temporary Copy)"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q5",
+        "question": "கணினித் திரையில் தோன்றும் தற்காலிக வெளியீடு (Display) எவ்வாறு அழைக்கப்படுகிறது?",
+        "options": [
+          "வன்பிரதி (Hard Copy)",
+          "மென்பிரதி (Soft Copy)",
+          "இயற்பியல் பிரதி (Physical Copy)",
+          "அச்சுப் பிரதி (Printed Copy)"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q6",
+        "question": "கட்டிடப் பிளான்கள் (Architectural Plans) போன்ற பெரிய அளவிலான உயர்தர வரைபடங்களை அச்சிடப் பயன்படும் சாதனம் எது?",
+        "options": [
+          "புள்ளி அணி அச்சுப்பொறி (Dot Matrix Printer)",
+          "லேசர் அச்சுப்பொறி (Laser Printer)",
+          "வரைவி (Plotter)",
+          "இங்க்ஜெட் அச்சுப்பொறி (Inkjet Printer)"
+        ],
+        "correctIndex": 2,
+        "marks": 2
+      },
+      {
+        "id": "q7",
+        "question": "பல்தேர்வு வினாத்தாள்களின் (MCQ Answer Sheets) விடைகளை விரைவாக மதிப்பீடு செய்யப் பயன்படும் தொழில்நுட்பம் எது?",
+        "options": [
+          "OCR (Optical Character Reader)",
+          "OMR (Optical Mark Reader)",
+          "MICR (Magnetic Ink Character Reader)",
+          "Barcode Reader"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q8",
+        "question": "கணினி விளையாட்டுகளை (Computer Games) இலகுவாகக் கட்டுப்படுத்தப் பயன்படும் உள்ளீட்டுச் சாதனம் எது?",
+        "options": [
+          "இயக்கக் கோல் (Joystick)",
+          "வருடி (Scanner)",
+          "வரைவி (Plotter)",
+          "அச்சுப்பொறி (Printer)"
+        ],
+        "correctIndex": 0,
+        "marks": 2
+      },
+      {
+        "id": "q9",
+        "question": "வங்கிக் காசோலைகளில் (Cheques) உள்ள காந்த மை எழுத்துக்களைப் படிக்கப் பயன்படும் சாதனம் எது?",
+        "options": [
+          "OMR",
+          "OCR",
+          "MICR",
+          "UPC"
+        ],
+        "correctIndex": 2,
+        "marks": 2
+      },
+      {
+        "id": "q10",
+        "question": "கீழ்வருவனவற்றுள் ஒரே நேரத்தில் உள்ளீடாகவும் வெளியீடாகவும் செயல்படக்கூடிய சாதனம் எது?",
+        "options": [
+          "விசைப்பலகை",
+          "தொடுதிரை (Touchscreen)",
+          "சுட்டி",
+          "திரையகம்"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q11",
+        "question": "ஒலி வடிவ தரவை (Audio Data) கணினியினுள் உள்ளீடு செய்யப் பயன்படும் சாதனம் எது?",
+        "options": [
+          "ஒலிபெருக்கி (Speaker)",
+          "ஒலிவாங்கி (Microphone)",
+          "தலையணி ஒலிவாங்கி (Headphones)",
+          "இணையக் கேமரா (Webcam)"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q12",
+        "question": "பொருட்களின் மீதுள்ள பட்டைக்குறிகளைப் (Barcodes) படித்து அவற்றின் விபரங்களை கணினிக்கு அனுப்பும் சாதனம் எது?",
+        "options": [
+          "OMR",
+          "பட்டைக்குறி படித்தான் (Barcode Reader)",
+          "வருடி (Scanner)",
+          "வரைவி (Plotter)"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q13",
+        "question": "அச்சிடப்பட்ட ஆவணங்களை அல்லது புகைப்படங்களை டிஜிட்டல் படங்களாக (Digital Images) மாற்றி கணினியினுள் அனுப்ப உதவும் சாதனம் எது?",
+        "options": [
+          "அச்சுப்பொறி",
+          "வருடி (Scanner)",
+          "திரையகம்",
+          "ஒலிவாங்கி"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q14",
+        "question": "கீழ்வருவனவற்றுள் தாக்கு அச்சுப்பொறிக்கு (Impact Printer) உதாரணம் எது?",
+        "options": [
+          "லேசர் அச்சுப்பொறி (Laser Printer)",
+          "இங்க்ஜெட் அச்சுப்பொறி (Inkjet Printer)",
+          "புள்ளி அணி அச்சுப்பொறி (Dot Matrix Printer)",
+          "வெப்ப அச்சுப்பொறி (Thermal Printer)"
+        ],
+        "correctIndex": 2,
+        "marks": 2
+      },
+      {
+        "id": "q15",
+        "question": "கணினித் திரையின் தெளிவுத்திறனை (Screen Resolution) அளவிடப் பயன்படும் அலகு எது?",
+        "options": [
+          "PPM (Pages Per Minute)",
+          "Pixels (பிக்சல்கள்)",
+          "DPI (Dots Per Inch)",
+          "Bytes"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q16",
+        "question": "அச்சுப்பொறியின் அச்சுத் தரத்தை / தெளிவுத்திறனை (Printer Resolution) அளவிடப் பயன்படும் அலகு எது?",
+        "options": [
+          "DPI (Dots Per Inch)",
+          "PPM (Pages Per Minute)",
+          "Pixels",
+          "Hertz"
+        ],
+        "correctIndex": 0,
+        "marks": 2
+      },
+      {
+        "id": "q17",
+        "question": "கணினியிலிருந்து வரும் ஒலி சமிக்ஞைகளை மனிதர்கள் கேட்கக்கூடிய ஒலியாக மாற்றித் தரும் வெளியீட்டுச் சாதனம் எது?",
+        "options": [
+          "ஒலிவாங்கி",
+          "ஒலிபெருக்கி (Speaker)",
+          "இணையக் கேமரா",
+          "சுட்டி"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q18",
+        "question": "நேரடி இணைய உரையாடலின் போது (Video Call) நேரடிக் காட்சிகளைக் கணினியினுள் உள்ளீடு செய்யப் பயன்படுவது எது?",
+        "options": [
+          "பிளாட்பெட் ஸ்கேனர்",
+          "இணையக் கேமரா (Webcam)",
+          "டிஜிட்டல் ப்ரொஜெக்டர்",
+          "வரைவி"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q19",
+        "question": "கணினி விசைப்பலகையில் (Keyboard) பொதுவான விசை அமைப்பு முறை (Layout) எது?",
+        "options": [
+          "AZERTY",
+          "QWERTY",
+          "DVORAK",
+          "QWERTZ"
+        ],
+        "correctIndex": 1,
+        "marks": 2
+      },
+      {
+        "id": "q20",
+        "question": "கீழ்வருவனவற்றுள் தாக்குறா அச்சுப்பொறிக்கு (Non-impact Printer) உதாரணம் அல்லாதது எது?",
+        "options": [
+          "லேசர் அச்சுப்பொறி",
+          "இங்க்ஜெட் அச்சுப்பொறி",
+          "புள்ளி அணி அச்சுப்பொறி (Dot Matrix Printer)",
+          "வெப்ப அச்சுப்பொறி"
+        ],
+        "correctIndex": 2,
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "id": "GVets0A6",
+    "title": "test3",
+    "description": "",
+    "grade": "All Grades",
+    "durationMinutes": 10,
+    "published": true,
+    "createdAt": "2026-09-12T19:45:20.520Z",
+    "questions": [
+      {
+        "id": "VMsBv0",
+        "question": "test",
+        "options": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "correctIndex": 0,
+        "marks": 2
+      }
+    ]
   }
 ]

@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
     const currentStudentId = String(session.studentId || "").toLowerCase();
     const results = await db.results.all();
 
+    // Prevent duplicate attempts
     const alreadySubmitted = results.find(
       (r: any) =>
         String(r.studentId || "").toLowerCase() === currentStudentId &&

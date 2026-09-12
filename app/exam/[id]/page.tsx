@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
 
 type ExamQuestion = { id: string; question: string; options: string[]; marks: number };
 type ExamData = {
@@ -42,59 +41,75 @@ export default function ExamPage() {
   const [review, setReview] = useState<ReviewItem[] | null>(null);
 
   useEffect(() => {
+    if (!params?.id) return;
+
     fetch(`/api/exams/${params.id}`)
       .then(async (r) => {
-        const data = await r.json();
-        if (!r.ok) throw new Error(data.error || "Could not load exam.");
-        return data;
+        if (!r.ok) {
+          // Fallback check for singular endpoint route if available
+          const altRes = await fetch(`/api/exam/${params.id}`);
+          if (!altRes.ok) {
+            const errData = await r.json().catch(() => ({}));
+            throw new Error(errData.error || "Could not load exam details.");
+          }
+          return altRes.json();
+        }
+        return r.json();
       })
       .then((data) => {
-        setExam(data.exam);
-        setSecondsLeft(data.exam.durationMinutes * 60);
+        const loadedExam = data.exam || data;
+        setExam(loadedExam);
+        const duration = loadedExam.durationMinutes || 30;
+        setSecondsLeft(duration * 60);
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [params.id]);
+  }, [params?.id]);
 
   const handleSubmit = useCallback(async () => {
-    if (submitting || result) return;
+    if (submitting || result || !params?.id) return;
     setSubmitting(true);
+    setError("");
+
     try {
-      const res = await fetch("/api/exams/submit", {
+      const res = await fetch("/api/exam/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ examId: params.id, answers }),
       });
+
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || "Could not submit exam.");
         return;
       }
+
       setResult(data.result);
       setReview(data.review);
 
-      // Smooth auto-scroll to the top so students immediately see the exam score card
+      // Smooth auto-scroll to the top to highlight score card
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
-      setError("Something went wrong while submitting.");
+      setError("Something went wrong while submitting your answers.");
     } finally {
       setSubmitting(false);
     }
-  }, [answers, params.id, submitting, result]);
+  }, [answers, params?.id, submitting, result]);
 
+  // Exam Countdown Timer
   useEffect(() => {
     if (secondsLeft === null || result) return;
     if (secondsLeft <= 0) {
       handleSubmit();
       return;
     }
-    const t = setTimeout(() => setSecondsLeft((s) => (s !== null ? s - 1 : s)), 1000);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setSecondsLeft((s) => (s !== null ? s - 1 : s)), 1000);
+    return () => clearTimeout(timer);
   }, [secondsLeft, result, handleSubmit]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center font-mono text-xs text-slate-400">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center font-mono text-xs text-slate-400 select-none">
         Loading exam session...
       </div>
     );
@@ -102,17 +117,16 @@ export default function ExamPage() {
 
   if (error && !exam) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 text-center">
-        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-8 max-w-md">
-          <p className="text-sm font-bold text-red-400">{error}</p>
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 text-center select-none">
+        <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-8 max-w-md space-y-4">
+          <p className="text-sm font-bold text-rose-300">⚠️ {error}</p>
           <button
             onClick={() => {
-              // Hard refresh navigation ensures latest exam results from database/JSON are loaded
               window.location.href = "/dashboard";
             }}
-            className="inline-flex items-center justify-center rounded-xl bg-[#8a00c2] px-8 py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:scale-105 active:scale-95"
+            className="inline-flex items-center justify-center rounded-xl bg-[#8a00c2] px-8 py-3 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3]"
           >
-            Back to dashboard
+            Back to Dashboard
           </button>
         </div>
       </div>
@@ -152,12 +166,11 @@ export default function ExamPage() {
 
             <button
               onClick={() => {
-                // Hard refresh navigation ensures latest exam results from database/JSON are loaded
                 window.location.href = "/dashboard";
               }}
               className="inline-flex items-center justify-center rounded-xl bg-[#8a00c2] px-8 py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:scale-105 active:scale-95"
             >
-              Back to dashboard
+              Back to Dashboard
             </button>
           </div>
 
@@ -174,7 +187,7 @@ export default function ExamPage() {
 
               return (
                 <div
-                  key={q.id}
+                  key={q.id || idx}
                   className={`rounded-2xl border p-6 backdrop-blur-md transition-all ${
                     isCorrect
                       ? "border-emerald-500/40 bg-emerald-950/20"
@@ -188,7 +201,7 @@ export default function ExamPage() {
 
                     {isCorrect ? (
                       <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-mono text-xs font-bold text-emerald-400">
-                        ✓ Correct (+{q.marks} Marks)
+                        ✓ Correct (+{q.marks || 1} Marks)
                       </span>
                     ) : isUnanswered ? (
                       <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-1 font-mono text-xs font-bold text-amber-400">
@@ -206,7 +219,7 @@ export default function ExamPage() {
                   </h3>
 
                   <div className="space-y-3">
-                    {q.options.map((opt, i) => {
+                    {q.options?.map((opt, i) => {
                       const isCorrectOption = i === q.correctIndex;
                       const isUserOption = i === q.givenIndex;
 
@@ -272,14 +285,14 @@ export default function ExamPage() {
           <div>
             <h1 className="font-display text-base sm:text-lg font-bold text-white">{exam.title}</h1>
             <p className="font-mono text-xs font-medium text-slate-400 mt-0.5">
-              <span className="text-[#f0822b] font-bold">{answeredCount}</span> of {exam.questions.length} answered
+              <span className="text-[#f0822b] font-bold">{answeredCount}</span> of {exam.questions?.length || 0} answered
             </p>
           </div>
 
           <div
             className={`rounded-xl px-4 py-2 font-mono text-sm font-bold shadow-inner ${
               (secondsLeft ?? 0) < 60
-                ? "bg-red-500/20 text-red-400 border border-red-500/40 animate-pulse"
+                ? "bg-rose-500/20 text-rose-400 border border-rose-500/40 animate-pulse"
                 : "bg-[#8a00c2]/20 text-purple-200 border border-[#8a00c2]/40"
             }`}
           >
@@ -288,21 +301,21 @@ export default function ExamPage() {
         </div>
 
         {error && (
-          <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-xs font-bold text-red-400">
-            {error}
+          <div className="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs font-bold text-rose-300">
+            ⚠️ {error}
           </div>
         )}
 
         {/* Questions List */}
         <div className="space-y-6">
-          {exam.questions.map((q, idx) => (
-            <div key={q.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
+          {exam.questions?.map((q, idx) => (
+            <div key={q.id || idx} className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
               <div className="flex items-center justify-between mb-3">
                 <span className="font-mono text-xs font-bold text-[#f0822b] uppercase tracking-wider">
                   Question {idx + 1}
                 </span>
                 <span className="font-mono text-xs text-slate-400 font-semibold">
-                  {q.marks} Marks
+                  {q.marks || 1} Marks
                 </span>
               </div>
 
@@ -311,7 +324,7 @@ export default function ExamPage() {
               </h3>
 
               <div className="space-y-3">
-                {q.options.map((opt, i) => {
+                {q.options?.map((opt, i) => {
                   const isSelected = answers[q.id] === i;
                   return (
                     <label
@@ -329,11 +342,13 @@ export default function ExamPage() {
                         onChange={() => setAnswers((a) => ({ ...a, [q.id]: i }))}
                         className="sr-only"
                       />
-                      <span className={`w-6 h-6 rounded-lg border flex items-center justify-center font-mono text-xs font-bold mr-3 shrink-0 transition-colors ${
-                        isSelected 
-                          ? "bg-[#8a00c2] border-[#8a00c2] text-white" 
-                          : "border-white/20 text-slate-400"
-                      }`}>
+                      <span
+                        className={`w-6 h-6 rounded-lg border flex items-center justify-center font-mono text-xs font-bold mr-3 shrink-0 transition-colors ${
+                          isSelected
+                            ? "bg-[#8a00c2] border-[#8a00c2] text-white"
+                            : "border-white/20 text-slate-400"
+                        }`}
+                      >
                         {String.fromCharCode(65 + i)}
                       </span>
                       <span className="flex-1">{opt}</span>
