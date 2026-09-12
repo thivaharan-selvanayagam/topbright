@@ -29,7 +29,7 @@ export default function TimetablePage() {
         <div className="container-page relative z-10 py-16">
           <p className="font-mono text-sm font-medium text-[#f0822b]">Class Schedule</p>
           <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold text-white sm:text-4xl">
-            This week's classes
+            Class Time Tables
           </h1>
           <p className="mt-3 max-w-xl text-slate-300">
             Times are subject to change during school exam periods. Message on WhatsApp to confirm
