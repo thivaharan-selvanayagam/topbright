@@ -85,8 +85,13 @@ export async function POST(req: NextRequest) {
       submittedAt: new Date().toISOString(),
     };
 
-    results.unshift(newResult);
-    await db.results.save(results);
+    // Safely attempt persistence while preventing EROFS server crash
+    try {
+      results.unshift(newResult);
+      await db.results.save(results);
+    } catch (saveErr) {
+      console.warn("Could not persist result to disk:", saveErr);
+    }
 
     return NextResponse.json({
       success: true,

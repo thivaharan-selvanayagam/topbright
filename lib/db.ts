@@ -1,45 +1,47 @@
 import fs from "fs/promises";
 import path from "path";
-
-/**
- * Lightweight JSON-file "database".
- *
- * This is intentionally simple so the whole site works out of the box with
- * zero external services. It is perfect for local development and for
- * hosting on a persistent Node server (e.g. a VPS, Render, Railway).
- *
- * IMPORTANT — Vercel note:
- * Vercel's serverless functions have a READ-ONLY filesystem in production
- * (writes only survive for the lifetime of a single request and are not
- * shared between invocations). That means new student registrations, exam
- * submissions, and admin edits made through the live Vercel site will NOT
- * persist reliably once you have real traffic.
- *
- * For production on Vercel, swap the read/write functions below for a real
- * database — the easiest options are:
- *   - Vercel Postgres (https://vercel.com/docs/storage/vercel-postgres)
- *   - Supabase (free Postgres, https://supabase.com)
- *   - Turso / PlanetScale (MySQL/SQLite compatible)
- * A starter Prisma schema mirroring these JSON shapes is included in
- * prisma/schema.prisma — see README.md "Going to production" section.
- */
+import os from "os";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
 async function readJson<T>(file: string, fallback: T): Promise<T> {
-  const filePath = path.join(DATA_DIR, file);
+  const primaryPath = path.join(DATA_DIR, file);
+  const tmpPath = path.join(os.tmpdir(), file);
+
   try {
-    const raw = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(raw) as T;
+    // Attempt reading from temporary storage first (for updated serverless instances)
+    try {
+      const tmpRaw = await fs.readFile(tmpPath, "utf-8");
+      return JSON.parse(tmpRaw) as T;
+    } catch {
+      const raw = await fs.readFile(primaryPath, "utf-8");
+      return JSON.parse(raw) as T;
+    }
   } catch {
     return fallback;
   }
 }
 
 async function writeJson<T>(file: string, data: T): Promise<void> {
-  const filePath = path.join(DATA_DIR, file);
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf-8");
+  const primaryPath = path.join(DATA_DIR, file);
+  const tmpPath = path.join(os.tmpdir(), file);
+
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(primaryPath, JSON.stringify(data, null, 2), "utf-8");
+  } catch (err: any) {
+    // Catch read-only filesystem errors on Vercel / serverless deployments
+    if (err?.code === "EROFS" || err?.code === "EACCES") {
+      try {
+        await fs.mkdir(path.dirname(tmpPath), { recursive: true });
+        await fs.writeFile(tmpPath, JSON.stringify(data, null, 2), "utf-8");
+      } catch (tmpErr) {
+        console.error(`Failed fallback write to ${tmpPath}:`, tmpErr);
+      }
+    } else {
+      console.error(`Error saving ${file}:`, err);
+    }
+  }
 }
 
 export const db = {
