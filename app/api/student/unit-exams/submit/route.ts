@@ -64,15 +64,28 @@ export async function POST(req: NextRequest) {
 
     const fileUrls: string[] = [];
     const uploadDir = path.join(process.cwd(), "public", "uploads", "unit-submissions");
-    await fs.mkdir(uploadDir, { recursive: true });
 
     for (const file of files) {
       if (file && file.size > 0) {
         const bytes = Buffer.from(await file.arrayBuffer());
         const ext = file.name.split(".").pop() || "jpg";
         const safeName = `${studentId}-${Date.now()}-${nanoid(4)}.${ext}`;
-        await fs.writeFile(path.join(uploadDir, safeName), bytes);
-        fileUrls.push(`/uploads/unit-submissions/${safeName}`);
+
+        try {
+          // Attempt standard disk upload (Works on local dev server / VPS)
+          await fs.mkdir(uploadDir, { recursive: true });
+          await fs.writeFile(path.join(uploadDir, safeName), bytes);
+          fileUrls.push(`/uploads/unit-submissions/${safeName}`);
+        } catch (fsErr: any) {
+          // Fallback for Vercel read-only filesystem (EROFS / EACCES)
+          if (fsErr?.code === "EROFS" || fsErr?.code === "EACCES") {
+            const mimeType = file.type || "image/jpeg";
+            const base64Data = bytes.toString("base64");
+            fileUrls.push(`data:${mimeType};base64,${base64Data}`);
+          } else {
+            throw fsErr;
+          }
+        }
       }
     }
 
