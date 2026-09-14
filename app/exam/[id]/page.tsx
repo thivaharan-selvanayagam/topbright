@@ -103,19 +103,33 @@ export default function ExamPage() {
       setResult(data.result);
       setReview(data.review);
 
-      // Persist result to localStorage for Vercel persistence
+      // Persist result with case-normalized student ID keys in localStorage for Vercel persistence
       if (data.result) {
         try {
-          const key = `mcq_results_${data.result.studentId || "default"}`;
-          const existing = JSON.parse(localStorage.getItem(key) || "[]");
-          const filtered = existing.filter((r: any) => String(r.examId) !== String(params.id));
-          localStorage.setItem(key, JSON.stringify([data.result, ...filtered]));
+          const stId = (data.result.studentId || "").toString().trim().toLowerCase();
+          const perStudentKey = `mcq_results_${stId}`;
+
+          const existingPerStudent = JSON.parse(localStorage.getItem(perStudentKey) || "[]");
+          const filteredPerStudent = existingPerStudent.filter(
+            (r: any) => String(r.examId || "").trim().toLowerCase() !== String(params.id).trim().toLowerCase()
+          );
+          localStorage.setItem(perStudentKey, JSON.stringify([data.result, ...filteredPerStudent]));
+
+          // Backup write to global array
+          const existingGlobal = JSON.parse(localStorage.getItem("global_mcq_results") || "[]");
+          const filteredGlobal = existingGlobal.filter(
+            (r: any) =>
+              !(
+                String(r.studentId || "").trim().toLowerCase() === stId &&
+                String(r.examId || "").trim().toLowerCase() === String(params.id).trim().toLowerCase()
+              )
+          );
+          localStorage.setItem("global_mcq_results", JSON.stringify([data.result, ...filteredGlobal]));
         } catch (e) {
-          console.error("Local storage error:", e);
+          console.error("Local storage write error:", e);
         }
       }
 
-      // Smooth auto-scroll to top to highlight score card
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: any) {
       setError(err.message || "Something went wrong while submitting your answers.");
@@ -165,13 +179,10 @@ export default function ExamPage() {
   if (result && review) {
     return (
       <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden pb-24">
-        {/* Background Ambient Glows */}
         <div className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#8a00c2]/20 blur-[150px]" />
         <div className="pointer-events-none absolute -right-40 top-1/3 h-[500px] w-[500px] rounded-full bg-[#f0822b]/15 blur-[150px]" />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 relative z-10">
-          
-          {/* Result Score Card Header */}
           <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-8 sm:p-10 text-center backdrop-blur-md shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#8a00c2] via-[#f0822b] to-[#8a00c2]" />
 
@@ -202,7 +213,6 @@ export default function ExamPage() {
             </button>
           </div>
 
-          {/* Detailed Question Review List */}
           <div className="mt-12 space-y-6">
             <h2 className="font-display text-xl font-bold text-white flex items-center gap-3">
               <span>Answer Review &amp; Feedback</span>
@@ -299,16 +309,12 @@ export default function ExamPage() {
   const minutes = Math.floor((secondsLeft ?? 0) / 60);
   const seconds = (secondsLeft ?? 0) % 60;
 
-  /* ---------------- Active Exam Interface ---------------- */
   return (
     <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden pb-24">
-      {/* Background Ambient Glows */}
       <div className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#8a00c2]/20 blur-[150px]" />
       <div className="pointer-events-none absolute -right-40 top-1/2 h-[500px] w-[500px] rounded-full bg-[#f0822b]/15 blur-[150px]" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 relative z-10">
-        
-        {/* Sticky Header with Timer */}
         <div className="sticky top-6 z-30 mb-8 flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/90 px-6 py-4 shadow-2xl backdrop-blur-md">
           <div>
             <h1 className="font-display text-base sm:text-lg font-bold text-white">{exam.title}</h1>
@@ -334,7 +340,6 @@ export default function ExamPage() {
           </div>
         )}
 
-        {/* Questions List */}
         <div className="space-y-6">
           {exam.questions?.map((q, idx) => (
             <div key={q.id || idx} className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
@@ -388,7 +393,6 @@ export default function ExamPage() {
           ))}
         </div>
 
-        {/* Submit Action */}
         <div className="mt-10 border-t border-white/10 pt-6 flex justify-end">
           <button
             onClick={handleSubmit}
@@ -398,7 +402,6 @@ export default function ExamPage() {
             {submitting ? "Submitting Exam..." : "Submit Exam Answers"}
           </button>
         </div>
-
       </div>
     </div>
   );
