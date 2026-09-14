@@ -1,6 +1,4 @@
 import { redirect } from "next/navigation";
-import fs from "fs/promises";
-import path from "path";
 import { getStudentSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import StudentDashboardClient from "./StudentDashboardClient";
@@ -17,32 +15,19 @@ function matchesGrade(itemGrade: string, studentGrade: string): boolean {
   return itemGrade === "All Grades" || cleanItem === cleanStudent || itemGrade.includes(studentGrade);
 }
 
-// Safely fetch unit submissions from database or fallback JSON
-async function getUnitSubmissions() {
-  try {
-    if ((db as any).unitSubmissions) {
-      return await (db as any).unitSubmissions.all();
-    }
-    const filePath = path.join(process.cwd(), "data", "unitSubmissions.json");
-    const content = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(content);
-  } catch {
-    return [];
-  }
-}
-
 export default async function DashboardPage() {
-  const session = getStudentSession();
+  const session = await getStudentSession();
   if (!session) redirect("/login");
 
   const currentStudentId = (session.studentId || "").toString().trim().toLowerCase();
 
+  // Route unit submissions directly through lib/db.ts to read from /tmp on Vercel
   const [exams, results, students, downloads, submissions] = await Promise.all([
     db.exams.all().catch(() => []),
     db.results.all().catch(() => []),
     db.students.all().catch(() => []),
     db.downloads.all().catch(() => []),
-    getUnitSubmissions(),
+    db.unitSubmissions.all().catch(() => []),
   ]);
 
   const student = students.find(
