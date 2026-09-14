@@ -7,35 +7,97 @@ import { compressImage } from "@/lib/compressor";
 export default function StudentDashboardClient({
   session,
   student,
-  practiceExams,
-  myResults,
-  unitExams,
-  unitNotes,
+  practiceExams = [],
+  myResults = [],
+  unitExams = [],
+  unitNotes = [],
   mySubmissions = [],
 }: any) {
-  const [activeTab, setActiveTab] = useState<"practice" | "unit-exams" | "notes" | "results">("unit-exams");
+  const [activeTab, setActiveTab] = useState<"practice" | "unit-exams" | "notes" | "results">("practice");
   const [selectedExam, setSelectedExam] = useState<any | null>(null);
   const [uploadFiles, setUploadFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState("");
   const [localSubmissions, setLocalSubmissions] = useState<any[]>([]);
+  const [localMcqResults, setLocalMcqResults] = useState<any[]>([]);
 
-  const storageKey = `unit_submissions_${session?.studentId || "default"}`;
+  const currentStudentId = (session?.studentId || (session as any)?.id || "").toString().trim().toLowerCase();
+  const unitKey = `unit_submissions_${currentStudentId}`;
+  const mcqKey = `mcq_results_${currentStudentId}`;
 
-  // Sync client-side localStorage submissions to survive Vercel's ephemeral filesystem
+  // Sync client-side localStorage records on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        setLocalSubmissions(JSON.parse(saved));
-      }
-    } catch (e) {
-      console.error("Failed to load local submissions:", e);
-    }
-  }, [storageKey]);
+      const savedUnit = localStorage.getItem(unitKey);
+      if (savedUnit) setLocalSubmissions(JSON.parse(savedUnit));
 
-  // Combine server submissions with client localStorage submissions
+      let items: any[] = [];
+
+      // Check master key
+      const master = localStorage.getItem("topbright_mcq_results");
+      if (master) items = [...items, ...JSON.parse(master)];
+
+      // Check student-specific key
+      if (currentStudentId) {
+        const studentSaved = localStorage.getItem(mcqKey);
+        if (studentSaved) items = [...items, ...JSON.parse(studentSaved)];
+      }
+
+      // Scan any additional keys starting with mcq_results_
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith("mcq_results_") || k.startsWith("topbright_mcq_"))) {
+          const val = localStorage.getItem(k);
+          if (val) {
+            try {
+              const parsed = JSON.parse(val);
+              if (Array.isArray(parsed)) items = [...items, ...parsed];
+            } catch {}
+          }
+        }
+      }
+
+      // Filter results matching the active student ID
+      const validStudentResults = items.filter((r: any) => {
+        if (!r || !r.examId) return false;
+        const rStId = String(r.studentId || "").trim().toLowerCase();
+        return !rStId || !currentStudentId || rStId === currentStudentId;
+      });
+
+      setLocalMcqResults(validStudentResults);
+    } catch (e) {
+      console.error("Failed to sync localStorage on dashboard:", e);
+    }
+  }, [currentStudentId, unitKey, mcqKey]);
+
+  // Combine server & client submissions
   const combinedSubmissions = [...mySubmissions, ...localSubmissions];
+
+  // Combine and deduplicate MCQ results
+  const combinedResults = [...myResults];
+  for (const lr of localMcqResults) {
+    const lrExamId = String(lr.examId || "").trim().toLowerCase();
+    const lrId = String(lr.id || "").trim().toLowerCase();
+
+    const exists = combinedResults.some((r: any) => {
+      const rExamId = String(r.examId || "").trim().toLowerCase();
+      const rId = String(r.id || "").trim().toLowerCase();
+      return (rExamId && rExamId === lrExamId) || (rId && rId === lrId);
+    });
+
+    if (!exists) {
+      combinedResults.unshift(lr);
+    }
+  }
+
+  // Create set of completed exam IDs to filter out from Available Practice Exams
+  const attemptedExamIds = new Set(
+    combinedResults.map((r: any) => String(r.examId || "").trim().toLowerCase())
+  );
+
+  const availablePracticeExams = practiceExams.filter(
+    (e: any) => !attemptedExamIds.has(String(e.id || "").trim().toLowerCase())
+  );
 
   const getSubmission = (exam: any) => {
     const targetId = String(exam.id || "").trim().toLowerCase();
@@ -94,7 +156,6 @@ export default function StudentDashboardClient({
         throw new Error(data?.error || `Server error (${res.status})`);
       }
 
-      // Persist submission locally to guarantee state persistence on Vercel
       const newSubRecord = data?.submission || {
         examId: selectedExam.id,
         examTitle: selectedExam.title,
@@ -106,9 +167,9 @@ export default function StudentDashboardClient({
       const updatedLocal = [newSubRecord, ...localSubmissions];
       setLocalSubmissions(updatedLocal);
       try {
-        localStorage.setItem(storageKey, JSON.stringify(updatedLocal));
-      } catch (storageErr) {
-        console.error("Could not write to localStorage:", storageErr);
+        localStorage.setItem(unitKey, JSON.stringify(updatedLocal));
+      } catch (e) {
+        console.error("Storage write failed:", e);
       }
 
       setUploadMsg("Answer submitted successfully!");
@@ -153,7 +214,7 @@ export default function StudentDashboardClient({
           <div className="flex items-center gap-3">
             <div className="rounded-2xl border border-white/10 bg-slate-900/80 px-5 py-3 text-center backdrop-blur-md">
               <span className="block font-mono text-[10px] text-slate-400 uppercase font-bold">MCQs Attempted</span>
-              <span className="font-display text-xl font-bold text-purple-300">{myResults.length}</span>
+              <span className="font-display text-xl font-bold text-purple-300">{combinedResults.length}</span>
             </div>
           </div>
         </div>
@@ -170,7 +231,7 @@ export default function StudentDashboardClient({
                 : "bg-slate-900/80 text-slate-400 border border-white/10 hover:bg-slate-900 hover:text-white"
             }`}
           >
-            Practice Exams ({practiceExams.length})
+            Practice Exams ({availablePracticeExams.length})
           </button>
           <button
             onClick={() => setActiveTab("unit-exams")}
@@ -200,7 +261,7 @@ export default function StudentDashboardClient({
                 : "bg-slate-900/80 text-slate-400 border border-white/10 hover:bg-slate-900 hover:text-white"
             }`}
           >
-            MCQ Results ({myResults.length})
+            MCQ Results ({combinedResults.length})
           </button>
         </div>
 
@@ -208,13 +269,13 @@ export default function StudentDashboardClient({
         {activeTab === "practice" && (
           <div>
             <h2 className="font-display text-lg font-bold text-white mb-4">Available Practice Exams</h2>
-            {practiceExams.length === 0 ? (
+            {availablePracticeExams.length === 0 ? (
               <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-8 text-center backdrop-blur-md">
                 <p className="text-xs font-mono text-slate-400">No pending practice exams. Check back after your next class!</p>
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {practiceExams.map((e: any) => (
+                {availablePracticeExams.map((e: any) => (
                   <div key={e.id} className="rounded-2xl border border-white/10 bg-slate-900/90 p-6 flex flex-col justify-between shadow-xl">
                     <div>
                       <span className="rounded-lg bg-[#8a00c2]/20 border border-[#8a00c2]/30 px-2.5 py-1 font-mono text-[10px] font-bold text-purple-300 uppercase">
@@ -273,7 +334,6 @@ export default function StudentDashboardClient({
                       }`}
                     >
                       <div>
-                        {/* Status Badge */}
                         <div className="flex items-center justify-between gap-2">
                           {isSubmitted ? (
                             <span className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 font-mono text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
@@ -289,7 +349,6 @@ export default function StudentDashboardClient({
 
                         <h3 className="font-display text-base font-bold text-white mt-4 leading-snug">{exam.title}</h3>
 
-                        {/* Submitted State Box */}
                         {isSubmitted && (
                           <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 flex items-center justify-between">
                             <span className="font-mono text-xs font-bold text-emerald-400 flex items-center gap-1.5">
@@ -373,7 +432,7 @@ export default function StudentDashboardClient({
         {activeTab === "results" && (
           <div>
             <h2 className="font-display text-lg font-bold text-white mb-4">My MCQ Exam Performance</h2>
-            {myResults.length === 0 ? (
+            {combinedResults.length === 0 ? (
               <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-8 text-center backdrop-blur-md">
                 <p className="text-xs font-mono text-slate-400">You haven't sat any MCQ practice exams yet.</p>
               </div>
@@ -389,8 +448,8 @@ export default function StudentDashboardClient({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {myResults.map((r: any) => (
-                      <tr key={r.id} className="hover:bg-white/5 transition-colors">
+                    {combinedResults.map((r: any, idx: number) => (
+                      <tr key={r.id || idx} className="hover:bg-white/5 transition-colors">
                         <td className="px-5 py-4 font-display font-bold text-white">{r.examTitle}</td>
                         <td className="px-5 py-4 font-mono text-xs text-slate-300 font-semibold">{r.score} / {r.totalMarks}</td>
                         <td className="px-5 py-4">
@@ -403,7 +462,7 @@ export default function StudentDashboardClient({
                           </span>
                         </td>
                         <td className="px-5 py-4 font-mono text-xs text-slate-400">
-                          {new Date(r.submittedAt).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                          {r.submittedAt ? new Date(r.submittedAt).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "Recently"}
                         </td>
                       </tr>
                     ))}
@@ -414,17 +473,16 @@ export default function StudentDashboardClient({
           </div>
         )}
 
-        {/* UPLOAD MODAL WITH PROMINENT WARNING */}
+        {/* UPLOAD MODAL */}
         {selectedExam && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
             <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl relative space-y-4">
               <h3 className="font-display text-lg font-bold text-white">Upload Answer Sheet</h3>
               <p className="text-xs text-[#f0822b] font-mono font-semibold">{selectedExam.title}</p>
 
-              {/* WARNING BOX */}
               <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-3.5 text-xs text-amber-200 leading-relaxed">
                 <strong className="text-amber-400 block mb-1">⚠️ Important Warning:</strong>
-                Each student can submit <strong>ONLY 1 submission</strong> per unit exam. Re-uploading or modifying your answer sheet is strictly disabled after submission. Please make sure all written pages are selected before clicking submit.
+                Each student can submit <strong>ONLY 1 submission</strong> per unit exam. Re-uploading or modifying your answer sheet is strictly disabled after submission.
               </div>
 
               <form onSubmit={handleUnitExamSubmit} className="space-y-4">
@@ -442,7 +500,7 @@ export default function StudentDashboardClient({
                   </p>
                 )}
 
-                {uploadMsg && <p className="text-xs font-bold text-purple-300 font-mono">{uploadMsg}</p>}
+                {uploadMsg && <p className="text-xs font-bold text-purple-[#8a00c2] font-mono">{uploadMsg}</p>}
 
                 <div className="flex gap-3 pt-2">
                   <button

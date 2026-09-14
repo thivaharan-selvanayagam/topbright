@@ -103,30 +103,40 @@ export default function ExamPage() {
       setResult(data.result);
       setReview(data.review);
 
-      // Persist result with case-normalized student ID keys in localStorage for Vercel persistence
+      // Save result directly to client localStorage to guarantee persistence across Vercel serverless containers
       if (data.result) {
         try {
-          const stId = (data.result.studentId || "").toString().trim().toLowerCase();
-          const perStudentKey = `mcq_results_${stId}`;
+          const studentIdClean = String(data.result.studentId || "").trim().toLowerCase();
+          const resultRecord = {
+            id: data.result.id || Date.now().toString(),
+            examId: String(params.id).trim(),
+            examTitle: data.result.examTitle || exam?.title || "MCQ Exam",
+            score: data.result.score ?? 0,
+            totalMarks: data.result.totalMarks ?? 0,
+            percentage: data.result.percentage ?? 0,
+            studentId: data.result.studentId || "",
+            submittedAt: data.result.submittedAt || new Date().toISOString(),
+          };
 
-          const existingPerStudent = JSON.parse(localStorage.getItem(perStudentKey) || "[]");
-          const filteredPerStudent = existingPerStudent.filter(
-            (r: any) => String(r.examId || "").trim().toLowerCase() !== String(params.id).trim().toLowerCase()
+          // 1. Save to master key
+          const masterKey = "topbright_mcq_results";
+          const existingMaster = JSON.parse(localStorage.getItem(masterKey) || "[]");
+          const filteredMaster = existingMaster.filter(
+            (r: any) => String(r.examId).trim().toLowerCase() !== String(params.id).trim().toLowerCase()
           );
-          localStorage.setItem(perStudentKey, JSON.stringify([data.result, ...filteredPerStudent]));
+          localStorage.setItem(masterKey, JSON.stringify([resultRecord, ...filteredMaster]));
 
-          // Backup write to global array
-          const existingGlobal = JSON.parse(localStorage.getItem("global_mcq_results") || "[]");
-          const filteredGlobal = existingGlobal.filter(
-            (r: any) =>
-              !(
-                String(r.studentId || "").trim().toLowerCase() === stId &&
-                String(r.examId || "").trim().toLowerCase() === String(params.id).trim().toLowerCase()
-              )
-          );
-          localStorage.setItem("global_mcq_results", JSON.stringify([data.result, ...filteredGlobal]));
+          // 2. Save to student-specific key
+          if (studentIdClean) {
+            const studentKey = `mcq_results_${studentIdClean}`;
+            const existingStudent = JSON.parse(localStorage.getItem(studentKey) || "[]");
+            const filteredStudent = existingStudent.filter(
+              (r: any) => String(r.examId).trim().toLowerCase() !== String(params.id).trim().toLowerCase()
+            );
+            localStorage.setItem(studentKey, JSON.stringify([resultRecord, ...filteredStudent]));
+          }
         } catch (e) {
-          console.error("Local storage write error:", e);
+          console.error("Local storage error:", e);
         }
       }
 
@@ -136,9 +146,8 @@ export default function ExamPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [answers, params?.id, submitting, result]);
+  }, [answers, params?.id, submitting, result, exam?.title]);
 
-  // Exam Countdown Timer
   useEffect(() => {
     if (secondsLeft === null || result) return;
     if (secondsLeft <= 0) {
