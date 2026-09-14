@@ -35,7 +35,6 @@ export default async function DashboardPage() {
   const session = getStudentSession();
   if (!session) redirect("/login");
 
-  // Fix: Access session.studentId directly
   const currentStudentId = (session.studentId || "").toString().trim().toLowerCase();
 
   const [exams, results, students, downloads, submissions] = await Promise.all([
@@ -46,30 +45,44 @@ export default async function DashboardPage() {
     getUnitSubmissions(),
   ]);
 
-  const student = students.find((s: any) => s.id?.toLowerCase() === currentStudentId);
+  const student = students.find(
+    (s: any) => (s.id || "").toString().trim().toLowerCase() === currentStudentId
+  );
   const studentGrade = student?.grade || "";
 
-  // 1. MCQ Practice Exams
+  // 1. Filter student's submitted MCQ results with string-normalized studentId comparison
   const myResults = results
-    .filter((r: any) => r.studentId?.toLowerCase() === currentStudentId)
-    .sort((a: any, b: any) => (a.submittedAt < b.submittedAt ? 1 : -1));
+    .filter(
+      (r: any) => (r.studentId || "").toString().trim().toLowerCase() === currentStudentId
+    )
+    .sort((a: any, b: any) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
 
-  const attemptedIds = new Set(myResults.map((r: any) => r.examId));
-  const practiceExams = exams.filter(
-    (e: any) => e.published && !attemptedIds.has(e.id) && matchesGrade(e.grade, studentGrade)
+  // 2. Create a Set of normalized exam IDs that the student has already completed
+  const attemptedExamIds = new Set(
+    myResults.map((r: any) => (r.examId || "").toString().trim())
   );
 
-  // 2. Unit Exams
+  // 3. Exclude attempted exams so they disappear from the practice list once submitted
+  const practiceExams = exams.filter((e: any) => {
+    const examIdStr = (e.id || "").toString().trim();
+    const isPublished = Boolean(e.published);
+    const hasAttempted = attemptedExamIds.has(examIdStr);
+    const isGradeMatch = matchesGrade(e.grade, studentGrade);
+
+    return isPublished && !hasAttempted && isGradeMatch;
+  });
+
+  // 4. Unit Exams
   const unitExams = (downloads as DownloadItem[]).filter(
     (d) => d.category === "Unit Exams" && matchesGrade(d.grade, studentGrade)
   );
 
-  // 3. Unit Notes
+  // 5. Unit Notes
   const unitNotes = (downloads as DownloadItem[]).filter(
     (d) => d.category === "Unit Notes" && matchesGrade(d.grade, studentGrade)
   );
 
-  // 4. Submissions belonging to this student
+  // 6. Submissions belonging to this student
   const mySubmissions = submissions.filter((s: any) => {
     const subStudentId = (s.studentId || "").toString().trim().toLowerCase();
     return subStudentId === currentStudentId;
