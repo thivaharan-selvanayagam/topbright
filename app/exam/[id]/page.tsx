@@ -21,6 +21,8 @@ type ReviewItem = {
   marks: number;
 };
 type Result = {
+  id?: string;
+  studentId?: string;
   score: number;
   totalMarks: number;
   percentage: number;
@@ -46,7 +48,6 @@ export default function ExamPage() {
     fetch(`/api/exams/${params.id}`)
       .then(async (r) => {
         if (!r.ok) {
-          // Fallback check for singular endpoint route if available
           const altRes = await fetch(`/api/exam/${params.id}`);
           if (!altRes.ok) {
             const errData = await r.json().catch(() => ({}));
@@ -72,25 +73,52 @@ export default function ExamPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/exam/submit", {
+      let res = await fetch("/api/exam/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ examId: params.id, answers }),
       });
 
-      const data = await res.json();
+      if (res.status === 404) {
+        res = await fetch("/api/exams/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ examId: params.id, answers }),
+        });
+      }
+
+      const rawText = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error(`Server returned invalid response (${res.status}).`);
+      }
+
       if (!res.ok) {
-        setError(data.error || "Could not submit exam.");
+        setError(data.error || `Error ${res.status}: Could not submit exam.`);
         return;
       }
 
       setResult(data.result);
       setReview(data.review);
 
-      // Smooth auto-scroll to the top to highlight score card
+      // Persist result to localStorage for Vercel persistence
+      if (data.result) {
+        try {
+          const key = `mcq_results_${data.result.studentId || "default"}`;
+          const existing = JSON.parse(localStorage.getItem(key) || "[]");
+          const filtered = existing.filter((r: any) => String(r.examId) !== String(params.id));
+          localStorage.setItem(key, JSON.stringify([data.result, ...filtered]));
+        } catch (e) {
+          console.error("Local storage error:", e);
+        }
+      }
+
+      // Smooth auto-scroll to top to highlight score card
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch {
-      setError("Something went wrong while submitting your answers.");
+    } catch (err: any) {
+      setError(err.message || "Something went wrong while submitting your answers.");
     } finally {
       setSubmitting(false);
     }
