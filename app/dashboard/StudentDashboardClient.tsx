@@ -11,7 +11,7 @@ export default function StudentDashboardClient({
   myResults,
   unitExams,
   unitNotes,
-  mySubmissions,
+  mySubmissions = [],
 }: any) {
   const [activeTab, setActiveTab] = useState<"practice" | "unit-exams" | "notes" | "results">("practice");
   const [selectedExam, setSelectedExam] = useState<any | null>(null);
@@ -30,9 +30,14 @@ export default function StudentDashboardClient({
     if (!selectedExam || uploadFiles.length === 0) return;
 
     // Client-side guard check for robust submission tracking
-    const isAlreadySubmitted = mySubmissions.some(
-      (s: any) => String(s.examId) === String(selectedExam.id)
-    );
+    const isAlreadySubmitted = mySubmissions.some((s: any) => {
+      const subId = String(s.examId || "").trim().toLowerCase();
+      const examId = String(selectedExam.id || "").trim().toLowerCase();
+      const subTitle = String(s.examTitle || "").trim().toLowerCase();
+      const examTitle = String(selectedExam.title || "").trim().toLowerCase();
+      return (subId && subId === examId) || (subTitle && subTitle === examTitle);
+    });
+
     if (isAlreadySubmitted) {
       setUploadMsg("You have already submitted an answer sheet for this exam.");
       return;
@@ -74,7 +79,7 @@ export default function StudentDashboardClient({
         setSelectedExam(null);
         setUploadMsg("");
         window.location.reload();
-      }, 1200);
+      }, 800);
     } catch (err: any) {
       setUploadMsg(err.message || "Error submitting answer.");
     } finally {
@@ -191,7 +196,7 @@ export default function StudentDashboardClient({
           </div>
         )}
 
-        {/* 2. UNIT EXAMS TAB (EXPLICIT SUBMISSION STATE DIFFERENTIATION) */}
+        {/* 2. UNIT EXAMS TAB */}
         {activeTab === "unit-exams" && (
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
@@ -199,11 +204,11 @@ export default function StudentDashboardClient({
               <div className="flex items-center gap-3 text-xs font-mono">
                 <span className="flex items-center gap-1.5 text-amber-400 font-bold">
                   <span className="h-2 w-2 rounded-full bg-[#f0822b]" />
-                  Pending: {unitExams.filter((e: any) => !mySubmissions.some((s: any) => String(s.examId) === String(e.id))).length}
+                  Pending: {unitExams.filter((e: any) => !mySubmissions.some((s: any) => String(s.examId || "").trim().toLowerCase() === String(e.id || "").trim().toLowerCase() || String(s.examTitle || "").trim().toLowerCase() === String(e.title || "").trim().toLowerCase())).length}
                 </span>
                 <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  Submitted: {unitExams.filter((e: any) => mySubmissions.some((s: any) => String(s.examId) === String(e.id))).length}
+                  Submitted: {unitExams.filter((e: any) => mySubmissions.some((s: any) => String(s.examId || "").trim().toLowerCase() === String(e.id || "").trim().toLowerCase() || String(s.examTitle || "").trim().toLowerCase() === String(e.title || "").trim().toLowerCase())).length}
                 </span>
               </div>
             </div>
@@ -215,10 +220,15 @@ export default function StudentDashboardClient({
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {unitExams.map((exam: any) => {
-                  // Strict String Comparison for submission matching
-                  const submission = mySubmissions.find(
-                    (s: any) => String(s.examId) === String(exam.id)
-                  );
+                  // Robust String Normalization & Title Fallback
+                  const submission = mySubmissions.find((s: any) => {
+                    const subId = String(s.examId || "").trim().toLowerCase();
+                    const examId = String(exam.id || "").trim().toLowerCase();
+                    const subTitle = String(s.examTitle || "").trim().toLowerCase();
+                    const examTitle = String(exam.title || "").trim().toLowerCase();
+                    return (subId && subId === examId) || (subTitle && subTitle === examTitle);
+                  });
+
                   const isSubmitted = !!submission;
 
                   return (
@@ -226,64 +236,62 @@ export default function StudentDashboardClient({
                       key={exam.id}
                       className={`rounded-2xl border p-6 flex flex-col justify-between shadow-xl transition-all ${
                         isSubmitted
-                          ? "border-emerald-500/40 bg-emerald-950/10 shadow-emerald-500/5"
+                          ? "border-emerald-500/40 bg-emerald-950/20 shadow-emerald-500/5"
                           : "border-purple-500/40 bg-slate-900/90 ring-1 ring-purple-500/20"
                       }`}
                     >
                       <div>
-                        {/* Status Badge Differentiation */}
+                        {/* Status Badge */}
                         <div className="flex items-center justify-between gap-2">
-                          <span
-                            className={`rounded-lg px-2.5 py-1 font-mono text-[10px] font-bold uppercase ${
-                              isSubmitted
-                                ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400"
-                                : "bg-[#f0822b]/10 border border-[#f0822b]/30 text-[#f0822b]"
-                            }`}
-                          >
-                            {isSubmitted ? "✓ Submitted" : "New Exam"}
-                          </span>
-                          <span className="font-mono text-[10px] text-slate-400">{exam.grade}</span>
+                          {isSubmitted ? (
+                            <span className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 font-mono text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                              ✓ SUBMITTED
+                            </span>
+                          ) : (
+                            <span className="rounded-lg border border-[#f0822b]/30 bg-[#f0822b]/10 px-3 py-1 font-mono text-[10px] font-bold text-[#f0822b] uppercase tracking-wider">
+                              NEW EXAM
+                            </span>
+                          )}
+                          <span className="font-mono text-xs text-slate-400 font-bold">{exam.grade}</span>
                         </div>
 
-                        <h3 className="font-display text-base font-bold text-white mt-3 leading-snug">{exam.title}</h3>
+                        <h3 className="font-display text-base font-bold text-white mt-4 leading-snug">{exam.title}</h3>
 
-                        {/* Submitted State vs Pending Warning */}
-                        {isSubmitted ? (
-                          <div className="mt-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-3 text-xs font-mono font-bold text-emerald-400 flex items-center justify-between">
-                            <span>✓ Answer Submitted</span>
-                            <span className="text-[11px] text-emerald-300/80">
+                        {/* Submitted State Box */}
+                        {isSubmitted && (
+                          <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 flex items-center justify-between">
+                            <span className="font-mono text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                              ✓ Answer Submitted
+                            </span>
+                            <span className="font-mono text-[11px] text-emerald-300/80">
                               {submission.submittedAt || "Recorded"} ({submission.fileUrls?.length || 1} file/s)
                             </span>
                           </div>
-                        ) : (
-                          <p className="mt-3 text-xs text-amber-300/90 font-mono font-medium flex items-center gap-1.5">
-                            <span>⚠️</span> Pending written submission
-                          </p>
                         )}
                       </div>
 
-                      <div className="mt-6 space-y-2">
+                      <div className="mt-6 space-y-3 pt-4 border-t border-white/10">
                         <a
                           href={exam.fileUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="block text-center rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-slate-200 hover:bg-white/10 transition-colors"
+                          download={exam.fileName || exam.title}
+                          className="block text-center rounded-xl border border-white/10 bg-white/5 py-3 text-xs font-bold text-slate-200 hover:bg-white/10 transition-colors"
                         >
                           📄 Download Exam Paper PDF
                         </a>
 
-                        {/* Action Button Differentiation */}
                         {isSubmitted ? (
                           <button
                             disabled
-                            className="w-full rounded-xl bg-emerald-500/20 border border-emerald-500/40 py-2.5 text-xs font-bold text-emerald-300 cursor-not-allowed flex items-center justify-center gap-1.5 shadow-sm"
+                            className="w-full rounded-xl border border-emerald-500/40 bg-emerald-500/20 py-3 text-xs font-bold text-emerald-300 cursor-not-allowed flex items-center justify-center gap-1.5"
                           >
                             ✓ Answer Sheet Submitted
                           </button>
                         ) : (
                           <button
                             onClick={() => setSelectedExam(exam)}
-                            className="w-full rounded-xl bg-[#8a00c2] py-2.5 text-xs font-bold text-white hover:bg-[#7200a3] transition-all shadow-md shadow-[#8a00c2]/20 hover:scale-[1.02]"
+                            className="w-full rounded-xl bg-[#8a00c2] py-3 text-xs font-bold text-white hover:bg-[#7200a3] transition-all shadow-md shadow-[#8a00c2]/20 hover:scale-[1.02]"
                           >
                             📤 Upload Answer Sheet
                           </button>
