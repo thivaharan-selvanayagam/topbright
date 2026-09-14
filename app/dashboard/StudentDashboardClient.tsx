@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { compressImage } from "@/lib/compressor";
 
@@ -13,11 +13,40 @@ export default function StudentDashboardClient({
   unitNotes,
   mySubmissions = [],
 }: any) {
-  const [activeTab, setActiveTab] = useState<"practice" | "unit-exams" | "notes" | "results">("practice");
+  const [activeTab, setActiveTab] = useState<"practice" | "unit-exams" | "notes" | "results">("unit-exams");
   const [selectedExam, setSelectedExam] = useState<any | null>(null);
   const [uploadFiles, setUploadFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState("");
+  const [localSubmissions, setLocalSubmissions] = useState<any[]>([]);
+
+  const storageKey = `unit_submissions_${session?.studentId || "default"}`;
+
+  // Sync client-side localStorage submissions to survive Vercel's ephemeral filesystem
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        setLocalSubmissions(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error("Failed to load local submissions:", e);
+    }
+  }, [storageKey]);
+
+  // Combine server submissions with client localStorage submissions
+  const combinedSubmissions = [...mySubmissions, ...localSubmissions];
+
+  const getSubmission = (exam: any) => {
+    const targetId = String(exam.id || "").trim().toLowerCase();
+    const targetTitle = String(exam.title || "").trim().toLowerCase();
+
+    return combinedSubmissions.find((s: any) => {
+      const subId = String(s.examId || "").trim().toLowerCase();
+      const subTitle = String(s.examTitle || "").trim().toLowerCase();
+      return (subId && subId === targetId) || (subTitle && subTitle === targetTitle);
+    });
+  };
 
   const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -29,16 +58,8 @@ export default function StudentDashboardClient({
     e.preventDefault();
     if (!selectedExam || uploadFiles.length === 0) return;
 
-    // Client-side guard check for robust submission tracking
-    const isAlreadySubmitted = mySubmissions.some((s: any) => {
-      const subId = String(s.examId || "").trim().toLowerCase();
-      const examId = String(selectedExam.id || "").trim().toLowerCase();
-      const subTitle = String(s.examTitle || "").trim().toLowerCase();
-      const examTitle = String(selectedExam.title || "").trim().toLowerCase();
-      return (subId && subId === examId) || (subTitle && subTitle === examTitle);
-    });
-
-    if (isAlreadySubmitted) {
+    const alreadySubmitted = Boolean(getSubmission(selectedExam));
+    if (alreadySubmitted) {
       setUploadMsg("You have already submitted an answer sheet for this exam.");
       return;
     }
@@ -73,19 +94,38 @@ export default function StudentDashboardClient({
         throw new Error(data?.error || `Server error (${res.status})`);
       }
 
+      // Persist submission locally to guarantee state persistence on Vercel
+      const newSubRecord = data?.submission || {
+        examId: selectedExam.id,
+        examTitle: selectedExam.title,
+        studentId: session.studentId,
+        submittedAt: new Date().toISOString().slice(0, 10),
+        fileUrls: ["#"],
+      };
+
+      const updatedLocal = [newSubRecord, ...localSubmissions];
+      setLocalSubmissions(updatedLocal);
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(updatedLocal));
+      } catch (storageErr) {
+        console.error("Could not write to localStorage:", storageErr);
+      }
+
       setUploadMsg("Answer submitted successfully!");
       setUploadFiles([]);
       setTimeout(() => {
         setSelectedExam(null);
         setUploadMsg("");
-        window.location.reload();
-      }, 800);
+      }, 600);
     } catch (err: any) {
       setUploadMsg(err.message || "Error submitting answer.");
     } finally {
       setUploading(false);
     }
   };
+
+  const pendingCount = unitExams.filter((e: any) => !getSubmission(e)).length;
+  const submittedCount = unitExams.filter((e: any) => Boolean(getSubmission(e))).length;
 
   return (
     <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden pb-24">
@@ -204,11 +244,11 @@ export default function StudentDashboardClient({
               <div className="flex items-center gap-3 text-xs font-mono">
                 <span className="flex items-center gap-1.5 text-amber-400 font-bold">
                   <span className="h-2 w-2 rounded-full bg-[#f0822b]" />
-                  Pending: {unitExams.filter((e: any) => !mySubmissions.some((s: any) => String(s.examId || "").trim().toLowerCase() === String(e.id || "").trim().toLowerCase() || String(s.examTitle || "").trim().toLowerCase() === String(e.title || "").trim().toLowerCase())).length}
+                  Pending: {pendingCount}
                 </span>
                 <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  Submitted: {unitExams.filter((e: any) => mySubmissions.some((s: any) => String(s.examId || "").trim().toLowerCase() === String(e.id || "").trim().toLowerCase() || String(s.examTitle || "").trim().toLowerCase() === String(e.title || "").trim().toLowerCase())).length}
+                  Submitted: {submittedCount}
                 </span>
               </div>
             </div>
@@ -220,16 +260,8 @@ export default function StudentDashboardClient({
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {unitExams.map((exam: any) => {
-                  // Robust String Normalization & Title Fallback
-                  const submission = mySubmissions.find((s: any) => {
-                    const subId = String(s.examId || "").trim().toLowerCase();
-                    const examId = String(exam.id || "").trim().toLowerCase();
-                    const subTitle = String(s.examTitle || "").trim().toLowerCase();
-                    const examTitle = String(exam.title || "").trim().toLowerCase();
-                    return (subId && subId === examId) || (subTitle && subTitle === examTitle);
-                  });
-
-                  const isSubmitted = !!submission;
+                  const submission = getSubmission(exam);
+                  const isSubmitted = Boolean(submission);
 
                   return (
                     <div
