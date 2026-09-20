@@ -29,7 +29,11 @@
     "grade": "10",
     "mode": "Online",
     "phone": "",
-    "passwordHash": "$2a$10$p/BIPgaN1ch7mrJ.0ZQSbeV1KXfy0xvNV5teufhI4yS6QB.nh4nA2",
-    "createdAt": "2026-09-07T04:19:54.124Z"
+    "passwordHash": "$2a$10$1s4Ip8izwP4c1JqZpfa5Zu4Omt.Droy9aa59WECM4JNTIU3vKyCGK",
+    "createdAt": "2026-09-07T04:19:54.124Z",
+    "password": "akija10",
+    "lastPaymentDate": "2026-09-20",
+    "lastPaymentAmount": 14000,
+    "approved": true
   }
 ]

@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Tab = "submissions" | "students" | "exams" | "videos" | "downloads" | "timetable";
+type Tab = "submissions" | "students" | "fees" | "exams" | "videos" | "downloads" | "timetable";
 
 const GRADES = ["Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12", "Grade 13", "Grade 6, 7 & 8", "Grade 10 & 11", "Grade 12 & 13", "All Grades"];
+const SINGLE_GRADES = ["Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12", "Grade 13"];
+const MEDIUMS = ["Tamil", "English"];
 const MODES = ["Online", "Physical", "One-to-One", "Group"];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -21,7 +23,18 @@ const SCHOOL_TERMS = ["Term 1", "Term 2", "Term 3"];
 
 const INPUT_CLASS = "w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition-colors focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]";
 
-// Helper to convert 24-hour time string (14:30) to 12-hour format (02:30 PM)
+function calculateFee(grade: string, medium: string): number {
+  let baseFee = 500;
+  const gNum = parseInt(grade.replace(/\D/g, ""), 10);
+
+  if (gNum >= 6 && gNum <= 9) baseFee = 400;
+  else if (gNum >= 10 && gNum <= 11) baseFee = 500;
+  else if (gNum >= 12 && gNum <= 13) baseFee = 700;
+
+  if (medium.toLowerCase() === "english") baseFee += 100;
+  return baseFee;
+}
+
 function formatTime12h(time24: string) {
   if (!time24) return "";
   const [hStr, mStr] = time24.split(":");
@@ -36,7 +49,7 @@ function formatTime12h(time24: string) {
 export default function AdminPage() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
-  const [tab, setTab] = useState<Tab>("submissions"); 
+  const [tab, setTab] = useState<Tab>("submissions");
 
   useEffect(() => {
     fetch("/api/admin/me")
@@ -56,7 +69,8 @@ export default function AdminPage() {
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "submissions", label: "Student Submissions" },
-    { id: "students", label: "Students" },
+    { id: "students", label: "Students Directory" },
+    { id: "fees", label: "Fee Collection" },
     { id: "exams", label: "Exams" },
     { id: "videos", label: "Videos" },
     { id: "downloads", label: "Downloads" },
@@ -82,7 +96,7 @@ export default function AdminPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8 rounded-xl border border-[#f0822b]/30 bg-[#f0822b]/10 px-5 py-4 text-xs font-medium text-slate-200 leading-relaxed">
-          <strong className="text-[#f0822b]">System Note:</strong> Everything here saves to JSON files on the server. On Vercel's free serverless hosting, file writes are not permanently saved between visits. The public Videos/Downloads pages read a bundled copy of the data, so new items only show there after a rebuild/redeploy, even when writes succeed.
+          <strong className="text-[#f0822b]">System Note:</strong> Everything here saves to JSON files on the server. On Vercel's serverless runtime, file persistence uses multiple fallback stores (/tmp directory and database abstractions).
         </div>
 
         <div className="flex flex-wrap gap-2 border-b border-white/10 pb-6">
@@ -104,6 +118,7 @@ export default function AdminPage() {
         <div className="mt-8">
           {tab === "submissions" && <SubmissionsTab />}
           {tab === "students" && <StudentsTab />}
+          {tab === "fees" && <FeesTab />}
           {tab === "exams" && <ExamsTab />}
           {tab === "videos" && <VideosTab />}
           {tab === "downloads" && <DownloadsTab />}
@@ -152,7 +167,6 @@ function SubmissionsTab() {
               <div>
                 <div className="flex justify-between items-start gap-2">
                   <div>
-                    {/* STUDENT NAME WITH GRADE BADGE RIGHT NEXT TO IT */}
                     <div className="flex items-center gap-2 flex-wrap">
                       <h4 className="font-display text-base font-bold text-white">{sub.studentName}</h4>
                       <span className="rounded-md bg-purple-500/20 border border-purple-500/30 px-2 py-0.5 font-mono text-[10px] font-bold text-purple-300 uppercase">
@@ -198,7 +212,311 @@ function SubmissionsTab() {
   );
 }
 
-/* ---------------- Timetable Tab (Clock Time Picker Added) ---------------- */
+/* ---------------- Students Directory Tab ---------------- */
+function StudentsTab() {
+  const [students, setStudents] = useState<any[]>([]);
+  const [form, setForm] = useState({ id: "", name: "", grade: "Grade 10", medium: "Tamil", place: "Puttalam", mode: "Group", password: "", phone: "" });
+  const [resetStudent, setResetStudent] = useState<any | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [msg, setMsg] = useState("");
+
+  function load() {
+    fetch("/api/admin/students").then((r) => r.json()).then((d) => setStudents(d.students || []));
+  }
+  useEffect(load, []);
+
+  const calculatedFee = calculateFee(form.grade, form.medium);
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault();
+    setMsg("");
+
+    const assignedId = form.id.trim() || `ICT2026${String(students.length + 1).padStart(3, "0")}`;
+
+    const res = await fetch("/api/admin/students", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, id: assignedId, feesPerClass: calculatedFee }),
+    });
+    const data = await res.json();
+    if (!res.ok) return setMsg(data.error);
+    setForm({ id: "", name: "", grade: "Grade 10", medium: "Tamil", place: "Puttalam", mode: "Group", password: "", phone: "" });
+    load();
+  }
+
+  async function handleToggleApproval(studentId: string, currentStatus: boolean) {
+    await fetch("/api/admin/students", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ studentId, approved: !currentStatus }),
+    });
+    load();
+  }
+
+  async function handleResetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!resetStudent || !newPassword) return;
+
+    const res = await fetch("/api/admin/students", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ studentId: resetStudent.id, newPassword }),
+    });
+
+    if (res.ok) {
+      setResetStudent(null);
+      setNewPassword("");
+      load();
+    }
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm(`Remove student ${id}?`)) return;
+    await fetch(`/api/admin/students?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    load();
+  }
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[1fr_1.8fr]">
+      <form onSubmit={handleAdd} className="h-fit space-y-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
+        <h3 className="font-display text-lg font-bold text-white mb-2">Register new student</h3>
+        {msg && <p className="text-xs font-bold text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{msg}</p>}
+
+        <Field label="Student ID (Auto-generated if blank)">
+          <input value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} className={INPUT_CLASS} placeholder={`Auto e.g. ICT2026${String(students.length + 1).padStart(3, "0")}`} />
+        </Field>
+        <Field label="Full name">
+          <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={INPUT_CLASS} placeholder="e.g. A. Dheena" />
+        </Field>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Grade">
+            <select value={form.grade} onChange={(e) => setForm({ ...form, grade: e.target.value })} className={INPUT_CLASS}>
+              {SINGLE_GRADES.map((g) => <option key={g} value={g}>{g}</option>)}
+            </select>
+          </Field>
+          <Field label="Medium">
+            <select value={form.medium} onChange={(e) => setForm({ ...form, medium: e.target.value })} className={INPUT_CLASS}>
+              {MEDIUMS.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </Field>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Place / Town">
+            <input required value={form.place} onChange={(e) => setForm({ ...form, place: e.target.value })} className={INPUT_CLASS} placeholder="e.g. Puttalam" />
+          </Field>
+          <Field label="Class mode">
+            <select value={form.mode} onChange={(e) => setForm({ ...form, mode: e.target.value })} className={INPUT_CLASS}>
+              {MODES.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </Field>
+        </div>
+
+        <Field label="Password">
+          <input required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={INPUT_CLASS} placeholder="Set initial student password" />
+        </Field>
+        <Field label="Phone number">
+          <input required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={INPUT_CLASS} placeholder="e.g. 0771234567" />
+        </Field>
+
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 flex justify-between items-center font-mono text-xs">
+          <span className="text-slate-300 font-bold">Auto-Calculated Fee:</span>
+          <span className="text-emerald-400 font-extrabold text-sm">LKR {calculatedFee} / Class</span>
+        </div>
+
+        <button className="w-full rounded-xl bg-[#8a00c2] py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5 mt-4">
+          Register &amp; Approve Student
+        </button>
+      </form>
+
+      {/* Student Records Table matching Notebook Details */}
+      <div className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md">
+        <table className="w-full min-w-[700px] text-sm text-left">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5 text-slate-300 font-mono text-[10px] uppercase">
+              <th className="px-4 py-4">ID</th>
+              <th className="px-4 py-4">Name</th>
+              <th className="px-4 py-4">Grade</th>
+              <th className="px-4 py-4">Medium</th>
+              <th className="px-4 py-4">Place</th>
+              <th className="px-4 py-4">Fees</th>
+              <th className="px-4 py-4">Status</th>
+              <th className="px-4 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5 font-mono text-xs">
+            {students.map((s) => (
+              <tr key={s.id} className="hover:bg-white/5 transition-colors">
+                <td className="px-4 py-3 text-[#f0822b] font-bold">{s.id}</td>
+                <td className="px-4 py-3 text-white font-sans font-bold">{s.name}</td>
+                <td className="px-4 py-3 text-purple-300">{s.grade}</td>
+                <td className="px-4 py-3 text-slate-300">{s.medium || "Tamil"}</td>
+                <td className="px-4 py-3 text-slate-300">{s.place || "N/A"}</td>
+                <td className="px-4 py-3 text-emerald-400 font-bold">LKR {s.feesPerClass || calculateFee(s.grade, s.medium || "Tamil")}</td>
+                <td className="px-4 py-3">
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${s.approved ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/20 text-amber-400 border border-amber-500/30"}`}>
+                    {s.approved ? "Approved" : "Pending"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-right space-x-2">
+                  <button
+                    onClick={() => handleToggleApproval(s.id, Boolean(s.approved))}
+                    className={`px-2 py-1 rounded text-[11px] font-bold ${s.approved ? "bg-amber-500/20 text-amber-300" : "bg-emerald-500/20 text-emerald-300"}`}
+                  >
+                    {s.approved ? "Revoke" : "Approve"}
+                  </button>
+                  <button
+                    onClick={() => setResetStudent(s)}
+                    className="px-2 py-1 rounded bg-[#8a00c2]/30 text-purple-200 text-[11px] font-bold hover:bg-[#8a00c2]/50"
+                  >
+                    Reset
+                  </button>
+                  <button onClick={() => handleDelete(s.id)} className="text-red-400 hover:text-red-300 font-bold">✕</button>
+                </td>
+              </tr>
+            ))}
+            {students.length === 0 && (
+              <tr><td colSpan={8} className="px-4 py-12 text-center text-slate-500 text-xs">No students registered yet.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Password Reset Modal */}
+      {resetStudent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+          <form onSubmit={handleResetPassword} className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-6 space-y-4">
+            <h3 className="font-display text-lg font-bold text-white">Reset Password for {resetStudent.name}</h3>
+            <p className="font-mono text-xs text-[#f0822b]">Student ID: {resetStudent.id}</p>
+            <input
+              type="text"
+              required
+              placeholder="Enter new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className={INPUT_CLASS}
+            />
+            <div className="flex gap-3 pt-2">
+              <button type="button" onClick={() => setResetStudent(null)} className="flex-1 rounded-xl border border-white/10 py-2.5 text-xs font-bold text-slate-400">Cancel</button>
+              <button type="submit" className="flex-1 rounded-xl bg-[#8a00c2] py-2.5 text-xs font-bold text-white">Save Password</button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Fees Collection Tab ---------------- */
+function FeesTab() {
+  const [students, setStudents] = useState<any[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<any | null>(null);
+  const [amount, setAmount] = useState<number>(500);
+  const [paymentDate, setPaymentDate] = useState<string>(new Date().toISOString().slice(0, 10));
+
+  function load() {
+    fetch("/api/admin/students").then((r) => r.json()).then((d) => setStudents(d.students || []));
+  }
+  useEffect(load, []);
+
+  async function handleSettlePayment(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedStudent) return;
+
+    const res = await fetch("/api/admin/fees", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        studentId: selectedStudent.id,
+        amount,
+        paymentDate,
+      }),
+    });
+
+    if (res.ok) {
+      setSelectedStudent(null);
+      load();
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-display text-lg font-bold text-white">Student Monthly Fees Collection Ledger</h3>
+          <p className="text-xs text-slate-400 mt-0.5">Track advance monthly fee settlements (Due within first 5 days of the month).</p>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md">
+        <table className="w-full min-w-[700px] text-sm text-left">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5 text-slate-300 font-mono text-[10px] uppercase">
+              <th className="px-5 py-4">Student ID</th>
+              <th className="px-5 py-4">Name</th>
+              <th className="px-5 py-4">Grade</th>
+              <th className="px-5 py-4">Phone Number</th>
+              <th className="px-5 py-4">Last Payment Date</th>
+              <th className="px-5 py-4">Last Settled Amount</th>
+              <th className="px-5 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5 font-mono text-xs">
+            {students.map((st) => (
+              <tr key={st.id} className="hover:bg-white/5 transition-colors">
+                <td className="px-5 py-4 text-[#f0822b] font-bold">{st.id}</td>
+                <td className="px-5 py-4 font-bold text-white font-sans">{st.name}</td>
+                <td className="px-5 py-4 text-purple-300">{st.grade}</td>
+                <td className="px-5 py-4 text-slate-300">{st.phone || "N/A"}</td>
+                <td className="px-5 py-4 text-slate-300">{st.lastPaymentDate || "Not Settled"}</td>
+                <td className="px-5 py-4 text-emerald-400 font-bold">{st.lastPaymentAmount ? `LKR ${st.lastPaymentAmount}` : "LKR 0"}</td>
+                <td className="px-5 py-4 text-right">
+                  <button
+                    onClick={() => {
+                      setSelectedStudent(st);
+                      setAmount(st.feesPerClass || calculateFee(st.grade, st.medium || "Tamil"));
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-[#8a00c2] text-xs font-bold text-white hover:bg-[#7200a3]"
+                  >
+                    Record Fee Payment
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Settle Fee Modal */}
+      {selectedStudent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+          <form onSubmit={handleSettlePayment} className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-6 space-y-4 font-mono text-xs">
+            <h3 className="font-display text-lg font-bold text-white font-sans">Record Monthly Fee Settlement</h3>
+            <p className="text-purple-300 font-bold">{selectedStudent.name} ({selectedStudent.id})</p>
+
+            <div>
+              <label className="block text-slate-400 mb-1">Amount Settled (LKR)</label>
+              <input type="number" required value={amount} onChange={(e) => setAmount(Number(e.target.value))} className={INPUT_CLASS} />
+            </div>
+
+            <div>
+              <label className="block text-slate-400 mb-1">Payment Date</label>
+              <input type="date" required value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} className={INPUT_CLASS} />
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button type="button" onClick={() => setSelectedStudent(null)} className="flex-1 rounded-xl border border-white/10 py-2.5 text-slate-400 font-bold">Cancel</button>
+              <button type="submit" className="flex-1 rounded-xl bg-[#8a00c2] py-2.5 text-white font-bold">Settle &amp; Approve</button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Timetable Tab ---------------- */
 function TimetableTab() {
   const [form, setForm] = useState({ 
     day: "Monday", 
@@ -215,7 +533,6 @@ function TimetableTab() {
     e.preventDefault();
     setMsg("");
     
-    // Format start time & end time into standard string (e.g. "04:00 PM – 05:30 PM")
     const formattedTime = `${formatTime12h(form.startTime)} – ${formatTime12h(form.endTime)}`;
 
     const res = await fetch("/api/admin/timetable", {
@@ -252,7 +569,6 @@ function TimetableTab() {
           </select>
         </Field>
 
-        {/* Clock Selection Inputs */}
         <div className="grid grid-cols-2 gap-4">
           <Field label="Start Time (Clock)">
             <input 
@@ -311,7 +627,7 @@ function TimetableTab() {
   );
 }
 
-/* ---------------- Exams Tab (Submission & Unique ID Fix) ---------------- */
+/* ---------------- Exams Tab ---------------- */
 function ExamsTab() {
   const [exams, setExams] = useState<any[]>([]);
   const [title, setTitle] = useState("");
@@ -341,7 +657,6 @@ function ExamsTab() {
     e.preventDefault();
     setMsg("");
 
-    // Guaranteed Question IDs & Types for evaluation engine
     const preparedQuestions = questions.map((q, idx) => ({
       id: q.id || `q_${Date.now()}_${idx}`,
       question: q.question,
@@ -469,7 +784,7 @@ function ExamsTab() {
         </div>
 
         <button className="w-full rounded-xl bg-[#8a00c2] py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5 mt-4">
-          Create & publish exam
+          Create &amp; publish exam
         </button>
       </form>
 
@@ -628,104 +943,6 @@ function DownloadsTab() {
             <p className="text-xs font-medium text-slate-500">Resources you upload during this admin session will appear here.</p>
           </div>
         )}
-      </div>
-    </div>
-  );
-}
-
-/* ---------------- Students Tab ---------------- */
-function StudentsTab() {
-  const [students, setStudents] = useState<any[]>([]);
-  const [form, setForm] = useState({ id: "", name: "", grade: "Grade 10", mode: "Online", password: "", phone: "" });
-  const [msg, setMsg] = useState("");
-
-  function load() {
-    fetch("/api/admin/students").then((r) => r.json()).then((d) => setStudents(d.students || []));
-  }
-  useEffect(load, []);
-
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault();
-    setMsg("");
-    const res = await fetch("/api/admin/students", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    if (!res.ok) return setMsg(data.error);
-    setForm({ id: "", name: "", grade: "Grade 10", mode: "Online", password: "", phone: "" });
-    load();
-  }
-
-  async function handleDelete(id: string) {
-    if (!confirm(`Remove student ${id}?`)) return;
-    await fetch(`/api/admin/students?id=${encodeURIComponent(id)}`, { method: "DELETE" });
-    load();
-  }
-
-  return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_1.3fr]">
-      <form onSubmit={handleAdd} className="h-fit space-y-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md">
-        <h3 className="font-display text-lg font-bold text-white mb-2">Add a student</h3>
-        {msg && <p className="text-xs font-bold text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{msg}</p>}
-        <Field label="Student ID (login)">
-          <input required value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} className={INPUT_CLASS} placeholder="ICT2026004" />
-        </Field>
-        <Field label="Full name">
-          <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={INPUT_CLASS} />
-        </Field>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Grade">
-            <select value={form.grade} onChange={(e) => setForm({ ...form, grade: e.target.value })} className={INPUT_CLASS}>
-              {GRADES.map((g) => <option key={g} value={g}>{g}</option>)}
-            </select>
-          </Field>
-          <Field label="Class mode">
-            <select value={form.mode} onChange={(e) => setForm({ ...form, mode: e.target.value })} className={INPUT_CLASS}>
-              {MODES.map((m) => <option key={m} value={m}>{m}</option>)}
-            </select>
-          </Field>
-        </div>
-        <Field label="Password">
-          <input required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={INPUT_CLASS} placeholder="Set a starting password" />
-        </Field>
-        <Field label="Phone (optional)">
-          <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={INPUT_CLASS} />
-        </Field>
-        <button className="w-full rounded-xl bg-[#8a00c2] py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5 mt-4">
-          Register Student
-        </button>
-      </form>
-
-      <div className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md">
-        <table className="w-full min-w-[500px] text-sm text-left">
-          <thead>
-            <tr className="border-b border-white/10 bg-white/5 text-slate-300">
-              <th className="px-4 py-4 font-mono text-[10px] font-bold uppercase tracking-wider">ID</th>
-              <th className="px-4 py-4 font-mono text-[10px] font-bold uppercase tracking-wider">Name</th>
-              <th className="px-4 py-4 font-mono text-[10px] font-bold uppercase tracking-wider">Grade</th>
-              <th className="px-4 py-4 font-mono text-[10px] font-bold uppercase tracking-wider">Mode</th>
-              <th className="px-4 py-4"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {students.map((s) => (
-              <tr key={s.id} className="hover:bg-white/5 transition-colors">
-                <td className="px-4 py-3 font-mono text-xs text-[#f0822b]">{s.id}</td>
-                <td className="px-4 py-3 text-white font-medium">{s.name}</td>
-                <td className="px-4 py-3 text-slate-400 text-xs">{s.grade}</td>
-                <td className="px-4 py-3 text-slate-400 text-xs">{s.mode}</td>
-                <td className="px-4 py-3 text-right">
-                  <button onClick={() => handleDelete(s.id)} className="text-xs text-red-400 hover:text-red-300">Remove</button>
-                </td>
-              </tr>
-            ))}
-            {students.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-12 text-center text-slate-500 text-xs">No students registered yet.</td></tr>
-            )}
-          </tbody>
-        </table>
       </div>
     </div>
   );

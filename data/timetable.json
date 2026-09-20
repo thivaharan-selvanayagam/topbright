@@ -118,5 +118,13 @@
     "grade": "Grade 10",
     "mode": "One-to-One",
     "topic": "School Syllabus (Rifla)"
+  },
+  {
+    "id": "Wevb3BFC",
+    "day": "Saturday",
+    "time": "05:00 PM – 06:00 PM",
+    "grade": "Grade 10",
+    "mode": "Online",
+    "topic": "School Syllabus (Batch 1) "
   }
 ]
