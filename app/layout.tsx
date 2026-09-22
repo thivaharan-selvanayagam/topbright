@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   creator: "TopBright ICT Academy",
   publisher: "TopBright ICT Academy",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://topbrightict.com"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://topbright.lk"
   ),
   alternates: {
     canonical: "/",
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     siteName: "TopBright ICT Academy",
     locale: "en_LK",
     type: "website",
-    url: "https://topbrightict.com",
+    url: "https://topbright.lk",
   },
   twitter: {
     card: "summary_large_image",
@@ -97,8 +97,8 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
   name: "TopBright ICT Academy",
-  url: "https://topbrightict.com",
-  logo: "https://topbrightict.com/icon.svg",
+  url: "https://topbright.lk",
+  logo: "https://topbright.lk/icon.svg",
   description:
     "Leading online ICT education provider offering comprehensive courses for Grades 6 through 13 in Tamil and English Medium.",
   sameAs: [],
