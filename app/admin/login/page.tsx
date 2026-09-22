@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -27,64 +28,75 @@ export default function AdminLoginPage() {
       router.push("/admin");
       router.refresh();
     } catch {
-      setError("Something went wrong.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden flex items-center justify-center p-4 sm:p-6">
-      {/* Background Brand Glows */}
-      <div className="pointer-events-none absolute -left-40 top-0 h-[400px] w-[400px] rounded-full bg-[#8a00c2]/20 blur-[140px]" />
-      <div className="pointer-events-none absolute -right-40 top-1/2 h-[400px] w-[400px] rounded-full bg-[#f0822b]/15 blur-[140px]" />
+    <div className="relative overflow-hidden bg-[#0d0114] select-none">
+      {/* Ambient Glowing Background */}
+      <div className="absolute -left-20 -top-20 h-96 w-96 animate-pulse rounded-full bg-[#8a00c2]/25 blur-[120px]" />
+      <div
+        className="absolute -bottom-20 right-10 h-96 w-96 animate-pulse rounded-full bg-[#f0822b]/20 blur-[120px]"
+        style={{ animationDuration: "6s" }}
+      />
+      <div className="dot-grid pointer-events-none absolute inset-0 opacity-20" />
 
-      <div className="w-full max-w-sm relative z-10">
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-3xl border border-white/10 bg-slate-900/90 p-6 sm:p-8 backdrop-blur-md shadow-2xl space-y-6"
-        >
-          <div className="text-center space-y-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/40 bg-[#8a00c2]/20 px-3 py-1 text-[10px] font-mono font-bold text-purple-200 uppercase tracking-widest">
-              TopBright Control
-            </span>
-            <h1 className="font-display text-2xl font-extrabold text-white">
+      <div className="container-page relative z-10 flex min-h-[calc(100vh-64px)] items-center justify-center py-16">
+        <div className="w-full max-w-md">
+          <div className="mb-6 text-center">
+            <p className="font-mono text-sm font-medium text-[#f0822b]">
+              TopBright ICT Academy
+            </p>
+            <h1 className="mt-2 font-display text-2xl font-semibold text-white">
               Admin Portal Login
             </h1>
-            <p className="text-xs text-slate-400 font-mono">
-              Enter your master password to access management controls.
+            <p className="mt-2 text-sm text-slate-300">
+              Enter your master password to access the control dashboard.
             </p>
           </div>
 
-          {error && (
-            <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-bold text-rose-300 font-mono text-center">
-              ⚠️ {error}
-            </div>
-          )}
-
-          <div className="space-y-1.5">
-            <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
-              Admin Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoFocus
-              placeholder="Enter admin password"
-              className="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-xs text-white placeholder-slate-500 outline-none transition-colors focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-[#8a00c2] py-3.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/20 hover:bg-[#7200a3] transition-all disabled:opacity-50"
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 rounded-lg border border-[#8a00c2]/30 bg-[#160221]/90 p-6 shadow-2xl backdrop-blur"
           >
-            {loading ? "Authenticating..." : "Log In to Dashboard"}
-          </button>
-        </form>
+            {error && (
+              <div className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300 font-mono">
+                {error}
+              </div>
+            )}
+            <div>
+              <label className="text-sm font-medium text-slate-200">
+                Admin Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoFocus
+                placeholder="••••••••"
+                className="mt-1.5 w-full rounded-md border border-[#8a00c2]/40 bg-[#0d0114] px-3 py-2.5 text-sm text-white placeholder:text-slate-500 transition focus:border-[#f0822b] focus:outline-none focus:ring-1 focus:ring-[#f0822b]"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-md bg-[#8a00c2] px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-[#8a00c2]/30 transition hover:bg-[#7200a3] disabled:opacity-60 focus-ring"
+            >
+              {loading ? "Logging in…" : "Log in to Admin Dashboard"}
+            </button>
+          </form>
+
+          <p className="mt-5 text-center text-xs text-slate-400">
+            Looking for student access?{" "}
+            <Link href="/login" className="font-medium text-[#f0822b] hover:underline">
+              Go to Student Login
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
