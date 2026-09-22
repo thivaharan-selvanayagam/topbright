@@ -17,12 +17,14 @@ export default function HeroSection() {
         {/* LEFT COLUMN: HERO CONTENT */}
         <div>
           <p className="font-mono text-sm font-semibold text-[#8a00c2]">
-            ICT Classes · Grade 6 – 13 · Batticaloa
+            Online · Physical · ICT Classes · Grade 6 – 13
           </p>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.08] text-slate-900 sm:text-5xl">
-            Learn ICT the way it&apos;s actually examined —
-            <span className="text-[#f0822b]"> with Lavanya.</span>
-          </h1>
+         <h1 className="mt-4 font-display text-3xl sm:text-5xl font-semibold leading-[1.12] text-slate-900">
+  Master Grades 6-13 ICT &amp; Excel in Your Exams
+  <span className="mt-2 block text-[#f0822b] text-2xl sm:text-4xl font-bold">
+    with TopBright ICT Academy
+  </span>
+</h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-slate-600">
             Live online classes and physical classes in Batticaloa, one-to-one or in a group.
             Watch lesson videos, download model papers and tutes, and sit online exams that

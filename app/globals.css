@@ -18,8 +18,13 @@ body {
 }
 
 ::selection {
-  background-color: #3FD8D4;
-  color: #0B1220;
+  background-color: #8a00c2; /* TopBright Purple */
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: #8a00c2; /* Mozilla Firefox fallback */
+  color: #ffffff;
 }
 
 .container-page {
@@ -43,7 +48,7 @@ body {
 }
 
 .focus-ring:focus-visible {
-  outline: 2px solid #3FD8D4;
+  outline: 2px solid #8a00c2;
   outline-offset: 3px;
 }
 
