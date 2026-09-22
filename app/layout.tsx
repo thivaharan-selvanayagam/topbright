@@ -23,11 +23,12 @@ export const metadata: Metadata = {
     template: "%s | TopBright ICT Academy",
   },
   description:
-    "TopBright ICT Academy is the premier online ICT learning platform for Grades 6–13 (Tamil & English Medium). Access interactive live classes, online MCQ practice exams, unit theory notes, past papers, and personal student progress tracking.",
+    "TopBright ICT Academy (topbright.lk) is Sri Lanka's premier online ICT learning platform for Grades 6–13 (Tamil & English Medium). Access interactive live classes, online MCQ practice exams, unit theory notes, past papers, and personal student progress tracking.",
   keywords: [
     "Online ICT Class",
     "Best Online ICT Class Sri Lanka",
     "TopBright ICT Academy",
+    "topbright.lk",
     "O/L ICT Online Classes",
     "A/L ICT Online Classes",
     "Grade 6 ICT Online",
@@ -57,17 +58,26 @@ export const metadata: Metadata = {
   openGraph: {
     title: "TopBright ICT Academy | Premier Online ICT Education Portal",
     description:
-      "Join Sri Lanka's leading online ICT class for Grades 6–13. Interactive lessons, MCQ practice tests, past paper downloads, and student progress dashboards.",
+      "Join Sri Lanka's leading online ICT class for Grades 6–13 at topbright.lk. Interactive lessons, MCQ practice tests, past paper downloads, and student progress dashboards.",
     siteName: "TopBright ICT Academy",
     locale: "en_LK",
     type: "website",
     url: "https://topbright.lk",
+    images: [
+      {
+        url: "/cover.webp",
+        width: 1200,
+        height: 630,
+        alt: "TopBright ICT Academy Cover Image",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "TopBright ICT Academy | #1 Online ICT Learning Platform",
     description:
-      "Enroll in top-rated online ICT classes for Grades 6–13 in Tamil & English Medium. Practice MCQ exams and download unit theory guides.",
+      "Enroll in top-rated online ICT classes for Grades 6–13 in Tamil & English Medium at topbright.lk. Practice MCQ exams and download unit theory guides.",
+    images: ["/cover.webp"],
   },
   robots: {
     index: true,
@@ -99,6 +109,7 @@ const jsonLd = {
   name: "TopBright ICT Academy",
   url: "https://topbright.lk",
   logo: "https://topbright.lk/icon.svg",
+  image: "https://topbright.lk/cover.webp",
   description:
     "Leading online ICT education provider offering comprehensive courses for Grades 6 through 13 in Tamil and English Medium.",
   sameAs: [],
