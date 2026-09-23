@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import type { DownloadItem } from "@/lib/types";
 
 const STANDARD_CATEGORIES = [
@@ -61,6 +61,28 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [activeSubCategory, setActiveSubCategory] = useState<string>("All");
   const [activeGrade, setActiveGrade] = useState<string>("All");
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
+
+  // Smooth scroll directly to the top of results after page state renders
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (containerRef.current) {
+      const navbarOffset = 100; // Offset for sticky navbar header
+      const elementPosition = containerRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - navbarOffset;
+
+      window.scrollTo({
+        top: Math.max(0, offsetPosition),
+        behavior: "smooth",
+      });
+    }
+  }, [currentPage]);
 
   // 1. Dynamic category detection based on items array
   const availableCategories = useMemo(() => {
@@ -166,7 +188,7 @@ export default function DownloadsList({ items = [] }: { items: DownloadItem[] })
   }
 
   return (
-    <div className="space-y-8 select-none">
+    <div ref={containerRef} className="space-y-8 select-none">
       {/* CATEGORY FOLDER TABS */}
       <div className="flex flex-wrap items-center gap-3 border-b border-white/10 pb-4">
         {availableCategories.map((cat) => {
