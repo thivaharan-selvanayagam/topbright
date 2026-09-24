@@ -3,10 +3,16 @@ import fs from "fs/promises";
 import path from "path";
 import os from "os";
 
-// Initialize Upstash Redis if environment variables are present on Vercel
+// Detect Redis URL and Token from either UPSTASH_REDIS_REST_* or KV_REST_API_*
+const redisUrl =
+  process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+const redisToken =
+  process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+
+// Initialize Redis if valid credentials exist (ignoring unpopulated local [SENSITIVE] placeholders)
 const redis =
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-    ? Redis.fromEnv()
+  redisUrl && redisToken && !redisToken.includes("[SENSITIVE]")
+    ? new Redis({ url: redisUrl, token: redisToken })
     : null;
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -29,7 +35,7 @@ async function readFromLocalFs<T>(file: string): Promise<T | null> {
 }
 
 async function readJson<T>(file: string, fallback: T): Promise<T> {
-  // 1. Production / Deployed on Vercel (Upstash Redis)
+  // 1. Production / Deployed on Vercel (Upstash / Vercel KV Redis)
   if (redis) {
     try {
       const data = await redis.get<T>(file);
@@ -44,7 +50,7 @@ async function readJson<T>(file: string, fallback: T): Promise<T> {
       }
       return fallback;
     } catch (err) {
-      console.error(`Error reading "${file}" from Upstash Redis:`, err);
+      console.error(`Error reading "${file}" from Redis:`, err);
       return fallback;
     }
   }
@@ -55,13 +61,13 @@ async function readJson<T>(file: string, fallback: T): Promise<T> {
 }
 
 async function writeJson<T>(file: string, data: T): Promise<void> {
-  // 1. Production / Deployed on Vercel (Upstash Redis)
+  // 1. Production / Deployed on Vercel (Upstash / Vercel KV Redis)
   if (redis) {
     try {
       await redis.set(file, data);
       return;
     } catch (err) {
-      console.error(`Error saving "${file}" to Upstash Redis:`, err);
+      console.error(`Error saving "${file}" to Redis:`, err);
     }
   }
 
