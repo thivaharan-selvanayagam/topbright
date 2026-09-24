@@ -38,7 +38,7 @@ const topAchievers = [
     exam: "O/L ICT Batch",
     score: "A Grade",
     school: "St. Michael's College",
-    image: "/2.webp",
+    image: "/3.webp",
     highlight: "Distinction",
   },
   {
@@ -46,7 +46,7 @@ const topAchievers = [
     exam: "A/L ICT Batch",
     score: "A Grade",
     school: "Cecilia's Girls' College",
-    image: "/3.webp",
+    image: "/2.webp",
     highlight: "High Achiever",
   },
 ];
