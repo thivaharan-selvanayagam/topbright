@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import timetable from "@/data/timetable.json";
 import settings from "@/data/settings.json";
+import { db } from "@/lib/db";
 
 export const metadata: Metadata = { title: "Timetable | TopBright Academy" };
+// Force Next.js to fetch fresh Redis data on every page visit
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function Page() {
+  const timetable = await db.timetable.all();
 
 const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
