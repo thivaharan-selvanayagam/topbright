@@ -30,7 +30,7 @@ const topAchievers = [
     exam: "O/L ICT Batch",
     score: "A Grade",
     school: "Vembadi Girls High School",
-    initials: "MN",
+    image: "/1.webp",
     highlight: "Top Performance",
   },
   {
@@ -38,7 +38,7 @@ const topAchievers = [
     exam: "O/L ICT Batch",
     score: "A Grade",
     school: "St. Michael's College",
-    initials: "KA",
+    image: "/2.webp",
     highlight: "Distinction",
   },
   {
@@ -46,7 +46,7 @@ const topAchievers = [
     exam: "A/L ICT Batch",
     score: "A Grade",
     school: "Cecilia's Girls' College",
-    initials: "RS",
+    image: "/3.webp",
     highlight: "High Achiever",
   },
 ];
@@ -80,7 +80,7 @@ export default function HallOfFameSection() {
 
         {/* Glowing Plaque Cards Grid */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {topAchievers.map((student, idx) => (
+          {topAchievers.map((student) => (
             <div
               key={student.name}
               className="group relative rounded-3xl p-[1px] overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#8a00c2]/20"
@@ -110,15 +110,19 @@ export default function HallOfFameSection() {
                     </span>
                   </div>
 
-                  {/* Profile Section */}
+                  {/* Profile Image Section */}
                   <div className="flex flex-col items-center text-center">
                     <div className="relative mb-5">
-                      {/* Avatar Glow Ring */}
-                      <div className="absolute inset-0 rounded-full bg-[#8a00c2] blur-md opacity-20 transition-opacity duration-300 group-hover:opacity-60" />
+                      {/* Image Glow Ring */}
+                      <div className="absolute inset-0 rounded-full bg-[#8a00c2] blur-md opacity-30 transition-opacity duration-300 group-hover:opacity-75" />
                       
-                      {/* Avatar */}
-                      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#8a00c2] to-slate-900 text-white font-display font-bold text-2xl border-2 border-white/10 shadow-xl transition-transform duration-500 group-hover:scale-110 group-hover:border-[#f0822b]/50">
-                        {student.initials}
+                      {/* Student Image */}
+                      <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-white/10 shadow-xl transition-transform duration-500 group-hover:scale-110 group-hover:border-[#f0822b]/50">
+                        <img
+                          src={student.image}
+                          alt={student.name}
+                          className="h-full w-full object-cover"
+                        />
                       </div>
                     </div>
 
