@@ -10,6 +10,7 @@
     "seed": "node scripts/seed.mjs"
   },
   "dependencies": {
+    "@upstash/redis": "^1.39.0",
     "bcryptjs": "2.4.3",
     "jsonwebtoken": "9.0.2",
     "nanoid": "5.0.7",
