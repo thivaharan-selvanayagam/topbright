@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import settings from "@/data/settings.json";
 
 function CodeIcon() {
@@ -35,10 +35,22 @@ function WhatsAppIcon() {
   );
 }
 
+const ALL_GRADES = [
+  "Grade 6",
+  "Grade 7",
+  "Grade 8",
+  "Grade 9",
+  "Grade 10",
+  "Grade 11",
+  "Grade 12",
+  "Grade 13",
+];
+
 const roadmaps = [
   {
     stage: "Stage 01",
     grades: "Grades 6 – 9",
+    defaultGrade: "Grade 8",
     title: "Junior ICT Foundation",
     badge: "Early Start",
     badgeColor: "bg-[#f0822b]/10 border-[#f0822b]/30 text-[#f0822b]",
@@ -54,6 +66,7 @@ const roadmaps = [
   {
     stage: "Stage 02",
     grades: "Grades 10 – 11",
+    defaultGrade: "Grade 11",
     title: "O/Level Masterclass",
     badge: "Core Syllabus",
     badgeColor: "bg-[#8a00c2]/20 border-[#8a00c2]/40 text-purple-300",
@@ -69,6 +82,7 @@ const roadmaps = [
   {
     stage: "Stage 03",
     grades: "Grades 12 – 13",
+    defaultGrade: "Grade 12",
     title: "A/Level Advanced ICT",
     badge: "Top Ranking",
     badgeColor: "bg-emerald-500/10 border-emerald-500/30 text-emerald-400",
@@ -84,9 +98,54 @@ const roadmaps = [
 ];
 
 export default function AcademicRoadmapSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    grade: "Grade 10",
+    medium: "Tamil",
+    mode: "Online",
+    place: "",
+  });
+
+  const handleOpenEnroll = (defaultGrade: string) => {
+    setFormData((prev) => ({ ...prev, grade: defaultGrade }));
+    setSubmitted(false);
+    setErrorMsg("");
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/enroll", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to submit enrollment application.");
+      }
+
+      setSubmitted(true);
+    } catch (err: any) {
+      setErrorMsg(err.message || "Failed to send email. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="relative overflow-hidden bg-slate-950 py-24 text-white border-b border-slate-800 select-none">
-      {/* Background Soft Glows */}
       <div className="pointer-events-none absolute -left-32 top-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-[#8a00c2]/20 blur-[150px]" />
       <div className="pointer-events-none absolute -right-32 top-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-[#f0822b]/15 blur-[150px]" />
 
@@ -118,11 +177,9 @@ export default function AcademicRoadmapSection() {
                 key={item.stage}
                 className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-slate-900/90 p-7 sm:p-8 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:border-[#8a00c2]/60 hover:bg-slate-900"
               >
-                {/* Background Accent Bar */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#8a00c2] to-[#f0822b] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 <div>
-                  {/* Stage & Badge Header */}
                   <div className="flex items-center justify-between mb-6">
                     <span className="font-mono text-xs font-extrabold text-[#f0822b] uppercase tracking-wider">
                       {item.stage} · {item.grades}
@@ -132,7 +189,6 @@ export default function AcademicRoadmapSection() {
                     </span>
                   </div>
 
-                  {/* Title & Description */}
                   <div className="flex items-center gap-3 mb-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/5 border border-white/10">
                       <Icon />
@@ -146,7 +202,6 @@ export default function AcademicRoadmapSection() {
                     {item.desc}
                   </p>
 
-                  {/* Key Topic Bullet Points */}
                   <div className="space-y-2.5 border-t border-white/10 pt-5">
                     <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block mb-1">
                       Core Syllabus Focus:
@@ -160,17 +215,26 @@ export default function AcademicRoadmapSection() {
                   </div>
                 </div>
 
-                {/* Footer Status */}
-                <div className="mt-8 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
-                  <span>Batch Availability</span>
-                  <span className="text-emerald-400 font-bold">Enrolling Now</span>
+                <div className="mt-8 pt-4 border-t border-white/10 flex items-center justify-between gap-3">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-mono text-slate-400 uppercase">Availability</span>
+                    <span className="text-xs font-bold text-emerald-400">Open for 2026</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEnroll(item.defaultGrade)}
+                    className="inline-flex items-center justify-center rounded-xl bg-[#8a00c2] px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/30 transition-all hover:bg-[#7200a3] hover:scale-105 active:scale-95"
+                  >
+                    Enroll Now &rarr;
+                  </button>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Bottom Callout Bar for Parents */}
+        {/* Bottom Callout Bar */}
         <div className="mt-12 rounded-2xl border border-purple-500/30 bg-gradient-to-r from-[#8a00c2]/20 via-slate-900 to-[#f0822b]/20 p-6 sm:p-8 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left shadow-2xl">
           <div>
             <h3 className="font-display text-base sm:text-lg font-bold text-white uppercase tracking-wider">
@@ -181,18 +245,190 @@ export default function AcademicRoadmapSection() {
             </p>
           </div>
 
-          <a
-            href={`https://wa.me/${settings.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 shrink-0 rounded-xl bg-[#27c93f] px-6 py-3.5 text-xs font-extrabold text-slate-950 shadow-lg shadow-[#27c93f]/20 transition-all hover:bg-[#22b538] hover:scale-105"
-          >
-            <WhatsAppIcon />
-            <span>Consult on WhatsApp</span>
-          </a>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => handleOpenEnroll("Grade 10")}
+              className="rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-xs font-bold text-white hover:bg-white/20 transition-all"
+            >
+              Quick Enrollment Form
+            </button>
+            <a
+              href={`https://wa.me/${settings.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#27c93f] px-5 py-3 text-xs font-extrabold text-slate-950 shadow-lg shadow-[#27c93f]/20 transition-all hover:bg-[#22b538] hover:scale-105"
+            >
+              <WhatsAppIcon />
+              <span>Consult on WhatsApp</span>
+            </a>
+          </div>
         </div>
 
       </div>
+
+      {/* ENROLLMENT MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-3xl border border-white/10 bg-slate-900 p-6 sm:p-8 shadow-2xl">
+            <div className="pointer-events-none absolute -left-20 -top-20 h-40 w-40 rounded-full bg-[#8a00c2]/30 blur-[80px]" />
+
+            <div className="flex items-start justify-between border-b border-white/10 pb-4 mb-5">
+              <div>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#f0822b]">
+                  Direct Admissions
+                </span>
+                <h3 className="font-display text-xl font-bold text-white mt-1">
+                  Enroll in TopBright ICT
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-full bg-white/5 p-2 text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {submitted ? (
+              <div className="text-center py-8 space-y-4">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-2xl font-bold">
+                  ✓
+                </div>
+                <h4 className="font-display text-lg font-bold text-white">Application Received</h4>
+                <p className="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
+                  Thank you! Your enrollment request has been delivered to teacher Lavanya. You will be contacted via WhatsApp shortly.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="rounded-xl bg-[#8a00c2] px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/30 hover:bg-[#7200a3] transition-all"
+                >
+                  Close Window
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {errorMsg && (
+                  <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-mono font-bold text-rose-300">
+                    ⚠️ {errorMsg}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Student Full Name
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="e.g. S. Kowshikan"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      Grade
+                    </label>
+                    <select
+                      value={formData.grade}
+                      onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+                      className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-xs text-white outline-none focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]"
+                    >
+                      {ALL_GRADES.map((g) => (
+                        <option key={g} value={g}>
+                          {g}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      Medium
+                    </label>
+                    <select
+                      value={formData.medium}
+                      onChange={(e) => setFormData({ ...formData, medium: e.target.value })}
+                      className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-xs text-white outline-none focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]"
+                    >
+                      <option value="Tamil">Tamil Medium</option>
+                      <option value="English">English Medium</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      Preferred Mode
+                    </label>
+                    <select
+                      value={formData.mode}
+                      onChange={(e) => setFormData({ ...formData, mode: e.target.value })}
+                      className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-xs text-white outline-none focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]"
+                    >
+                      <option value="Online">Online Interactive</option>
+                      <option value="Physical">Physical Class</option>
+                      <option value="One-to-One">One-to-One Individual</option>
+                      <option value="Group">Small Group</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      Town / School
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Batticaloa"
+                      value={formData.place}
+                      onChange={(e) => setFormData({ ...formData, place: e.target.value })}
+                      className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    WhatsApp Contact Number
+                  </label>
+                  <input
+                    required
+                    type="tel"
+                    placeholder="e.g. 077 123 4567"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-[#8a00c2] focus:ring-1 focus:ring-[#8a00c2]"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="rounded-xl border border-white/10 px-5 py-2.5 text-xs font-bold text-slate-400 hover:bg-white/5 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="rounded-xl bg-[#8a00c2] px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#8a00c2]/30 hover:bg-[#7200a3] transition-all hover:scale-105 disabled:opacity-50"
+                  >
+                    {loading ? "Submitting..." : "Send Application →"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
