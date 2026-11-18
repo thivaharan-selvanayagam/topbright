@@ -1,5 +1,21 @@
 [
   {
+    "id": "ICT2026005",
+    "name": "Abishali",
+    "grade": "Grade 9",
+    "medium": "Tamil",
+    "place": "Chilaw",
+    "mode": "Online",
+    "phone": "0775766397",
+    "feesPerClass": 400,
+    "password": "abishali",
+    "passwordHash": "$2a$10$TkmDngMetIFQflLNQTEgAe/HstiiFGylK1tT.EhJ.xJI.Taz.MK1q",
+    "approved": true,
+    "lastPaymentDate": "",
+    "lastPaymentAmount": 0,
+    "createdAt": "2026-10-30"
+  },
+  {
     "id": "ICT2026001",
     "name": "Nithusha Kumar",
     "grade": "10",

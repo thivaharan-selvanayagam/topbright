@@ -18,14 +18,6 @@ function PdfFileIcon() {
   );
 }
 
-function InteractiveTestIcon() {
-  return (
-    <svg className="w-5 h-5 text-[#f0822b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.037-.502.082-.75.136M9.75 3.104l-2.03-1.015a.75.75 0 00-1.045.335L4.5 6.75M9.75 8.818l7.5-3.75M12 21a9 9 0 100-18 9 9 0 000 18z" />
-    </svg>
-  );
-}
-
 function DownloadIcon() {
   return (
     <svg className="w-4 h-4 transition-transform group-hover:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -42,32 +34,32 @@ function ArrowRightIcon() {
   );
 }
 
-const sampleResources = [
+const realResources = [
   {
-    title: "Grade 11 ICT Model Paper 2026",
+    title: "G.C.E. O/L ICT Model Paper & Scheme",
     type: "Model Paper",
     format: "PDF Document",
-    size: "2.4 MB",
+    size: "2.8 MB",
     badgeBg: "bg-[#8a00c2]/10 text-[#8a00c2] border-[#8a00c2]/20",
     icon: PdfFileIcon,
     link: "/downloads",
   },
   {
-    title: "Python Programming Quick Summary",
+    title: "Grade 10 & 11 Python Programming Tute",
     type: "Study Tute",
     format: "PDF Handbook",
-    size: "1.8 MB",
+    size: "3.4 MB",
     badgeBg: "bg-[#f0822b]/10 text-[#f0822b] border-[#f0822b]/20",
     icon: PdfFileIcon,
     link: "/downloads",
   },
   {
-    title: "Number Systems Practice Revision",
-    type: "Past Paper",
-    format: "Interactive Test",
-    size: "Online Mock",
+    title: "A/L ICT Data Communication Summary",
+    type: "Short Notes",
+    format: "PDF Guide",
+    size: "1.9 MB",
     badgeBg: "bg-[#8a00c2]/10 text-[#8a00c2] border-[#8a00c2]/20",
-    icon: InteractiveTestIcon,
+    icon: PdfFileIcon,
     link: "/downloads",
   },
 ];
@@ -75,7 +67,7 @@ const sampleResources = [
 export default function StudyVaultSection() {
   return (
     <section className="relative overflow-hidden bg-slate-950 py-24 border-b border-slate-800 text-white select-none">
-      {/* Background Soft Glows - Adjusted for Dark Mode */}
+      {/* Background Soft Glows */}
       <div className="pointer-events-none absolute -left-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#8a00c2]/10 blur-[100px]" />
       <div className="pointer-events-none absolute -right-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#f0822b]/10 blur-[100px]" />
 
@@ -98,7 +90,7 @@ export default function StudyVaultSection() {
 
           <Link
             href="/downloads"
-            className="group inline-flex items-center gap-2.5 rounded-xl bg-purple-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/50 transition-all hover:bg-purple-700 hover:-translate-y-0.5"
+            className="group inline-flex items-center gap-2.5 rounded-xl bg-[#8a00c2] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#8a00c2]/30 transition-all hover:bg-[#7200a3] hover:-translate-y-0.5"
           >
             <span>View All Downloads</span>
             <ArrowRightIcon />
@@ -107,15 +99,15 @@ export default function StudyVaultSection() {
 
         {/* Resources Grid */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {sampleResources.map((res) => {
+          {realResources.map((res) => {
             const IconComponent = res.icon;
             return (
               <div
                 key={res.title}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-7 shadow-2xl shadow-slate-950/20 transition-all duration-300 hover:-translate-y-2 hover:border-purple-800 hover:shadow-purple-950/30"
+                className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-7 shadow-2xl shadow-slate-950/20 transition-all duration-300 hover:-translate-y-2 hover:border-[#8a00c2]/50 hover:shadow-[#8a00c2]/20"
               >
                 {/* Dynamic gradient background effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-800/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#8a00c2]/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                 <div className="relative z-10">
                   {/* Top Badges */}
@@ -124,13 +116,13 @@ export default function StudyVaultSection() {
                       <IconComponent />
                       {res.type}
                     </span>
-                    <span className="font-mono text-xs font-semibold text-slate-500">
+                    <span className="font-mono text-xs font-semibold text-slate-400">
                       {res.size}
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-display text-lg font-bold text-white transition-colors group-hover:text-white leading-snug">
+                  <h3 className="font-display text-lg font-bold text-white transition-colors leading-snug group-hover:text-[#f0822b]">
                     {res.title}
                   </h3>
 

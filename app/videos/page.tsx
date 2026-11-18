@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import videos from "@/data/videos.json";
+import { db } from "@/lib/db";
 import VideoGrid from "@/components/VideoGrid";
 
 export const metadata: Metadata = {
@@ -11,9 +11,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function VideosPage() {
+// Force Next.js to fetch fresh Redis videos on every visit
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function VideosPage() {
+  const videos = await db.videos.all();
+
   return (
-    <div className="min-h-screen bg-[#0d0114]">
+    <div className="min-h-screen bg-[#0d0114] select-none">
       {/* Header Banner */}
       <section className="relative overflow-hidden border-b border-[#8a00c2]/30 bg-[#0d0114]">
         <div className="absolute -left-20 -top-20 h-80 w-80 animate-pulse rounded-full bg-[#8a00c2]/25 blur-[120px]" />
