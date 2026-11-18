@@ -44,31 +44,67 @@ function MailIcon() {
   );
 }
 
+const contactFaqs = [
+  {
+    q: "How can I enroll a student at TopBright ICT Academy?",
+    a: "You can enroll by messaging us on WhatsApp (+94 71 431 6092), calling directly, or filling out the contact form on this page. Our admissions desk will confirm batch schedules and send registration details.",
+  },
+  {
+    q: "Are admissions open for both physical and online classes?",
+    a: "Yes, we accept new student registrations for in-person physical classes at Kallady, Batticaloa, as well as live interactive online batches for students across Sri Lanka.",
+  },
+  {
+    q: "What are the visiting hours for the Kallady, Batticaloa center?",
+    a: "Parents and students can visit our physical center on Saturdays and Sundays between 8:00 AM and 6:00 PM, or schedule a weekday appointment via WhatsApp.",
+  },
+  {
+    q: "What payment options are supported for monthly course fees?",
+    a: "We support direct commercial bank transfers, online banking transfers, and cash payments during physical class sessions in Batticaloa.",
+  },
+];
+
 export default function ContactPage() {
   const contactJsonLd = {
     "@context": "https://schema.org",
-    "@type": "ContactPage",
-    name: "Contact TopBright ICT Academy",
-    url: "https://topbright.lk/contact",
-    description:
-      "Contact information, WhatsApp inquiries, student admissions, and campus location for TopBright ICT Academy in Batticaloa, Sri Lanka.",
-    mainEntity: {
-      "@type": "EducationalOrganization",
-      name: "TopBright ICT Academy",
-      telephone: "+94714316092",
-      email: "info@topbright.lk",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Kallady",
-        addressLocality: "Batticaloa",
-        addressCountry: "LK",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": "https://topbright.lk/contact",
+        name: "Contact TopBright ICT Academy",
+        url: "https://topbright.lk/contact",
+        description:
+          "Contact information, WhatsApp inquiries, student admissions, and campus location for TopBright ICT Academy in Batticaloa, Sri Lanka.",
+        mainEntity: {
+          "@type": "EducationalOrganization",
+          name: "TopBright ICT Academy",
+          telephone: "+94714316092",
+          email: "info@topbright.lk",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Kallady",
+            addressLocality: "Batticaloa",
+            addressCountry: "LK",
+          },
+          sameAs: [
+            "https://wa.me/94714316092",
+            "https://www.facebook.com/topbrightacademy",
+            "https://www.youtube.com/@topbrightacademy",
+          ],
+        },
       },
-      sameAs: [
-        "https://wa.me/94714316092",
-        "https://www.facebook.com/topbrightacademy",
-        "https://www.youtube.com/@topbrightacademy",
-      ],
-    },
+      {
+        "@type": "FAQPage",
+        "@id": "https://topbright.lk/contact#faq",
+        mainEntity: contactFaqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.a,
+          },
+        })),
+      },
+    ],
   };
 
   return (
@@ -114,79 +150,89 @@ export default function ContactPage() {
               </p>
             </div>
             
-            {/* WHATSAPP ACTION CARD */}
-            <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-slate-900/90 p-6 sm:p-7 shadow-2xl transition-all duration-300 hover:border-emerald-500/60">
-              <div className="flex items-center justify-between mb-4">
-                <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 uppercase tracking-wider">
-                  <WhatsAppIcon />
-                  Instant Messaging
-                </span>
-                <span className="text-[10px] font-mono text-slate-400">24/7 Available</span>
-              </div>
-              <h3 className="font-display text-xl font-bold text-white">WhatsApp Inquiry</h3>
-              <p className="text-xs text-slate-300 font-medium mt-1">Get immediate responses regarding fees, batch times, and study tutes.</p>
-              
-              <a
-                href={`https://wa.me/${settings.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 flex items-center justify-center gap-2.5 w-full rounded-xl bg-[#27c93f] px-6 py-3.5 text-xs font-extrabold text-slate-950 shadow-lg shadow-[#27c93f]/20 transition-all hover:bg-[#22b538] hover:scale-[1.02]"
-              >
-                <WhatsAppIcon />
-                <span>Chat Directly on WhatsApp</span>
-              </a>
-            </div>
-
-            {/* PHONE CARD */}
-            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-7 shadow-xl transition-all duration-300 hover:border-[#f0822b]/50 hover:bg-slate-900">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f0822b]/10 border border-[#f0822b]/20">
-                  <PhoneIcon />
-                </div>
-                <div>
-                  <h4 className="font-display text-sm font-bold text-white">Direct Phone Call</h4>
-                  <p className="text-[11px] text-slate-400 font-medium">Speak with Lavanya Teacher</p>
-                </div>
-              </div>
-              <a 
-                href={`tel:+${settings.whatsapp}`} 
-                className="mt-2 block font-mono text-lg sm:text-xl font-extrabold text-[#f0822b] hover:underline"
-              >
-                {settings.phone}
-              </a>
-            </div>
-
-            {/* LOCATION CARD */}
-            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-7 shadow-xl transition-all duration-300 hover:border-[#8a00c2]/50 hover:bg-slate-900">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8a00c2]/10 border border-[#8a00c2]/20">
-                  <MapPinIcon />
-                </div>
-                <div>
-                  <h4 className="font-display text-sm font-bold text-white">Academy Location</h4>
-                  <p className="text-[11px] text-slate-400 font-medium">Batticaloa, Sri Lanka</p>
-                </div>
-              </div>
-              <p className="text-xs text-slate-200 font-semibold leading-relaxed">{settings.address}</p>
-            </div>
-
-            {/* EMAIL CARD */}
-            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-7 shadow-xl transition-all duration-300 hover:border-[#f0822b]/50 hover:bg-slate-900">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f0822b]/10 border border-[#f0822b]/20">
-                  <MailIcon />
-                </div>
-                <div>
-                  <h4 className="font-display text-sm font-bold text-white">Email Address</h4>
-                  <a 
-                    href={`mailto:${settings.email}`} 
-                    className="font-mono text-xs font-bold text-[#f0822b] hover:underline"
+            <ul className="space-y-4 list-none p-0 m-0">
+              {/* WHATSAPP ACTION CARD */}
+              <li>
+                <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-slate-900/90 p-6 sm:p-7 shadow-2xl transition-all duration-300 hover:border-emerald-500/60">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 uppercase tracking-wider">
+                      <WhatsAppIcon />
+                      Instant Messaging
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">24/7 Available</span>
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-white">WhatsApp Inquiry</h3>
+                  <p className="text-xs text-slate-300 font-medium mt-1">Get immediate responses regarding fees, batch times, and study tutes.</p>
+                  
+                  <a
+                    href={`https://wa.me/${settings.whatsapp}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 flex items-center justify-center gap-2.5 w-full rounded-xl bg-[#27c93f] px-6 py-3.5 text-xs font-extrabold text-slate-950 shadow-lg shadow-[#27c93f]/20 transition-all hover:bg-[#22b538] hover:scale-[1.02]"
                   >
-                    {settings.email}
+                    <WhatsAppIcon />
+                    <span>Chat Directly on WhatsApp</span>
                   </a>
                 </div>
-              </div>
-            </div>
+              </li>
+
+              {/* PHONE CARD */}
+              <li>
+                <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-7 shadow-xl transition-all duration-300 hover:border-[#f0822b]/50 hover:bg-slate-900">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f0822b]/10 border border-[#f0822b]/20">
+                      <PhoneIcon />
+                    </div>
+                    <div>
+                      <h4 className="font-display text-sm font-bold text-white">Direct Phone Call</h4>
+                      <p className="text-[11px] text-slate-400 font-medium">Speak with Lavanya Teacher</p>
+                    </div>
+                  </div>
+                  <a 
+                    href={`tel:+${settings.whatsapp}`} 
+                    className="mt-2 block font-mono text-lg sm:text-xl font-extrabold text-[#f0822b] hover:underline"
+                  >
+                    {settings.phone}
+                  </a>
+                </div>
+              </li>
+
+              {/* LOCATION CARD */}
+              <li>
+                <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-7 shadow-xl transition-all duration-300 hover:border-[#8a00c2]/50 hover:bg-slate-900">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8a00c2]/10 border border-[#8a00c2]/20">
+                      <MapPinIcon />
+                    </div>
+                    <div>
+                      <h4 className="font-display text-sm font-bold text-white">Academy Location</h4>
+                      <p className="text-[11px] text-slate-400 font-medium">Batticaloa, Sri Lanka</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-200 font-semibold leading-relaxed">{settings.address}</p>
+                </div>
+              </li>
+
+              {/* EMAIL CARD */}
+              <li>
+                <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-7 shadow-xl transition-all duration-300 hover:border-[#f0822b]/50 hover:bg-slate-900">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f0822b]/10 border border-[#f0822b]/20">
+                      <MailIcon />
+                    </div>
+                    <div>
+                      <h4 className="font-display text-sm font-bold text-white">Email Address</h4>
+                      <a 
+                        href={`mailto:${settings.email}`} 
+                        className="font-mono text-xs font-bold text-[#f0822b] hover:underline"
+                      >
+                        {settings.email}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
 
           </div>
 
@@ -213,6 +259,96 @@ export default function ContactPage() {
             </div>
           </div>
 
+        </div>
+
+        {/* SECTION: SUPPORT CHANNELS & OPERATING HOURS (TABLE) */}
+        <div className="mt-16 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/80 shadow-2xl">
+          <div className="border-b border-white/10 bg-white/5 px-6 py-4">
+            <h2 className="font-display text-lg font-bold text-white uppercase tracking-wider">
+              Admissions &amp; Support Channels Directory
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Official contact methods, operating hours, and average response times.
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-white/10 bg-slate-950 font-mono text-[11px] uppercase tracking-wider text-[#f0822b]">
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Channel</th>
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Contact Detail</th>
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Operating Hours</th>
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Average Response</th>
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Best For</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 text-slate-300">
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">WhatsApp Desk</td>
+                  <td className="py-4 px-4 sm:px-6 font-mono text-[#27c93f] whitespace-nowrap">+94 71 431 6092</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">24 Hours / 7 Days</td>
+                  <td className="py-4 px-4 sm:px-6 text-emerald-400 font-semibold whitespace-nowrap">Under 15 Mins</td>
+                  <td className="py-4 px-4 sm:px-6">Batch admission inquiries, fee slips &amp; portal login help</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">Direct Phone Call</td>
+                  <td className="py-4 px-4 sm:px-6 font-mono text-[#f0822b] whitespace-nowrap">+94 71 431 6092</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">8:00 AM – 8:00 PM</td>
+                  <td className="py-4 px-4 sm:px-6 text-emerald-400 font-semibold whitespace-nowrap">Immediate</td>
+                  <td className="py-4 px-4 sm:px-6">Direct academic discussion with Lavanya Teacher</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">Kallady Campus</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Kallady, Batticaloa</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Sat &amp; Sun: 8 AM – 6 PM</td>
+                  <td className="py-4 px-4 sm:px-6 text-emerald-400 font-semibold whitespace-nowrap">In-Person</td>
+                  <td className="py-4 px-4 sm:px-6">Physical classroom sessions &amp; textbook/tute collection</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">Official Email</td>
+                  <td className="py-4 px-4 sm:px-6 font-mono text-purple-300 whitespace-nowrap">info@topbright.lk</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Monday – Friday</td>
+                  <td className="py-4 px-4 sm:px-6 text-emerald-400 font-semibold whitespace-nowrap">Within 24 Hours</td>
+                  <td className="py-4 px-4 sm:px-6">Formal academic records &amp; institutional verifications</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* SECTION: ADMISSIONS FREQUENTLY ASKED QUESTIONS */}
+        <div className="mt-16 max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#f0822b]">
+              Admissions FAQ
+            </span>
+            <h2 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold text-white uppercase">
+              Frequently Asked Admissions Questions
+            </h2>
+            <p className="mt-2 text-xs sm:text-sm text-slate-400">
+              Find quick answers regarding our admission process, payment methods, and batch schedules.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {contactFaqs.map((faq, idx) => (
+              <details
+                key={faq.q}
+                className="group rounded-2xl border border-white/10 bg-slate-900/80 p-5 transition-all duration-300 hover:border-purple-500/40"
+                open={idx === 0}
+              >
+                <summary className="flex cursor-pointer items-center justify-between font-display text-sm sm:text-base font-bold text-white group-hover:text-[#f0822b]">
+                  <span>{faq.q}</span>
+                  <span className="ml-4 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 font-mono text-xs text-[#f0822b] transition-transform duration-300 group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-300 font-medium">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
         </div>
 
       </div>

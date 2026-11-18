@@ -82,6 +82,25 @@ const pillars = [
   },
 ];
 
+const aboutFaqs = [
+  {
+    q: "Who teaches the ICT classes at TopBright Academy?",
+    a: "All classes are led directly by Lavanya, who graduated with a Bachelor of Information and Communication Technology (Honours) from the University of Jaffna and has served as a visiting lecturer at Jaffna University College.",
+  },
+  {
+    q: "Are the courses aligned with the Sri Lankan national curriculum?",
+    a: "Yes, our teaching follows the official National Institute of Education (NIE) Sri Lanka syllabus for Grade 6–9 Junior ICT, G.C.E. O/L ICT, and G.C.E. A/L ICT in both Tamil and English mediums.",
+  },
+  {
+    q: "Can students attend physical classes in Batticaloa as well as online?",
+    a: "Yes, we conduct in-person physical classes at our Kallady, Batticaloa center, along with live interactive online classes streamed nationwide with 24/7 video recording replays.",
+  },
+  {
+    q: "How does TopBright Academy prepare students for national exams?",
+    a: "We provide unit-by-unit syllabus coverage, past paper discussions from 2015 to the latest year, model test papers, and instant auto-marked online MCQ assessments through our student portal.",
+  },
+];
+
 export default function AboutPage() {
   const aboutJsonLd = {
     "@context": "https://schema.org",
@@ -129,6 +148,18 @@ export default function AboutPage() {
           "Computer Networks",
           "G.C.E. O/L and A/L Examination Preparation",
         ],
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://topbright.lk/about#faq",
+        mainEntity: aboutFaqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.a,
+          },
+        })),
       },
     ],
   };
@@ -271,9 +302,9 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 list-none p-0">
             {modes.map((m) => (
-              <div
+              <li
                 key={m.title}
                 className="group relative flex flex-col justify-between rounded-2xl border border-white/10 bg-slate-900/90 p-6 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-[#8a00c2]/60 hover:bg-slate-900"
               >
@@ -293,9 +324,9 @@ export default function AboutPage() {
                   <span>Grades 6–13</span>
                   <span className="text-[#8a00c2] font-bold">Available</span>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
@@ -320,17 +351,17 @@ export default function AboutPage() {
                 Secondary ICT is not merely about memorizing hardware terms or software menus. We teach algorithmic logic, system design, binary math, and programming fundamentals with structured exam techniques.
               </p>
 
-              <div className="space-y-4 pt-2">
+              <ul className="space-y-4 pt-2 list-none p-0">
                 {pillars.map((p) => (
-                  <div key={p.title} className="flex items-start gap-3.5">
+                  <li key={p.title} className="flex items-start gap-3.5">
                     <CheckCircleIcon />
                     <div>
                       <h4 className="font-display text-sm font-bold text-slate-900">{p.title}</h4>
                       <p className="text-xs text-slate-600 font-medium mt-0.5 leading-relaxed">{p.desc}</p>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
 
             {/* Feature Showcase Box */}
@@ -341,20 +372,20 @@ export default function AboutPage() {
                   <span className="font-mono text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">ACTIVE 24/7</span>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                <ul className="space-y-4 list-none p-0">
+                  <li className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
                     <span className="text-xs font-mono text-slate-800 font-semibold">1. Live Interactive Lectures</span>
                     <span className="text-[10px] font-mono text-[#f0822b] font-bold">Online &amp; Physical</span>
-                  </div>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  </li>
+                  <li className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
                     <span className="text-xs font-mono text-slate-800 font-semibold">2. HD Video Replay Archives</span>
                     <span className="text-[10px] font-mono text-[#8a00c2] font-bold">Unlimited Access</span>
-                  </div>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  </li>
+                  <li className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
                     <span className="text-xs font-mono text-slate-800 font-semibold">3. Automated Online Exams</span>
                     <span className="text-[10px] font-mono text-emerald-600 font-bold">Instant Scoring</span>
-                  </div>
-                </div>
+                  </li>
+                </ul>
 
                 <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
                   <div>
@@ -432,6 +463,43 @@ export default function AboutPage() {
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6: FREQUENTLY ASKED QUESTIONS */}
+      <section className="bg-slate-950 text-white border-b border-slate-800 py-16 lg:py-20 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-12">
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#f0822b]">
+              Frequently Asked Questions
+            </span>
+            <h2 className="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-white uppercase">
+              Questions About TopBright Academy
+            </h2>
+            <p className="mt-3 text-slate-300 text-sm sm:text-base font-medium">
+              Common questions from parents and students regarding our educator qualifications, curriculum, and course formats.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {aboutFaqs.map((faq, idx) => (
+              <details
+                key={faq.q}
+                className="group rounded-2xl border border-white/10 bg-slate-900/80 p-6 transition-all duration-300 hover:border-purple-500/40"
+                open={idx === 0}
+              >
+                <summary className="flex cursor-pointer items-center justify-between font-display text-base sm:text-lg font-bold text-white group-hover:text-[#f0822b]">
+                  <span>{faq.q}</span>
+                  <span className="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 font-mono text-sm text-[#f0822b] transition-transform duration-300 group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-300 font-medium">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
           </div>
         </div>
       </section>

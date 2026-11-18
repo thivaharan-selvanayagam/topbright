@@ -236,6 +236,54 @@ export default function AcademicRoadmapSection() {
           })}
         </div>
 
+        {/* Curriculum Matrix Table for SEO & Quick Reference */}
+        <div className="mt-14 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/90 shadow-2xl">
+          <div className="border-b border-white/10 bg-white/5 px-6 py-4">
+            <h3 className="font-display text-lg font-bold text-white uppercase tracking-wider">
+              Curriculum Stages &amp; Delivery Matrix
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Comparative view of learning objectives, class formats, and exam targets across all grades.
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-white/10 bg-slate-950 font-mono text-[11px] uppercase tracking-wider text-[#f0822b]">
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Curriculum Stage</th>
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Grades</th>
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Core Syllabus Highlights</th>
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Delivery Modes</th>
+                  <th scope="col" className="py-3.5 px-4 sm:px-6">Primary Target</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 text-slate-300">
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">Junior ICT Foundation</td>
+                  <td className="py-4 px-4 sm:px-6 font-mono text-slate-400 whitespace-nowrap">Grades 6–9</td>
+                  <td className="py-4 px-4 sm:px-6">Computer fundamentals, Scratch block logic, office tools &amp; digital safety</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Physical &amp; Online</td>
+                  <td className="py-4 px-4 sm:px-6 text-emerald-400 font-semibold">Foundational Literacy</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">G.C.E. O/L Masterclass</td>
+                  <td className="py-4 px-4 sm:px-6 font-mono text-slate-400 whitespace-nowrap">Grades 10–11</td>
+                  <td className="py-4 px-4 sm:px-6">Number systems, boolean logic, databases (SQL), Python programming &amp; past papers</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Physical, Online &amp; 1-on-1</td>
+                  <td className="py-4 px-4 sm:px-6 text-emerald-400 font-semibold">National O/L &apos;A&apos; Grade</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">G.C.E. A/L Advanced ICT</td>
+                  <td className="py-4 px-4 sm:px-6 font-mono text-slate-400 whitespace-nowrap">Grades 12–13</td>
+                  <td className="py-4 px-4 sm:px-6">Algorithms, data structures, TCP/IP networking, systems analysis &amp; model papers</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Physical &amp; Online Batches</td>
+                  <td className="py-4 px-4 sm:px-6 text-emerald-400 font-semibold">Island Rank &amp; Campus Entry</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         {/* Bottom Callout Bar */}
         <div className="mt-12 rounded-2xl border border-purple-500/30 bg-gradient-to-r from-[#8a00c2]/20 via-slate-900 to-[#f0822b]/20 p-6 sm:p-8 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left shadow-2xl">
           <div>

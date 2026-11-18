@@ -32,6 +32,21 @@ const MODE_COLOR: Record<string, string> = {
   "One-to-One": "bg-slate-800/80 text-slate-300 border border-slate-700",
 };
 
+const timetableFaqs = [
+  {
+    q: "What happens if a student misses a scheduled live class?",
+    a: "Every live online session is recorded in high definition and published to the student portal within 24 hours, so students can catch up anytime without falling behind.",
+  },
+  {
+    q: "Can a student switch between physical and online sessions?",
+    a: "Yes. Students enrolled in physical classes who cannot travel due to weather or transport can join the simultaneous live online stream upon notifying the admissions desk.",
+  },
+  {
+    q: "How are one-to-one individual coaching times scheduled?",
+    a: "One-to-one sessions are customized around the student's personal school and exam timetable. You can reserve custom time slots by contacting us directly on WhatsApp.",
+  },
+];
+
 // Converts time strings like "03:30 PM – 04:30 PM" to minutes from midnight for ascending sorting
 function parseStartTimeMinutes(timeStr: string): number {
   if (!timeStr) return 0;
@@ -66,8 +81,25 @@ export default async function TimetablePage() {
     };
   }).filter((g) => g.entries.length > 0);
 
+  const timetableJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: timetableFaqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.a,
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[#0d0114] select-none">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(timetableJsonLd) }}
+      />
       {/* Header Banner */}
       <section className="relative overflow-hidden border-b border-[#8a00c2]/30 bg-[#0d0114]">
         <div className="absolute -left-20 -top-20 h-80 w-80 animate-pulse rounded-full bg-[#8a00c2]/25 blur-[120px]" />
@@ -146,6 +178,57 @@ export default async function TimetablePage() {
             No class schedules are available at the moment.
           </div>
         )}
+
+        {/* Timetable Guidelines List */}
+        <div className="mt-14 rounded-xl border border-[#8a00c2]/30 bg-[#160221]/90 p-6 sm:p-8 backdrop-blur">
+          <h3 className="font-display text-lg font-bold text-white mb-4">
+            Class Attendance &amp; Participation Guidelines
+          </h3>
+          <ul className="space-y-3 text-xs sm:text-sm text-slate-300">
+            <li className="flex items-start gap-2.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#f0822b] mt-2 shrink-0" />
+              <span><strong>Join 5 minutes prior:</strong> Online students should log in before the stream begins to test audio and connectivity.</span>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#f0822b] mt-2 shrink-0" />
+              <span><strong>Keep lesson tutes ready:</strong> Download the relevant unit PDF notes from the Study Vault before attending class.</span>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#f0822b] mt-2 shrink-0" />
+              <span><strong>Physical batch seating:</strong> Physical classroom slots in Kallady, Batticaloa are allocated on confirmed registration.</span>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#f0822b] mt-2 shrink-0" />
+              <span><strong>Recorded lecture catch-up:</strong> In case of absence, replay recordings within 48 hours to prepare for weekly tests.</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Timetable FAQs */}
+        <div className="mt-12">
+          <h3 className="font-display text-lg font-bold text-white mb-4">
+            Schedule &amp; Attendance FAQs
+          </h3>
+          <div className="space-y-4">
+            {timetableFaqs.map((faq, idx) => (
+              <details
+                key={faq.q}
+                className="group rounded-xl border border-[#8a00c2]/30 bg-[#160221]/90 p-5 transition-all duration-300 hover:border-[#8a00c2]/60"
+                open={idx === 0}
+              >
+                <summary className="flex cursor-pointer items-center justify-between font-display text-sm sm:text-base font-bold text-white group-hover:text-[#f0822b]">
+                  <span>{faq.q}</span>
+                  <span className="ml-4 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 font-mono text-xs text-[#f0822b] transition-transform duration-300 group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-300">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
 
         {/* Info Box */}
         <div className="mt-12 rounded-lg border border-[#8a00c2]/30 bg-[#160221] p-6 text-sm text-slate-300 backdrop-blur">
