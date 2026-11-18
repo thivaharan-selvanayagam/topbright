@@ -1,0 +1,30 @@
+# TopBright ICT Academy
+
+> TopBright ICT Academy (topbright.lk) is Sri Lanka's premier online and physical ICT learning academy for Grades 6 through 13 in Tamil and English Medium. Founded and led by Lavanya (BICT Hons, University of Jaffna), the academy delivers interactive live classes, physical classroom instruction in Batticaloa, automated self-marking MCQ exams, past papers, and recorded lesson archives.
+
+## Core Navigation & Resources
+- [Home](https://topbright.lk/): Academy overview, course offerings, student portal features, and verified student testimonials.
+- [About Academy](https://topbright.lk/about): Educator background (BICT Hons, University of Jaffna; Visiting Lecturer), teaching methodology, and academic philosophy.
+- [Class Timetable](https://topbright.lk/timetable): Up-to-date weekly schedule for Grades 6–13 physical and online batches.
+- [Study Vault](https://topbright.lk/downloads): Curated library of G.C.E. O/L and A/L ICT past papers, school term test papers, and model revision tutes.
+- [Video Library](https://topbright.lk/videos): High-definition recorded video lessons and revision tutorials available on-demand.
+- [Contact & Admissions](https://topbright.lk/contact): Enrollment queries, class coordination, WhatsApp hotline, and location details.
+- [Student Portal](https://topbright.lk/login): Dedicated student login for computer-based testing, progress analytics, and fee tracking.
+
+## Academic Programs & Curriculum
+- **Junior ICT (Grades 6–9)**: Foundational computer architecture, hardware and software principles, block coding with Scratch, spreadsheet basics, and safe internet practices in Tamil and English medium.
+- **G.C.E. Ordinary Level ICT (Grades 10 & 11)**: Comprehensive national syllabus coverage including number systems, boolean logic and logic gates, operating systems, office automation, database management, multimedia, and extensive past paper drills.
+- **G.C.E. Advanced Level ICT (Grades 12 & 13)**: In-depth secondary education covering Python programming, relational database systems (SQL), computer networks, web development technologies (HTML/CSS/JS), systems analysis, and past examination blueprint alignment.
+- **Automated Digital Exams**: Instant score breakdowns and question-by-question explanations upon submission.
+
+## Educator Profile
+- **Lead Educator**: Lavanya
+- **Credentials**: Bachelor of Information and Communication Technology - BICT (Honours), University of Jaffna
+- **Academic Experience**: Former Visiting Lecturer at Jaffna University College with 5+ years of dedicated secondary ICT teaching experience.
+
+## Contact Information
+- **Institution**: TopBright ICT Academy
+- **Address**: Kallady, Batticaloa, Eastern Province, Sri Lanka
+- **WhatsApp / Phone**: +94 71 431 6092 (071 431 6092)
+- **Email**: info@topbright.lk
+- **Website**: https://topbright.lk

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import settings from "@/data/settings.json";
+import { faqs } from "@/data/faqs";
 
 function HelpIcon() {
   return (
@@ -33,30 +34,28 @@ function WhatsAppIcon() {
   );
 }
 
-const faqs = [
-  {
-    q: "How do I enroll and receive my Student ID?",
-    a: "Contact Lavanya Teacher directly via WhatsApp or phone. Once registered, your custom Student ID credentials will be generated for immediate portal access, video archives, and automated tests.",
-  },
-  {
-    q: "Can I switch between physical and online classes?",
-    a: "Yes! Both physical classes in Batticaloa and live online interactive streams follow the exact same syllabus pacing and weekly lesson schedule, allowing seamless flexibility.",
-  },
-  {
-    q: "Are lesson recordings available immediately after class?",
-    a: "Recordings are processed in high definition and uploaded to the Student Portal within 24 hours of each live session for 24/7 on-demand revision.",
-  },
-  {
-    q: "How do online auto-marked exams work?",
-    a: "Log in with your Student ID, navigate to 'My Exams', complete your timed MCQ or theory paper, and receive instant score breakdowns with step-by-step logic explanations.",
-  },
-];
-
 export default function FaqSection() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.a,
+      },
+    })),
+  };
+
   return (
     <section className="relative overflow-hidden bg-slate-50/80 py-24 border-b border-slate-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* Background Soft Ambient Lights */}
       <div className="pointer-events-none absolute -left-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#8a00c2]/5 blur-3xl" />
       <div className="pointer-events-none absolute -right-20 top-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#f0822b]/5 blur-3xl" />

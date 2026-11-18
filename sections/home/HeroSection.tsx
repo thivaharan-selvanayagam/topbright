@@ -25,10 +25,8 @@ export default function HeroSection() {
     with TopBright ICT Academy
   </span>
 </h1>
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-slate-600">
-            Live online classes and physical classes in Batticaloa, one-to-one or in a group.
-            Watch lesson videos, download model papers and tutes, and sit online exams that
-            mark themselves the second you submit.
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-600">
+            TopBright ICT Academy is Sri Lanka&apos;s leading online and physical ICT learning platform for Grades 6 through 13 students, offering comprehensive syllabus coverage in Tamil and English medium. We combine interactive live lectures and physical classes in Batticaloa with instant-marked online MCQ exams, downloadable past papers, complete unit theory guides, and 24/7 recorded video archives to help every student achieve exam mastery.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">

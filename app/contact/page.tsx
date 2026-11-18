@@ -2,7 +2,14 @@ import type { Metadata } from "next";
 import settings from "@/data/settings.json";
 import ContactForm from "@/components/ContactForm";
 
-export const metadata: Metadata = { title: "Contact | TopBright Academy" };
+export const metadata: Metadata = {
+  title: "Contact & Admissions",
+  description:
+    "Contact TopBright ICT Academy in Batticaloa. Inquire about student admissions, class schedules, or online portal access via WhatsApp, phone, or direct email.",
+  alternates: {
+    canonical: "/contact",
+  },
+};
 
 function PhoneIcon() {
   return (
@@ -38,8 +45,38 @@ function MailIcon() {
 }
 
 export default function ContactPage() {
+  const contactJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: "Contact TopBright ICT Academy",
+    url: "https://topbright.lk/contact",
+    description:
+      "Contact information, WhatsApp inquiries, student admissions, and campus location for TopBright ICT Academy in Batticaloa, Sri Lanka.",
+    mainEntity: {
+      "@type": "EducationalOrganization",
+      name: "TopBright ICT Academy",
+      telephone: "+94714316092",
+      email: "info@topbright.lk",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Kallady",
+        addressLocality: "Batticaloa",
+        addressCountry: "LK",
+      },
+      sameAs: [
+        "https://wa.me/94714316092",
+        "https://www.facebook.com/topbrightacademy",
+        "https://www.youtube.com/@topbrightacademy",
+      ],
+    },
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-white select-none relative overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
+      />
       {/* Background Lighting Elements */}
       <div className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-[#8a00c2]/20 blur-[150px]" />
       <div className="pointer-events-none absolute -right-40 bottom-0 h-[500px] w-[500px] rounded-full bg-[#f0822b]/15 blur-[150px]" />
@@ -59,7 +96,7 @@ export default function ContactPage() {
             </span>
           </h1>
           <p className="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
-            Direct access for student enrollments, timetable queries, and online portal assistance in Batticaloa.
+            Get in touch with TopBright ICT Academy for student admissions, course enrollment inquiries, timetable scheduling, and technical portal support. Whether you want to attend our physical classroom sessions in Kallady, Batticaloa or join live interactive online batches from anywhere in Sri Lanka, our academic team is ready to assist you via WhatsApp, direct phone, or email.
           </p>
         </div>
 
@@ -68,6 +105,14 @@ export default function ContactPage() {
           
           {/* LEFT COLUMN: UNIFIED CONTACT PANEL (5 COLS) */}
           <div className="lg:col-span-5 flex flex-col justify-between gap-4">
+            <div>
+              <h2 className="font-display text-2xl font-bold text-white mb-4">
+                Contact Channels &amp; Direct Support
+              </h2>
+              <p className="text-xs text-slate-400 mb-6">
+                Reach out across our official communication lines for admissions and student assistance.
+              </p>
+            </div>
             
             {/* WHATSAPP ACTION CARD */}
             <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-slate-900/90 p-6 sm:p-7 shadow-2xl transition-all duration-300 hover:border-emerald-500/60">

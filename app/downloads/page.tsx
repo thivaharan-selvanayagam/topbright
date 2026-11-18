@@ -6,7 +6,14 @@ import type { DownloadItem } from "@/lib/types";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export const metadata: Metadata = { title: "Study Vault | TopBright Academy" };
+export const metadata: Metadata = {
+  title: "Study Vault & Past Papers",
+  description:
+    "Download free G.C.E. O/L and A/L ICT past papers, model exam papers, unit notes, and school syllabus textbooks from TopBright Academy's Study Vault.",
+  alternates: {
+    canonical: "/downloads",
+  },
+};
 
 export default async function DownloadsPage() {
   // Fetch files dynamically from database storage
@@ -37,13 +44,21 @@ export default async function DownloadsPage() {
             </span>
           </h1>
           <p className="mt-4 max-w-2xl text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
-            Access official past papers, school term test papers, model questions, and revision books. Filter by grade or category below.
+            Welcome to TopBright Academy&apos;s Study Vault, a free digital resource library for school students and ICT candidates. Download official G.C.E. O/L and A/L past papers, provincial model papers, school term tests, and unit revision notes in Tamil and English medium. Select your grade below to access high-quality educational materials curated to support your exam preparation.
           </p>
         </div>
       </section>
 
       {/* Downloads List Component */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        <div className="mb-8">
+          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
+            Available Study Materials &amp; Past Papers
+          </h2>
+          <p className="text-sm text-slate-400 mt-1">
+            Filter by study category or grade level to download syllabus PDFs and past paper discussions.
+          </p>
+        </div>
         <DownloadsList items={publicItems} />
       </section>
     </div>

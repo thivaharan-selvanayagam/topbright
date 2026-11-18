@@ -36,9 +36,9 @@ export default function WhyChooseUsSection() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5">
+          <ul className="flex flex-col gap-5">
             {whyChooseUs.map((w, i) => (
-              <div key={w.title} className={`group relative flex items-start gap-5 rounded-2xl border border-slate-100 bg-[#fdf8ff] p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#8a00c2]/30 hover:shadow-lg hover:shadow-[#8a00c2]/5 ${i % 2 !== 0 ? "lg:ml-12" : ""}`}>
+              <li key={w.title} className={`group relative flex items-start gap-5 rounded-2xl border border-slate-100 bg-[#fdf8ff] p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#8a00c2]/30 hover:shadow-lg hover:shadow-[#8a00c2]/5 ${i % 2 !== 0 ? "lg:ml-12" : ""}`}>
                 <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100 group-hover:border-[#f0822b]/40 transition-colors">
                   <span className="font-display text-lg font-bold text-[#f0822b]">{w.stat}</span>
                 </div>
@@ -48,9 +48,9 @@ export default function WhyChooseUsSection() {
                   </h3>
                   <p className="mt-1 text-sm leading-relaxed text-slate-600">{w.desc}</p>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
     </section>

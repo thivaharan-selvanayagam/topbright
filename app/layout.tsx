@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | TopBright ICT Academy",
   },
   description:
-    "TopBright ICT Academy (topbright.lk) is Sri Lanka's premier online ICT learning platform for Grades 6–13 (Tamil & English Medium). Access interactive live classes, online MCQ practice exams, unit theory notes, past papers, and personal student progress tracking.",
+    "TopBright ICT Academy provides premier online & physical ICT classes in Sri Lanka for Grades 6–13 with live sessions, past papers, and auto-marked exams.",
   keywords: [
     "Online ICT Class",
     "Best Online ICT Class Sri Lanka",
@@ -112,7 +112,11 @@ const jsonLd = {
   image: "https://topbright.lk/cover.webp",
   description:
     "Leading online ICT education provider offering comprehensive courses for Grades 6 through 13 in Tamil and English Medium.",
-  sameAs: [],
+  sameAs: [
+    "https://wa.me/94714316092",
+    "https://www.facebook.com/topbrightacademy",
+    "https://www.youtube.com/@topbrightacademy",
+  ],
   address: {
     "@type": "PostalAddress",
     addressCountry: "LK",

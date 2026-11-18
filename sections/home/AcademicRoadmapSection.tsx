@@ -206,12 +206,14 @@ export default function AcademicRoadmapSection() {
                     <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block mb-1">
                       Core Syllabus Focus:
                     </span>
-                    {item.topics.map((tp) => (
-                      <div key={tp} className="flex items-center gap-2 text-xs text-slate-200 font-medium">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#f0822b] shrink-0" />
-                        <span>{tp}</span>
-                      </div>
-                    ))}
+                    <ul className="space-y-2">
+                      {item.topics.map((tp) => (
+                        <li key={tp} className="flex items-center gap-2 text-xs text-slate-200 font-medium">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#f0822b] shrink-0" />
+                          <span>{tp}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
 

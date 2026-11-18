@@ -3,7 +3,14 @@ import Link from "next/link";
 import Image from "next/image";
 import CtaSection from "@/sections/home/CtaSection";
 
-export const metadata: Metadata = { title: "About | TopBright Academy" };
+export const metadata: Metadata = {
+  title: "About Academy & Educator",
+  description:
+    "Learn about TopBright ICT Academy and lead tutor Lavanya (BICT Hons). Offering proven physical classes in Batticaloa and interactive online courses islandwide.",
+  alternates: {
+    canonical: "/about",
+  },
+};
 
 function AcademicCapIcon() {
   return (
@@ -76,8 +83,62 @@ const pillars = [
 ];
 
 export default function AboutPage() {
+  const aboutJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "EducationalOrganization",
+        "@id": "https://topbright.lk/#organization",
+        name: "TopBright ICT Academy",
+        url: "https://topbright.lk",
+        logo: "https://topbright.lk/icon.svg",
+        sameAs: [
+          "https://wa.me/94714316092",
+          "https://www.facebook.com/topbrightacademy",
+          "https://www.youtube.com/@topbrightacademy",
+        ],
+        founder: {
+          "@type": "Person",
+          name: "Lavanya",
+          jobTitle: "Founder & Lead ICT Educator",
+          alumniOf: {
+            "@type": "CollegeOrUniversity",
+            name: "University of Jaffna",
+          },
+          hasCredential: {
+            "@type": "EducationalOccupationalCredential",
+            credentialCategory: "degree",
+            name: "Bachelor of Information & Communication Technology (Honours)",
+          },
+        },
+      },
+      {
+        "@type": "Person",
+        "@id": "https://topbright.lk/#educator",
+        name: "Lavanya",
+        jobTitle: "Founder & Lead ICT Educator",
+        worksFor: {
+          "@type": "EducationalOrganization",
+          name: "TopBright ICT Academy",
+        },
+        alumniOf: "University of Jaffna",
+        knowsAbout: [
+          "Information and Communication Technology",
+          "Python Programming",
+          "Database Management Systems",
+          "Computer Networks",
+          "G.C.E. O/L and A/L Examination Preparation",
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen select-none">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }}
+      />
       
       {/* SECTION 1: HERO BANNER (DARK THEME) */}
       <section className="relative bg-slate-950 text-white border-b border-slate-800 pt-20 pb-16 sm:pb-20 overflow-hidden">
@@ -95,7 +156,7 @@ export default function AboutPage() {
             </span>
           </h1>
           <p className="mt-4 max-w-2xl text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
-            Moving beyond simple rote memorization — we train Grade 6–13 students across Batticaloa and islandwide online to excel in national ICT examinations.
+            TopBright ICT Academy is an established educational institute founded by Lavanya, BICT (Hons), dedicated to delivering top-tier ICT education for students from Grade 6 to Advanced Level across Sri Lanka. Through structured physical classes in Batticaloa and interactive online learning nationwide, we provide syllabus-aligned curriculum coverage, rigorous past paper analysis, and automated digital self-assessments designed to turn complex computer concepts into top exam results.
           </p>
         </div>
       </section>
@@ -311,6 +372,66 @@ export default function AboutPage() {
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5: CURRICULUM MATRIX & GRADE COMPARISON (TABLE) */}
+      <section className="bg-slate-900 text-white border-b border-slate-800 py-16 lg:py-20 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-3xl mb-10">
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#f0822b]">
+              Curriculum Matrix
+            </span>
+            <h2 className="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-white uppercase">
+              Academic Levels &amp; Course Structure
+            </h2>
+            <p className="mt-3 text-slate-300 text-sm sm:text-base font-medium">
+              A comprehensive overview of our ICT programs across secondary school stages in Tamil and English medium.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/80 shadow-2xl">
+            <table className="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/5 font-mono text-[11px] uppercase tracking-wider text-[#f0822b]">
+                  <th scope="col" className="py-4 px-4 sm:px-6">Level / Grades</th>
+                  <th scope="col" className="py-4 px-4 sm:px-6">Key Focus Areas</th>
+                  <th scope="col" className="py-4 px-4 sm:px-6">Medium</th>
+                  <th scope="col" className="py-4 px-4 sm:px-6">Delivery Modes</th>
+                  <th scope="col" className="py-4 px-4 sm:px-6">Assessments</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 text-slate-300">
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">
+                    Junior ICT<br /><span className="font-mono text-xs text-[#8a00c2] font-semibold">Grades 6–9</span>
+                  </td>
+                  <td className="py-4 px-4 sm:px-6">Foundational hardware, software, Scratch coding, basic logic &amp; spreadsheets</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Tamil &amp; English</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Physical &amp; Online</td>
+                  <td className="py-4 px-4 sm:px-6">Term end tests &amp; practical checks</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">
+                    G.C.E. O/L<br /><span className="font-mono text-xs text-[#8a00c2] font-semibold">Grades 10–11</span>
+                  </td>
+                  <td className="py-4 px-4 sm:px-6">Number systems, boolean logic, databases, web design &amp; national past paper drills</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Tamil &amp; English</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Physical, Online &amp; 1-to-1</td>
+                  <td className="py-4 px-4 sm:px-6">Auto-marked MCQ exams &amp; paper tutes</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 px-4 sm:px-6 font-bold text-white whitespace-nowrap">
+                    G.C.E. A/L<br /><span className="font-mono text-xs text-[#8a00c2] font-semibold">Grades 12–13</span>
+                  </td>
+                  <td className="py-4 px-4 sm:px-6">Python programming, relational DBMS (SQL), networking, systems analysis &amp; theory</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Tamil &amp; English</td>
+                  <td className="py-4 px-4 sm:px-6 whitespace-nowrap">Physical &amp; Online Batches</td>
+                  <td className="py-4 px-4 sm:px-6">Model papers &amp; national blueprint tests</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
