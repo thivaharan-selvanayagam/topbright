@@ -107,11 +107,21 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
   name: "TopBright ICT Academy",
+  alternateName: [
+    "TopBright Academy",
+    "TopBright ICT",
+    "TopBright Sri Lanka",
+    "topbright.lk",
+  ],
+  disambiguatingDescription:
+    "TopBright ICT Academy is an educational institution in Batticaloa, Sri Lanka providing secondary ICT tuition and online classes for Grades 6–13, founded by Lavanya (BICT Hons). Not affiliated with Topbright toys.",
   url: "https://topbright.lk",
   logo: "https://topbright.lk/icon.svg",
   image: "https://topbright.lk/cover.webp",
   description:
-    "Leading online ICT education provider offering comprehensive courses for Grades 6 through 13 in Tamil and English Medium.",
+    "Premier online and physical ICT education provider in Sri Lanka offering comprehensive courses for Grades 6 through 13 in Tamil and English Medium.",
+  telephone: "+94714316092",
+  email: "info@topbright.lk",
   sameAs: [
     "https://wa.me/94714316092",
     "https://www.facebook.com/topbrightacademy",
@@ -119,16 +129,54 @@ const jsonLd = {
   ],
   address: {
     "@type": "PostalAddress",
+    streetAddress: "Kallady",
+    addressLocality: "Batticaloa",
+    addressRegion: "Eastern Province",
+    postalCode: "30000",
     addressCountry: "LK",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 7.7102,
+    longitude: 81.7088,
+  },
+  founder: {
+    "@type": "Person",
+    name: "Lavanya",
+    jobTitle: "Founder & Lead ICT Educator",
+    alumniOf: {
+      "@type": "CollegeOrUniversity",
+      name: "University of Jaffna",
+    },
+    hasCredential: {
+      "@type": "EducationalOccupationalCredential",
+      name: "Bachelor of Information and Communication Technology (Honours)",
+    },
+  },
+  knowsAbout: [
+    "Information and Communication Technology",
+    "Python Programming",
+    "G.C.E. O/L ICT",
+    "G.C.E. A/L ICT",
+    "Database Management Systems",
+    "Computer Networks",
+    "Sri Lankan School Curriculum",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+94714316092",
+    contactType: "admissions",
+    availableLanguage: ["Tamil", "English"],
+    areaServed: "LK",
   },
   hasOfferCatalog: {
     "@type": "OfferCatalog",
-    name: "Online ICT Courses & Tuition",
+    name: "Online & Physical ICT Courses",
     itemListElement: [
       {
         "@type": "Course",
         name: "Grade 6-9 Online ICT Classes",
-        description: "Foundational ICT concepts, Tamil & English Medium.",
+        description: "Foundational ICT concepts, Scratch coding, Tamil & English Medium.",
         provider: "TopBright ICT Academy",
       },
       {

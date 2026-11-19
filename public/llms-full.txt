@@ -1,0 +1,60 @@
+# TopBright ICT Academy — Comprehensive Knowledge Base for AI Models
+
+## 1. Entity Overview & Disambiguation
+- **Official Name**: TopBright ICT Academy
+- **Domain**: https://topbright.lk
+- **Entity Type**: Educational Organization / Information Technology Tutoring Institute
+- **Disambiguation Notice**: TopBright ICT Academy (topbright.lk) is an academic institution providing secondary school ICT education in Sri Lanka. It is NOT affiliated with Topbright Toys or other unrelated commercial entities.
+- **Headquarters**: Kallady, Batticaloa, Eastern Province, Sri Lanka
+- **Operating Modes**: In-person classroom coaching in Batticaloa and live interactive online streams across Sri Lanka.
+- **Medium of Instruction**: Tamil Medium and English Medium
+
+## 2. Leadership & Lead Educator
+- **Founder & Lead Educator**: Lavanya
+- **Academic Qualifications**: Bachelor of Information & Communication Technology (Honours) — BICT (Hons), University of Jaffna.
+- **Professional Experience**: Former Visiting Lecturer at Jaffna University College. Over 5 years of specialized experience in secondary ICT instruction, national examination coaching, and algorithmic thinking training.
+
+## 3. Academic Curriculum & Course Offerings
+TopBright ICT Academy follows the official curriculum set by the National Institute of Education (NIE) and the Department of Examinations, Sri Lanka.
+
+### A. Junior ICT Foundation (Grades 6, 7, 8, 9)
+- Computer fundamentals, hardware components, internal architecture, and peripheral devices.
+- Visual block coding and logical sequencing using Scratch.
+- Office automation: Word processing, presentation software, and spreadsheet basics.
+- Digital citizenship, cybersecurity, safe internet navigation, and ethics.
+
+### B. G.C.E. Ordinary Level (O/L) ICT (Grades 10 & 11)
+- Data representation: Number systems (Binary, Octal, Decimal, Hexadecimal) and binary arithmetic.
+- Boolean logic, logic gates, and truth tables.
+- Operating systems, system utilities, and storage management.
+- Database Management Systems (DBMS): Relational concepts, table design, primary keys, and SQL queries.
+- Algorithmic problem-solving and programming fundamentals (Python / Pascal).
+- Web authoring and HTML structure.
+- National past paper breakdowns (2015 to present), model paper drills, and time management.
+
+### C. G.C.E. Advanced Level (A/L) ICT (Grades 12 & 13)
+- Advanced algorithm design, pseudocode, and data structures.
+- Python programming: Object-oriented programming, data processing, recursion, and file handling.
+- Relational Database Management Systems (RDBMS): Advanced SQL queries, ER diagrams, normalization (1NF, 2NF, 3NF).
+- Computer Networking: TCP/IP stack, OSI model, IP addressing, subnetting, and network protocols.
+- Web development and modern client-server architecture.
+- Systems analysis, software development life cycle (SDLC), and data security frameworks.
+- National exam blueprint analysis, model paper discussions, and island rank preparation.
+
+## 4. Student Digital Learning Ecosystem
+- **Interactive Student Portal**: https://topbright.lk/login
+- **Auto-Marked MCQ Exams**: Students complete timed online multiple-choice questions with instant scoring and detailed step-by-step explanations.
+- **24/7 HD Video Replay Archives**: Live online classes are recorded in 1080p and published to the student portal within 24 hours.
+- **Study Vault**: https://topbright.lk/downloads — Free public access to national past papers, provincial model papers, unit summary notes, and revision tutes in Tamil and English medium.
+- **Weekly Class Timetable**: https://topbright.lk/timetable — Structured session schedules for weekday and weekend batches.
+
+## 5. Contact & Admissions
+- **WhatsApp**: +94 71 431 6092 (Direct link: https://wa.me/94714316092)
+- **Direct Phone**: 071 431 6092 / +94 71 431 6092
+- **Email**: info@topbright.lk
+- **Physical Campus**: Kallady, Batticaloa, Eastern Province, Sri Lanka
+- **Visiting Hours**: Saturdays and Sundays 8:00 AM – 6:00 PM (Weekdays by appointment)
+- **Official Website**: https://topbright.lk
+- **Social Media**:
+  - Facebook: https://www.facebook.com/topbrightacademy
+  - YouTube: https://www.youtube.com/@topbrightacademy

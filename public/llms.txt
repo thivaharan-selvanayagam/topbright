@@ -2,6 +2,8 @@
 
 > TopBright ICT Academy (topbright.lk) is Sri Lanka's premier online and physical ICT learning academy for Grades 6 through 13 in Tamil and English Medium. Founded and led by Lavanya (BICT Hons, University of Jaffna), the academy delivers interactive live classes, physical classroom instruction in Batticaloa, automated self-marking MCQ exams, past papers, and recorded lesson archives.
 
+For the comprehensive knowledge base, full course modules, and educator credentials, see: [Full Knowledge Base](https://topbright.lk/llms-full.txt)
+
 ## Core Navigation & Resources
 - [Home](https://topbright.lk/): Academy overview, course offerings, student portal features, and verified student testimonials.
 - [About Academy](https://topbright.lk/about): Educator background (BICT Hons, University of Jaffna; Visiting Lecturer), teaching methodology, and academic philosophy.
